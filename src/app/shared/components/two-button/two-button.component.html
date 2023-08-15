@@ -1,0 +1,23 @@
+<div class="button-wrap">
+  <button
+    class="btn-ins run typo-button-1"
+    mat-button
+    [disabled]="!isAbleFirstButton"
+    (click)="onFirstClick()"
+    [class.isdisable]="!isAbleFirstButton"
+    *ngIf="!isLoading"
+  >
+    {{ firstLabel }}
+  </button>
+  <div class="btn-ins run typo-button-1" [class.loading]="isLoading" *ngIf="isLoading">
+    <img alt="spinner" src="../../../../assets/images/spinner.gif" />
+  </div>
+  <button
+    [disabled]="!isAbleSecondButton"
+    [class.isdisable]="!isAbleSecondButton"
+    (click)="onSecondClick()"
+    class="btn-ins cancel typo-button-1"
+  >
+    {{ secondLabel }}
+  </button>
+</div>

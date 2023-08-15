@@ -1,0 +1,42 @@
+.button-wrap {
+  padding: 20px 24px;
+  border-top: 1px solid #dde;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  .btn-ins {
+    width: 100%;
+    padding: 11px 24px;
+    border-radius: 8px;
+    color: var(--color--primary--500);
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.save {
+      border: 1px solid var(--color--primary--500);
+      background: var(--color--primary--500);
+      color: #ffffff;
+    }
+    &.run {
+      border: var(--color--primary--50);
+      background: var(--color--primary--50);
+      &.isdisable {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      &.loading {
+        opacity: 0.5;
+      }
+      img {
+        height: 24px;
+        width: auto;
+      }
+    }
+    &.cancel {
+      color: var(--color--danger--600);
+      border: 1px solid var(--color--neutral--200);
+    }
+  }
+}

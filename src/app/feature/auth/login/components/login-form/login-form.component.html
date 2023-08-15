@@ -1,0 +1,63 @@
+<div class="login-title">
+  <h1>Đăng Nhập</h1>
+
+</div>
+
+<div class="login-form">
+  <form [formGroup]="loginForm">
+    <!--Username-->
+    <mat-label>Số Điện Thoại</mat-label>
+    <mat-form-field appearance="outline" hideRequiredMarker>
+      <input matInput [placeholder]="'Số điện thoại'" formControlName="username" type="text"/>
+      <mat-error *ngIf="getControlInvalid('email')">Số điện thoại không hợp lệ</mat-error>
+    </mat-form-field>
+
+    <!--Password-->
+    <mat-label>Mật Khẩu</mat-label>
+    <mat-form-field appearance="outline" hideRequiredMarker>
+      <input matInput [type]="hide ? 'password' : 'text'" [placeholder]="'Mật khẩu'" formControlName="password"/>
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hide = !hide"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide"
+      >
+        <mat-icon fontSet="material-icons-outlined" [style.color]="hide ? '#8B8C99' : '#292D32'">{{
+          hide ? 'visibility_off' : 'visibility'
+          }}</mat-icon>
+      </button>
+      <mat-error *ngIf="getControlInvalid('password')">Mật khẩu không hợp lệ</mat-error>
+    </mat-form-field>
+
+    <!--Remember me and forgot password button-->
+    <section>
+      <div class="rm-pw">
+        <mat-checkbox color="primary" formControlName="rememberMe">Remember me</mat-checkbox>
+        <a routerLink="">Forgot password?</a>
+      </div>
+    </section>
+    <!--        <div class="alert-message" *ngIf="error$ | async">-->
+    <!--          <app-alert-message [type]="'danger'" [message]="error$ | async" [isShowCloseButton]="false"></app-alert-message>-->
+    <!--        </div>-->
+    <div class="action">
+      <button class="login"
+              mat-flat-button
+              [class.disabled]="isLoading"
+              [disabled]="isLoading"
+              (click)="onSubmit()"
+      >
+        Đăng nhập
+        <div class="loading" *ngIf="isLoading">
+          <img alt="spinner" src="../../../../assets/images/spinner.gif"/>
+        </div>
+      </button>
+      <button
+        class="register"
+        mat-stroked-button
+      >
+        Tạo tài khoản
+      </button>
+    </div>
+  </form>
+</div>
