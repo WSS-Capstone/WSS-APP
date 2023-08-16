@@ -1,0 +1,40 @@
+.auth-container {
+  display: flex;
+  height: 100vh;
+
+  .separator {
+    flex-basis: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    &.auth-form {
+      align-items: center;
+      //margin-top: 80px;
+    }
+
+    &.banner {
+      background: url('../../../assets/images/welcome-auth.png') no-repeat center / cover;
+      height: 100%;
+    }
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  &--mobile {
+    flex-direction: column;
+    display: inline-block;
+    width: 100%;
+
+    .separator.auth-form > .form {
+      width: 100%;
+    }
+
+    //margin-top: 80px;
+    //margin-left: 24px;
+    //margin-right: 24px;
+  }
+}
