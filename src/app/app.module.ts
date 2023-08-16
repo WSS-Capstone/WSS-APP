@@ -8,6 +8,8 @@ import {LoadingIndicatorModule} from "./shared/components/loading-indicator/load
 import {metaReducers, reducers} from "./store/reducers";
 import {StoreModule} from "@ngrx/store";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {ConfigData} from "./core/models/config-data";
+import {AppInitializer} from "./core/initializers";
 
 @NgModule({
   declarations: [
@@ -21,7 +23,10 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     LoadingIndicatorModule,
     StoreModule.forRoot(reducers, {metaReducers}),
   ],
-  providers: [],
+  providers: [
+    ConfigData,
+    AppInitializer
+  ],
   exports: [
   ],
   bootstrap: [AppComponent]
