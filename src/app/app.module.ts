@@ -9,7 +9,9 @@ import {metaReducers, reducers} from "./store/reducers";
 import {StoreModule} from "@ngrx/store";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ConfigData} from "./core/models/config-data";
-import {AppInitializer} from "./core/initializers";
+import {AppInitializer} from "./core/initializers/app.initializer";
+import {CoreModule} from "./core/core.module";
+
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import {AppInitializer} from "./core/initializers";
     HttpClientModule,
     AppRoutingModule,
     LoadingIndicatorModule,
+    CoreModule,
     StoreModule.forRoot(reducers, {metaReducers}),
   ],
   providers: [

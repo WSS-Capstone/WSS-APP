@@ -1,6 +1,11 @@
-import { Injectable } from "@angular/core";
+import {APP_INITIALIZER} from "@angular/core";
+import {AppInitializer, initializeTokenFactory} from "./app.initializer";
 
-@Injectable()
-export class AppInitializer {
-
-}
+export const appInitializers = [
+  {
+    provide: APP_INITIALIZER,
+    useFactory: initializeTokenFactory,
+    deps: [AppInitializer],
+    multi: true,
+  },
+];

@@ -22,6 +22,7 @@
     "@angular/router": "^14.1.0",
     "@ngrx/store": "^14.1.0",
     "firebase": "^8.6.8",
+    "ngx-cookie-service": "14.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
