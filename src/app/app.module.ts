@@ -20,6 +20,7 @@ import {getAnalytics, provideAnalytics} from "@angular/fire/analytics";
 import {getAuth, provideAuth} from "@angular/fire/auth";
 import {getFirestore, provideFirestore} from "@angular/fire/firestore";
 import {getFunctions, provideFunctions} from "@angular/fire/functions";
+import {SharedModule} from "./shared/shared.module";
 
 const initFirebase = [
   AngularFireModule.initializeApp(environment.firebase),
@@ -41,6 +42,7 @@ const initFirebase = [
     AppRoutingModule,
     LoadingIndicatorModule,
     CoreModule,
+    SharedModule,
     StoreModule.forRoot(reducers, {metaReducers}),
     ...initFirebase
   ],
