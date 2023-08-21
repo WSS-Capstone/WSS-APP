@@ -11,7 +11,24 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ConfigData} from "./core/models/config-data";
 import {AppInitializer} from "./core/initializers/app.initializer";
 import {CoreModule} from "./core/core.module";
+import {AngularFireModule} from "@angular/fire/compat";
+import {environment} from "../environments/environment";
+import {provideFirebaseApp} from "@angular/fire/app";
+import firebase from "firebase/compat/app";
+import initializeApp = firebase.initializeApp;
+import {getAnalytics, provideAnalytics} from "@angular/fire/analytics";
+import {getAuth, provideAuth} from "@angular/fire/auth";
+import {getFirestore, provideFirestore} from "@angular/fire/firestore";
+import {getFunctions, provideFunctions} from "@angular/fire/functions";
 
+const initFirebase = [
+  AngularFireModule.initializeApp(environment.firebase),
+  provideFirebaseApp(() => initializeApp(environment.firebase)),
+  provideAnalytics(() => getAnalytics()),
+  provideAuth(() => getAuth()),
+  provideFirestore(() => getFirestore()),
+  provideFunctions(() => getFunctions()),
+]
 
 @NgModule({
   declarations: [
@@ -25,6 +42,7 @@ import {CoreModule} from "./core/core.module";
     LoadingIndicatorModule,
     CoreModule,
     StoreModule.forRoot(reducers, {metaReducers}),
+    ...initFirebase
   ],
   providers: [
     ConfigData,
