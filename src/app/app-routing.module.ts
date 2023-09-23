@@ -10,16 +10,27 @@ const routes: Routes = [
     children: [
       {
         path: 'login',
-        loadChildren: () => import('./feature/auth/login/login.module').then((m) => m.LoginModule),
+        loadChildren: () => import('./modules/auth/login/login.module').then((m) => m.LoginModule),
         canActivate: [NoAuthGuard],
       },
-      // {
-      //   path: 'sign-up',
-      //   loadChildren: () => import('./features/auth/sign-up/sign-up.module').then((m) => m.SignUpModule),
-      //   canActivate: [NoAuthGuard],
-      // },
+      {
+        path: 'sign-up',
+        loadChildren: () => import('./modules/auth/sign-up/sign-up.module').then((m) => m.SignUpModule),
+        canActivate: [NoAuthGuard],
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'login'
+      }
     ],
   },
+  // {
+  //   path: '',
+  //   component: MainLayoutComponent,
+  //   canActivate: [],
+  //   children: [],
+  // }
 ];
 
 @NgModule({

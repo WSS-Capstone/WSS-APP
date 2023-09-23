@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {LoginRoutingModule} from "./login-routing.module";
-import { LoginViewComponent } from './views/login/login.view.component';
-import { LoginContainerComponent } from './containers/login/login.container.component';
+import {LoginViewComponent} from './views/login/login.view.component';
+import {LoginContainerComponent} from './containers/login/login.container.component';
 import {LoginFormComponent} from "./components/login-form/login-form.component";
 import {LogoWithTitleComponent} from "../../../shared/components/logo-with-title/logo-with-title.component";
 import {ReactiveFormsModule} from "@angular/forms";
@@ -20,7 +20,7 @@ const VIEWS = [LoginViewComponent];
 
 @NgModule({
   declarations: [
-    ...VIEWS,...CONTAINERS, ...COMPONENTS
+    ...VIEWS, ...CONTAINERS, ...COMPONENTS
   ],
   imports: [
     CommonModule,
@@ -34,4 +34,5 @@ const VIEWS = [LoginViewComponent];
     NgOptimizedImage,
   ]
 })
-export class LoginModule { }
+export class LoginModule {
+}

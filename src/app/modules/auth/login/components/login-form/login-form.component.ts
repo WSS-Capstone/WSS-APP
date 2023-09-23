@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import {from} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login-form',
@@ -17,6 +18,7 @@ export class LoginFormComponent {
 
   constructor(
     private fb: FormBuilder,
+    private readonly _router: Router,
     private auth: AngularFireAuth
   ) {
     this.loginForm = fb.group({
@@ -47,5 +49,13 @@ export class LoginFormComponent {
     console.log(this.loginForm.value);
     // this.isLoading = true;
     // this.loginStore.doLogin(this.loginForm.value);
+  }
+
+  onRegister(): void {
+    this._router.navigate(['/sign-up']);
+  }
+
+  loginWithGoogle(): void {
+
   }
 }

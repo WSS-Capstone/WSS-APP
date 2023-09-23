@@ -1,0 +1,90 @@
+<div class="signup-title">
+  <h2>Đăng ký tài khoản</h2>
+</div>
+
+<div class="signup-form">
+  <form [formGroup]="signup">
+    <!--Username-->
+    <mat-label>Họ và tên</mat-label>
+    <mat-form-field appearance="outline" hideRequiredMarker>
+      <input matInput [placeholder]="'Họ và tên'" formControlName="fullname" type="text"/>
+      <mat-error *ngIf="getControlInvalid('fullname')">Họ và tên không hợp lệ</mat-error>
+    </mat-form-field>
+
+    <!--Email-->
+    <mat-label>Email</mat-label>
+    <mat-form-field appearance="outline" hideRequiredMarker>
+      <input matInput [placeholder]="'Email'" formControlName="email" type="text"/>
+      <mat-error *ngIf="getControlInvalid('email')">Email không hợp lệ</mat-error>
+    </mat-form-field>
+
+    <!--Email-->
+    <mat-label>Số điện thoại</mat-label>
+    <mat-form-field appearance="outline" hideRequiredMarker>
+      <input matInput [placeholder]="'Số điện thoại'" formControlName="phone" type="text"/>
+      <mat-error *ngIf="getControlInvalid('phone')">Số điện thoại không hợp lệ</mat-error>
+    </mat-form-field>
+
+    <!--Address-->
+    <mat-label>Địa chỉ</mat-label>
+    <mat-form-field appearance="outline" hideRequiredMarker>
+      <input matInput [placeholder]="'Địa chỉ'" formControlName="address" type="text"/>
+      <mat-error *ngIf="getControlInvalid('address')">Địa chỉ không hợp lệ</mat-error>
+    </mat-form-field>
+
+    <!--Password-->
+    <mat-label>Mật Khẩu</mat-label>
+    <mat-form-field appearance="outline" hideRequiredMarker>
+      <input matInput [type]="hide ? 'password' : 'text'" [placeholder]="'Mật khẩu'" formControlName="password"/>
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hide = !hide"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide"
+      >
+        <mat-icon fontSet="material-icons-outlined" [style.color]="hide ? '#8B8C99' : '#292D32'">{{
+          hide ? 'visibility_off' : 'visibility'
+          }}</mat-icon>
+      </button>
+      <mat-error *ngIf="getControlInvalid('password')">Sử dụng 8 ký tự trở lên với sự kết hợp của các chữ cái, số và ký
+        hiệu
+      </mat-error>
+    </mat-form-field>
+
+    <!--Gender-->
+    <mat-label>Giới tính</mat-label>
+    <mat-radio-group aria-label="Giới tính" formControlName="gender">
+      <mat-radio-button value="1">Nam</mat-radio-button>
+      <mat-radio-button value="2">Nữ</mat-radio-button>
+      <mat-radio-button value="3">Khác</mat-radio-button>
+    </mat-radio-group>
+    <!--Accept term and forgot password button-->
+    <section>
+      <div class="rm-pw">
+        <mat-checkbox color="primary" formControlName="rememberMe">Bằng cách tạo tài khoản, tôi đồng ý với Điều khoản sử
+          dụng
+          <br>và Chính sách quyền riêng tư của chúng tôi
+        </mat-checkbox>
+      </div>
+    </section>
+    <!--        <div class="alert-message" *ngIf="error$ | async">-->
+    <!--          <app-alert-message [type]="'danger'" [message]="error$ | async" [isShowCloseButton]="false"></app-alert-message>-->
+    <!--        </div>-->
+    <div class="action">
+      <button class="register"
+              mat-flat-button
+              [class.disabled]="isLoading"
+              [disabled]="isLoading"
+              (click)="onSubmit()"
+      >
+        Đăng ký
+        <div class="loading" *ngIf="isLoading">
+          <img alt="spinner" src="../../../../assets/images/spinner.gif"/>
+        </div>
+      </button>
+      <span class="login">Bạn đã có tài khoản? <span class="loginLink" (click)="goToLogin()">Đăng nhập</span></span>
+
+    </div>
+  </form>
+</div>
