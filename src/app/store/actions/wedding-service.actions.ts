@@ -10,6 +10,6 @@ export const loadWeddingServices = createAction('[WSS] Load WeddingServices');
 // );
 
 export const loadWeddingServicesFailure = createAction(
-  '[OfficeManagement] Load OfficeManagements Failure',
+  '[WSS] Load WSS Failure',
   props<{ error: any }>()
 );

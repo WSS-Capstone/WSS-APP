@@ -1,28 +1,30 @@
-import {Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AngularFireAuth} from "@angular/fire/compat/auth";
-import {from} from "rxjs";
-import {Router} from "@angular/router";
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Router } from '@angular/router';
+import { LoginStore } from '../../store/login.store';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.scss']
+  styleUrls: ['./login-form.component.scss'],
 })
 export class LoginFormComponent {
   loginForm: FormGroup;
   hide = true;
   isLoading = false;
   // isDisabled$ = this.loginStore.isDisableButton$;
-  // error$ = null;
+  error$ = this.loginStore.error$;
 
   constructor(
     private fb: FormBuilder,
     private readonly _router: Router,
-    private auth: AngularFireAuth
+    private auth: AngularFireAuth,
+    private loginStore: LoginStore,
   ) {
     this.loginForm = fb.group({
-      username: [null, [Validators.required]],
+      email: [null, [Validators.required]],
       password: [null, [Validators.required, Validators.minLength(1)]],
       rememberMe: [true],
     });
@@ -34,21 +36,10 @@ export class LoginFormComponent {
 
   onSubmit(): void {
     if (this.loginForm.invalid || this.isLoading) {
+      // markFormGroupTouched(this.loginForm);
       return;
     }
-    let value = from(this.auth.signInWithEmailAndPassword(this.loginForm.value.username, this.loginForm.value.password));
-
-    value.subscribe(e => {
-      console.log(e);
-      e.user?.getIdToken().then(token => {
-        console.log(token);
-        localStorage.setItem('token', token);
-      });
-    })
-
-    console.log(this.loginForm.value);
-    // this.isLoading = true;
-    // this.loginStore.doLogin(this.loginForm.value);
+    this.loginStore.doLogin(this.loginForm.value);
   }
 
   onRegister(): void {
@@ -56,6 +47,8 @@ export class LoginFormComponent {
   }
 
   loginWithGoogle(): void {
-
+    this.auth.signInWithPopup(new GoogleAuthProvider()).then((res) => {
+      console.log(res);
+    });
   }
 }

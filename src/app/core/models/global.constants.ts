@@ -26,3 +26,7 @@ export const FIREBASE_CONFIG = {
   appId: "1:716165936197:web:e40a8a74cbcb8c72521f2c",
   measurementId: "G-40XM8B81K2"
 };
+
+export const ENDPOINTS = {
+  login: 'auth/login',
+};

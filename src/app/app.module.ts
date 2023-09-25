@@ -21,9 +21,14 @@ import {getAuth, provideAuth} from "@angular/fire/auth";
 import {getFirestore, provideFirestore} from "@angular/fire/firestore";
 import {getFunctions, provideFunctions} from "@angular/fire/functions";
 import {SharedModule} from "./shared/shared.module";
+import {EffectsModule} from "@ngrx/effects";
+import {AuthEffects} from "./store/effects/auth.effects";
+import {MatDialogModule} from "@angular/material/dialog";
+import {AngularFireAuthModule} from "@angular/fire/compat/auth";
 
 const initFirebase = [
   AngularFireModule.initializeApp(environment.firebase),
+  AngularFireAuthModule,
   provideFirebaseApp(() => initializeApp(environment.firebase)),
   provideAnalytics(() => getAnalytics()),
   provideAuth(() => getAuth()),
@@ -41,9 +46,11 @@ const initFirebase = [
     HttpClientModule,
     AppRoutingModule,
     LoadingIndicatorModule,
+    MatDialogModule,
     CoreModule,
     SharedModule,
     StoreModule.forRoot(reducers, {metaReducers}),
+      EffectsModule.forRoot([AuthEffects]),
     ...initFirebase
   ],
   providers: [

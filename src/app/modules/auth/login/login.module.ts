@@ -12,6 +12,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {TwoButtonComponent} from "../../../shared/components/two-button/two-button.component";
 import {MatButtonModule} from "@angular/material/button";
+import {AlertMessageComponent} from "../../../shared/components/alert-message/alert-message.component";
 
 const COMPONENTS = [LoginFormComponent, LogoWithTitleComponent, TwoButtonComponent];
 const CONTAINERS = [LoginContainerComponent];
@@ -19,9 +20,7 @@ const CONTAINERS = [LoginContainerComponent];
 const VIEWS = [LoginViewComponent];
 
 @NgModule({
-  declarations: [
-    ...VIEWS, ...CONTAINERS, ...COMPONENTS
-  ],
+  declarations: [...VIEWS, ...CONTAINERS, ...COMPONENTS],
   imports: [
     CommonModule,
     LoginRoutingModule,
@@ -32,7 +31,7 @@ const VIEWS = [LoginViewComponent];
     MatCheckboxModule,
     MatInputModule,
     NgOptimizedImage,
-  ]
+    AlertMessageComponent,
+  ],
 })
-export class LoginModule {
-}
+export class LoginModule {}

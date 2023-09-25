@@ -1,0 +1,7 @@
+<div class="message-container" [class]="typeStatus">
+    <div class="notification">
+        <img [src]="iconPath" alt="icon" />
+        <span>{{ message }}</span>
+    </div>
+    <img *ngIf="isClose" (click)="closeAlert()" src="./assets/icons/close.svg" alt="close" />
+</div>

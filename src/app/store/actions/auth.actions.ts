@@ -2,12 +2,13 @@ import { createAction, props, union } from '@ngrx/store';
 import {IToken, IUser} from "../../core/models/user/user";
 import {LoginRequest} from "../../core/models/auth/login-request";
 
-
-export const login = createAction('[Auth] Login', props<{ data: LoginRequest }>());
+export const login = createAction('[Auth] Login Firebase', props<{ data: LoginRequest }>());
 
 export const loginSuccess = createAction('[Auth] Login Success', props<{ user: IUser; token: IToken }>());
 
 export const loginFailure = createAction('[Auth] Login Failure', props<{ error: string }>());
+
+export const setUserInfo = createAction('[Auth] Set User Info', props<{ user: IUser }>());
 
 export const logout = createAction('[Auth] Logout');
 export const logoutSuccess = createAction('[Auth] Logout Success');
@@ -26,6 +27,7 @@ const AUTH_ACTIONS = union({
   login,
   loginSuccess,
   loginFailure,
+  setUserInfo,
   logout,
   renewToken,
   renewTokenSuccess,

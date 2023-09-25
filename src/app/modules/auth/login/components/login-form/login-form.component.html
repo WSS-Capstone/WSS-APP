@@ -8,7 +8,7 @@
     <!--Username-->
     <mat-label>Số Điện Thoại</mat-label>
     <mat-form-field appearance="outline" hideRequiredMarker>
-      <input matInput [placeholder]="'Số điện thoại'" formControlName="username" type="text"/>
+      <input matInput [placeholder]="'Số điện thoại'" formControlName="email" type="text"/>
       <mat-error *ngIf="getControlInvalid('email')">Số điện thoại không hợp lệ</mat-error>
     </mat-form-field>
 
@@ -37,9 +37,9 @@
         <a routerLink="">Forgot password?</a>
       </div>
     </section>
-    <!--        <div class="alert-message" *ngIf="error$ | async">-->
-    <!--          <app-alert-message [type]="'danger'" [message]="error$ | async" [isShowCloseButton]="false"></app-alert-message>-->
-    <!--        </div>-->
+    <div class="alert-message" *ngIf="error$ | async">
+      <app-alert-message [type]="'danger'" [message]="error$ | async" [isShowCloseButton]="false"></app-alert-message>
+    </div>
     <div class="action">
       <button class="login"
               mat-flat-button
