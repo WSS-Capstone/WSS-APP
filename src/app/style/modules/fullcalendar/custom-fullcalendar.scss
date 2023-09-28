@@ -1,0 +1,253 @@
+.fc-col-header-cell {
+  height: 70px !important;
+}
+
+.calendar-header-title div:first-child {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.fc-header-toolbar {
+  display: none !important;
+}
+
+.fc-timegrid-slots tr > td:first-child {
+  border: none;
+}
+
+.isToday {
+  background: var(--color--primary--500);
+  border-radius: 23px;
+  color: white !important;
+  padding: 5px;
+  height: 28px;
+  width: 28px;
+}
+
+.day {
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekday {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color--text--subdued);
+  margin-bottom: 4px;
+}
+
+.fc-timegrid-axis {
+  border-bottom: none !important;
+}
+
+.fc-timegrid-slots tbody tr {
+  height: 50px !important;
+}
+
+.fc .fc-timegrid-now-indicator-line {
+  border-color: var(--color--danger--700);
+}
+
+.fc .fc-timegrid-now-indicator-line:before {
+  content: '';
+  display: block;
+  background: var(--color--danger--700);
+  width: 12px !important;
+  height: 12px;
+  border-radius: 50%;
+  position: absolute;
+  top: -7px;
+  left: 0;
+}
+
+.fc-timegrid-now-indicator-arrow {
+  display: none;
+}
+
+// calendar background color
+.fc-timegrid-now-indicator-container {
+  background-color: var(--color--neutral--white);
+}
+
+.fc-scrollgrid-sync-inner {
+  height: inherit !important;
+  //display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+.fc {
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+
+.event-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  margin-left: 12px;
+
+  .provider-dob {
+    margin-top: 6px;
+  }
+}
+
+.fc-event-main {
+  .fc-event-main-frame {
+    display: none;
+  }
+  &:hover {
+    .fc-event-title {
+      span {
+        color: var(--color--hover--default) !important;
+      }
+    }
+  }
+}
+
+.fc-v-event {
+  border: 0 !important;
+}
+
+.fc-event {
+  border-radius: 4px;
+  border-left: 2px solid var(--color--primary--400) !important;
+
+  .fc-event-title {
+    span {
+      color: var(--color--text--default);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.fc-timegrid-col-events {
+  .inital-visit {
+    border: 0;
+    border-left: 2px solid var(--color--primary--400) !important;
+    background-color: #d9e7fc80;
+
+    &:hover {
+      background-color: var(--color--primary--400) !important;
+      color: white;
+    }
+  }
+
+  .DME-supplies-visit {
+    background-color: #7bd74980 !important;
+    border-left: 2px solid var(--color--success--500) !important;
+
+    &:hover {
+      background-color: var(--color--success--500) !important;
+      color: white;
+    }
+  }
+
+  .follow-up-visit {
+    background-color: #fde7e780 !important;
+    border-left: 2px solid var(--color--danger--500) !important;
+
+    &:hover {
+      background-color: var(--color--danger--500) !important;
+      color: white;
+    }
+  }
+
+  .medication-refill {
+    background-color: #fef4cd80 !important;
+    border-left: 2px solid var(--color--warning--600) !important;
+
+    &:hover {
+      background-color: var(--color--warning--600) !important;
+      color: white;
+    }
+  }
+
+  .consult {
+    background-color: #f8e5ff80 !important;
+    border-left: 2px solid var(--color--purple--500) !important;
+
+    &:hover {
+      background-color: var(--color--purple--500) !important;
+      color: white;
+    }
+  }
+}
+
+.fc-timegrid-slots {
+  colgroup {
+    col {
+      width: 120px !important;
+    }
+  }
+}
+
+.fc-timegrid-cols {
+  colgroup {
+    col {
+      width: 120px !important;
+    }
+  }
+}
+
+.fc-col-header {
+  colgroup {
+    col {
+      width: 120px !important;
+    }
+  }
+}
+
+.fc-direction-ltr .fc-timegrid-slot-label-frame {
+  text-align: left;
+  padding-left: 24px;
+}
+
+.fc .fc-timegrid-slot-label {
+  vertical-align: text-top;
+}
+
+.fc-col-header-cell {
+  div {
+    flex-direction: column-reverse !important;
+
+    .weekday {
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: initial;
+    }
+
+    .day {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color--text--subdued);
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.fc-timegrid-bg-harness {
+  //display: none;
+  height: 50px;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: none;
+}

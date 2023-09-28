@@ -1,0 +1,17 @@
+import {CategoriesListViewComponent} from "./view/categories-list-view/categories-list-view.component";
+import {RouterModule, Routes} from "@angular/router";
+import {NgModule} from "@angular/core";
+
+const routes: Routes = [
+  {
+    path: '',
+    component: CategoriesListViewComponent,
+  },
+
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class CategoriesRoutingModule {}

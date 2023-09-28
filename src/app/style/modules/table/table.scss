@@ -1,0 +1,17 @@
+table {
+  width: 100%;
+}
+
+.display-table-cell {
+  display: table-cell;
+}
+
+.easydrbilling {
+  &-table {
+    width: 100%;
+  }
+
+  &-row-is-clicked {
+    font-weight: bold;
+  }
+}

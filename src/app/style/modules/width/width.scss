@@ -1,0 +1,12 @@
+.easydrbilling-form {
+  width: 80%;
+}
+
+$sizes: 10, 25, 30, 35, 40, 45, 48, 50, 70, 75, 100;
+$unit: '%';
+
+@each $size in $sizes {
+  .easydrbilling-#{$size}-width {
+    width: #{$size}#{$unit};
+  }
+}

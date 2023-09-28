@@ -1,0 +1,133 @@
+#date-picker-wrapper {
+  .tui-calendar-header-info {
+    display: none;
+  }
+
+  .tui-datepicker {
+    padding: 1px;
+    border-radius: 6px;
+    margin-top: 22px;
+    margin-left: -17px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    z-index: 1;
+
+    .tui-datepicker-type-date {
+      margin: auto;
+    }
+  }
+
+  .tui-calendar {
+    th,
+    td {
+      height: 32px;
+      width: 36px;
+      color: var(--color--text--default);
+    }
+
+    th {
+      /* Body/Body 8 */
+      font-family: 'Inter', sans-serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 12px;
+    }
+
+    td {
+      /* Body/Regular */
+      font-family: 'Inter', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .tui-calendar-prev-month.tui-calendar-date,
+    .tui-calendar-next-month.tui-calendar-date {
+      visibility: initial;
+      color: var(--color--text--disabled) !important;
+      pointer-events: none;
+    }
+
+    .tui-calendar-date {
+      &.tui-is-selected,
+      &.tui-calendar-today,
+      &.tui-is-selectable:hover:not(.tui-is-selected) {
+        position: relative;
+        z-index: 1;
+        background-color: initial;
+
+        &::before {
+          content: '';
+          position: absolute;
+          display: block;
+          top: 4px;
+          left: 6px;
+          width: 24px;
+          height: 24px;
+          z-index: -1;
+          border-radius: 4px;
+        }
+      }
+
+      &.tui-is-selected {
+        color: var(--color--neutral--white);
+
+        &::before {
+          background: var(--color--primary--500);
+        }
+      }
+
+      &.tui-calendar-today {
+        &::before {
+          width: 22px;
+          height: 22px;
+          border: 1px solid var(--color--primary--500);
+        }
+      }
+
+      &.tui-is-selectable:hover:not(.tui-is-selected) {
+        &::before {
+          background: var(--color--primary--50);
+        }
+
+        &.tui-calendar-today::before {
+          width: 22px;
+          height: 22px;
+        }
+      }
+    }
+
+    .tui-calendar-header {
+      .tui-calendar-title {
+        color: var(--color--text--default);
+        /* Body/Body 6 */
+        font-family: 'Inter', sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        position: relative;
+        right: 6px;
+      }
+
+      .tui-calendar-header-inner {
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
+
+        .tui-calendar-btn {
+          width: 40px;
+          height: 40px;
+          z-index: initial;
+        }
+      }
+    }
+
+    .tui-calendar-body {
+      padding: 8px;
+    }
+  }
+}

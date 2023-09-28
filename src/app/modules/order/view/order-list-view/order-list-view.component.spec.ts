@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MainLayoutComponent } from './main-layout.component';
+import { OrderListViewComponent } from './order-list-view.component';
 
-describe('MainLayoutComponent', () => {
-  let component: MainLayoutComponent;
-  let fixture: ComponentFixture<MainLayoutComponent>;
+describe('OrderListViewComponent', () => {
+  let component: OrderListViewComponent;
+  let fixture: ComponentFixture<OrderListViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MainLayoutComponent ]
+      declarations: [ OrderListViewComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MainLayoutComponent);
+    fixture = TestBed.createComponent(OrderListViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

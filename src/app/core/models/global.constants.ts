@@ -3,7 +3,7 @@ export const ROUTE_PATH = {
   register: '/register',
   home: 'home',
   forgotPassword: 'reset-password',
-  appointments: '/appointments',
+  category: '/categories',
 };
 
 export const GLOBAL_CONSTANTS = {
@@ -13,7 +13,7 @@ export const GLOBAL_CONSTANTS = {
   expiredTime: 'expiredTime',
   wss_api: 'https://localhost',
 
-  login_api: "api/v1/login",
+  auth_api: "auth",
   register_api: "api/v1/register",
 };
 
@@ -28,5 +28,5 @@ export const FIREBASE_CONFIG = {
 };
 
 export const ENDPOINTS = {
-  login: 'auth/login',
+  login: `${GLOBAL_CONSTANTS.auth_api}/userInfo`,
 };

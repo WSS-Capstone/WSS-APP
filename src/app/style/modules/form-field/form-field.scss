@@ -1,0 +1,30 @@
+.replica-form-field {
+  border-radius: 8px !important;
+  border: 1px var(--color--neutral--100) solid;
+  background: transparent;
+  height: 54px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+
+  &:focus,
+  &:active,
+  &:hover {
+    border-color: var(--color--primary--500);
+  }
+}
+
+.mat-form-field-required-marker {
+  color: var(--color--danger--600);
+}
+
+.mat-focused {
+  .mat-form-field-label {
+    color: var(--color--text--subdued) !important;
+  }
+
+  .mat-form-field-required-marker {
+    color: var(--color--danger--600);
+  }
+}

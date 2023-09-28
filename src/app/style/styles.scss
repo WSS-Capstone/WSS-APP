@@ -1,0 +1,175 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import './modules/modules.scss';
+@import './material/mat-overrides.scss';
+@import '_variables.scss';
+//@import 'ngx-toastr/toastr';
+//@import './modules/toastr/custom-toastr.scss';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  color: var(--color--text--default);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+input:placeholder-shown {
+  text-overflow: ellipsis;
+}
+
+.display-flex {
+  display: inline-flex;
+}
+
+.input-field {
+  background-color: white;
+  border: 1px solid rgb(167, 165, 165);
+  height: 20px;
+  border-radius: 2px;
+  width: 100%;
+}
+
+.search-button {
+  height: 52px;
+}
+
+.search-icon {
+  font-size: 36px;
+  height: auto;
+  width: auto;
+}
+
+.align-center {
+  align-items: center;
+}
+
+a {
+  //color: var(--color--primary--500);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.vertical-divider {
+  width: 24px;
+  height: 0;
+  /* Divider */
+  border: 1px solid var(--color--divider);
+  transform: rotate(90deg);
+  /* Inside auto layout */
+  flex: none;
+  flex-grow: 0;
+}
+
+.px-24 {
+  padding: 0 24px;
+}
+
+.py-24 {
+  padding: 24px 0;
+}
+
+.patient-form-accordion-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 8px;
+  border: 1px solid var(--color--divider);
+  background: var(--color--neutral--white);
+}
+
+.copy-icon {
+  cursor: pointer;
+  margin-left: 12px;
+}
+
+.copy-tooltip {
+  padding: 12px;
+  border-radius: 6px !important;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: var(--color--neutral--white) !important;
+}
+
+.color-primary {
+  color: var(--color--primary--500) !important;
+}
+
+.select_dropdown {
+  margin-bottom: 1.34375em;
+
+  .dropdown {
+    padding: 8px 0;
+  }
+
+  .mat-form-field-wrapper {
+    padding: 0;
+  }
+
+  &.center-input {
+    mat-form-field {
+      &.mat-form-field-should-float {
+        .mat-form-field-infix {
+          padding: 0.55em 0 0.5em 0;
+
+          .mat-form-field-label-wrapper {
+            .mat-form-field-label {
+              transform: translateY(-0.34em) scale(0.75);
+            }
+          }
+        }
+      }
+
+      &.mat-form-field-hide-placeholder {
+        .mat-form-field-label-wrapper {
+          .mat-form-field-infix {
+            .mat-form-field-label {
+              top: 1.49376em;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.no-label-input {
+    mat-form-field {
+      &.mat-form-field-should-float {
+        .mat-form-field-infix {
+          .mat-form-field-label-wrapper {
+            .mat-form-field-label {
+              transform: translateY(-0.34em) scale(0.75);
+            }
+          }
+        }
+      }
+
+      &.mat-form-field-hide-placeholder {
+        .mat-form-field-label-wrapper {
+          .mat-form-field-infix {
+            .mat-form-field-label {
+              top: 1.49376em;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .item {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 16px;
+    color: var(--color--text--default);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color--hover--default);
+    }
+  }
+}

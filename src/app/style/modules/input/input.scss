@@ -1,0 +1,19 @@
+/* Webkit browsers like Safari and Chrome */
+
+input[type='number'] {
+  -moz-appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+input[type='time']::-webkit-calendar-picker-indicator {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 0;
+  background: url('../../../../assets/icons/clock.svg') no-repeat;
+}

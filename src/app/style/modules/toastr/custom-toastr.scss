@@ -1,0 +1,44 @@
+.toast-container .ngx-toastr {
+  width: 507px;
+  box-shadow: none;
+  border-radius: 10px;
+  border: 1px solid inherit;
+  color: var(--color--text-default);
+  background-size: 32px;
+  display: flex;
+  align-items: center;
+
+  .toast-message {
+    margin-left: 16px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.toast-info {
+  background-image: url('/assets/icons/info.svg');
+  background-color: #dbeafe;
+}
+.toast-error {
+  background-image: url('/assets/icons/error.svg');
+  background-color: #fde7e7;
+}
+.toast-success {
+  background-image: url('/assets/icons/success.svg');
+  background-color: #bae7a3;
+}
+.toast-warning {
+  background-image: url('/assets/icons/warning.svg');
+  background-color: #fef4cd;
+}
+
+.toast-container .ngx-toastr:hover {
+  box-shadow: none;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.toast-bottom-right {
+  right: 24px;
+  bottom: 30px;
+}

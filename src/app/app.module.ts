@@ -25,6 +25,9 @@ import {EffectsModule} from "@ngrx/effects";
 import {AuthEffects} from "./store/effects/auth.effects";
 import {MatDialogModule} from "@angular/material/dialog";
 import {AngularFireAuthModule} from "@angular/fire/compat/auth";
+import { CustomerListViewComponent } from './modules/customer/view/customer-list-view/customer-list-view.component';
+import { OrderListViewComponent } from './modules/order/view/order-list-view/order-list-view.component';
+import { ServiceListViewComponent } from './modules/service/view/service-list-view/service-list-view.component';
 
 const initFirebase = [
   AngularFireModule.initializeApp(environment.firebase),

@@ -15,12 +15,12 @@ export class NoAuthGuard implements CanActivate {
   canActivate(): Observable<boolean> {
     return this.store$.select(isAuthenticated$).pipe(
       map((authenticated) => {
-        // if (authenticated) {
-        //   // void this.router.navigate([`/${ROUTE_PATH.home}`]);
-        //   return true;
-        // }
+          console.log('No authenticated', authenticated)
+        if (authenticated) {
+          void this.router.navigate([`/${ROUTE_PATH.category}`]);
+          return false;
+        }
         return true;
-        // return false;
       })
     );
   }

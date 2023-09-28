@@ -12,11 +12,22 @@ export interface ILoginState {
 }
 
 export interface LoginInfo {
-  email: string;
-  phone: string;
-  fullname: string;
-  gender: any;
-  address: string;
+  id: string;
+  username: string;
+  status: string;
+  refId: string;
   roleName: string;
-  isActive: boolean;
+  owner?: UserInfo;
+  customer?: UserInfo;
+  partner?: UserInfo;
+}
+
+export interface UserInfo {
+  id: string;
+  fullname: string;
+  dateOfBirth: string;
+  phone: string;
+  address: string;
+  imageUrl: string;
+  gender: string;
 }

@@ -1,0 +1,29 @@
+@use '@angular/material' as mat;
+@import '@angular/material/theming';
+
+@import './color/color';
+@import './typography/typography';
+$typography-config: mat.define-typography-config(
+  $font-family: '"Inter", sans-serif;',
+);
+
+@include mat.core($typography-config);
+
+$palette-primary: mat.define-palette($primary, 500, 100, 700);
+$palette-neutral: mat.define-palette($neutral, 500, 100, 600);
+$palette-success: mat.define-palette($success, 500, 100, 600);
+$palette-warning: mat.define-palette($warning, 500, 100, 700);
+$palette-danger: mat.define-palette($danger, 600, 100, 700);
+$palette-informative: mat.define-palette($informative, 500, 100, 700);
+
+$light-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $palette-primary,
+      accent: $palette-neutral,
+      warn: $palette-danger,
+    ),
+    typography: $typography-config,
+  )
+);
+@include mat.all-component-themes($light-theme);

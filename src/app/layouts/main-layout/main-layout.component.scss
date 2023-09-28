@@ -1,0 +1,41 @@
+.main-header {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 2;
+}
+
+.main-layout {
+  display: inline-flex;
+  width: var(--width--app--full);
+  height: calc(var(--height--app--full) - var(--height--header--default));
+  margin-top: var(--height--header--default);
+  overflow: hidden;
+
+  .main-menu-container {
+    position: fixed;
+    top: var(--height--header--default);
+    left: 0;
+    bottom: 0;
+    z-index: 9;
+    border-right: 1px solid #ddddee;
+    box-sizing: border-box;
+  }
+
+  .page-content-container {
+    width: calc(var(--width--app--full) - var(--width--menu--default));
+    margin-left: var(--width--menu--default);
+    overflow: auto; // temp without patient visits detail content container
+  }
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+
+  .content {
+    overflow: hidden;
+  }
+}

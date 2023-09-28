@@ -1,0 +1,17 @@
+.display-flex-right {
+  display: flex;
+  justify-content: right;
+}
+
+.display-flex-right > span {
+  padding-right: 5px;
+}
+
+.pad-right-5px {
+  padding-right: 5px;
+}
+
+.pad-left-bottom-5px {
+  padding-left: 5px;
+  padding-bottom: 5px;
+}

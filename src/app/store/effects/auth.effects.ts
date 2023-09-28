@@ -8,7 +8,7 @@ import {
   loginFailure,
   loginSuccess,
   logout,
-  logoutSuccess,
+  logoutSuccess, renewToken, renewTokenFailure, renewTokenSuccess,
 } from '../actions/auth.actions';
 import { catchError, finalize, from, map, of, switchMap, tap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -48,6 +48,7 @@ export class AuthEffects {
   private handleFirebaseAuthError(error: any) {
     this.loadingService.hide();
     this.authService.clearLoginSuccessFirebase();
+    console.log("Error FB", error);
     return of(loginFailure({ error: 'Sai thông tin đăng nhập' }));
   }
 
@@ -85,8 +86,24 @@ export class AuthEffects {
   }
 
   private handleBackendAuthError(error: any) {
+      console.log("Error BE", error);
+
     return of(loginFailure({ error: 'Sai thông tin đăng nhập' }));
   }
+
+  renewToken$ = createEffect(() =>
+      this.actions$.pipe(
+          ofType(renewToken),
+          tap(() => {
+            let token = this.authService.renewToken();
+            console.log("renew:" , token);
+            // if(!!token){
+            //   return renewTokenSuccess({token : { idToken : token }});
+            // }
+            // return renewTokenFailure({ error: 'Renew error' });
+          }),
+      )
+  );
 
   logout$ = createEffect(() =>
     this.actions$.pipe(

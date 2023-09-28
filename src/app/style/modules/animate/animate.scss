@@ -1,0 +1,25 @@
+:root {
+  --animate-duration: 0.5s;
+  --animate-delay: 0.5s;
+  --animate-repeat: 1;
+}
+
+.animate__animated {
+  animation-duration: 1s;
+  animation-duration: var(--animate-duration);
+  animation-fill-mode: both;
+
+  &.animate__slideInRight {
+    animation-name: slideInRight;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translate(100%, 0);
+  }
+
+  to {
+    transform: translate(0, 0);
+  }
+}

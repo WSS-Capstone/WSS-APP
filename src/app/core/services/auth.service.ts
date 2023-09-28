@@ -14,11 +14,14 @@ import {
 import { map, of, tap } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { Router } from '@angular/router';
-import { setUserInfo } from '../../store/actions/auth.actions';
+import {
+  loginSuccess,
+  renewToken,
+  setUserInfo,
+} from '../../store/actions/auth.actions';
 import { IToken, IUser } from '../models/user/user';
 import { LoginInfo } from '../../modules/auth/login/models/models';
-import { idToken } from '@angular/fire/auth';
-import { plainToClass } from 'class-transformer';
+import firebase from 'firebase/compat/app';
 
 @Injectable({
   providedIn: 'root',
@@ -36,17 +39,36 @@ export class AuthService {
   private renewTokenTimeout;
 
   login(loginRequest: LoginRequest) {
+    let token = this.storageService.getCookieByName(GLOBAL_CONSTANTS.idToken);
+
     return this.apiService
-      .post<LoginInfo>(`${environment.wssApi}/${ENDPOINTS.login}`, loginRequest)
+      .get<LoginInfo>(`${environment.wssApi}/${ENDPOINTS.login}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .pipe(
         map((res) => {
-          const { email, phone, fullname, roleName, isActive } = res;
-          const user: IUser = {
-            email,
-            phone,
-            fullname,
+          const {
+            id,
+            username,
+            refId,
             roleName,
-            isActive,
+            status,
+            customer,
+            partner,
+            owner,
+          } = res;
+
+          const user: IUser = {
+            id,
+            email: username,
+            phone: customer?.phone ?? partner?.phone ?? owner?.phone,
+            fullname:
+              customer?.fullname ?? partner?.fullname ?? owner?.fullname,
+            roleName,
+            isActive: status === 'Active',
           };
           const token: IToken = {
             idToken: this.storageService.getCookieByName(
@@ -102,6 +124,51 @@ export class AuthService {
     }
   }
 
+  renewToken() {
+    const token = this.storageService.getCookieByName(GLOBAL_CONSTANTS.idToken);
+    if (this.isTokenExpired(token) || !token) {
+      of(this.auth.onIdTokenChanged).pipe(
+        tap({
+          next: (user: any) => {
+            user.getIdToken().then((idToken) => {
+              this.storageService.setCookie(GLOBAL_CONSTANTS.idToken, idToken);
+              return idToken;
+            });
+          },
+          error: () => {
+            this.logout();
+            return null;
+          },
+        }),
+      );
+    }
+    return token;
+  }
+
+  isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp < Math.floor(Date.now() / 1000);
+    } catch (e) {
+      return true;
+    }
+  }
+
+  checkToken() {
+    const token = this.storageService.getCookieByName(GLOBAL_CONSTANTS.idToken);
+    console.log('checkToken', token);
+    if (this.isTokenExpired(token) || !token) {
+      // this.logout();
+      // this.store.dispatch(renewToken());
+      void this.router.navigate([`/${ROUTE_PATH.login}`]);
+      return;
+    } else {
+      this.setLoginSuccessValue({ idToken: token } as IToken);
+    }
+
+    // this.store.dispatch(renewToken());
+  }
+
   setLoginSuccessFirebase(token: IToken, rememberMe?: boolean) {
     this.storageService.setCookie(GLOBAL_CONSTANTS.idToken, token.idToken);
     if (rememberMe) {
@@ -124,7 +191,7 @@ export class AuthService {
     // const expiredTime = new Date().getTime() + token.expiresIn * 1000;
     // set tokens in cookie and expiredTime in localStorage
     // this.storageService.setLocalStorage(GLOBAL_CONSTANTS.expiredTime, expiredTime);
-    // this.storageService.setCookie(GLOBAL_CONSTANTS.idToken, token.idToken);
+    this.storageService.setCookie(GLOBAL_CONSTANTS.idToken, token.idToken);
 
     if (rememberMe) {
       this.storageService.setLocalStorage(
@@ -132,7 +199,11 @@ export class AuthService {
         rememberMe,
       );
     }
-
+    const userS = this.storageService.getCookieByName(
+      GLOBAL_CONSTANTS.emailCookieName,
+    );
+    const user: IUser = JSON.parse(userS);
+    this.store.dispatch(loginSuccess({ user, token }));
     // call function that will automatically renew token before it expires.
     // this.startRenewTokenTimer(expiredTime);
   }

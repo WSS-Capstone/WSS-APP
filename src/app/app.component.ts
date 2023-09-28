@@ -4,6 +4,7 @@ import {LoadingService} from "./core/services/loading.service";
 import {DestroyService} from "./core/services/destroy.service";
 import {AuthState} from "./core/models/auth/auth-state";
 import {takeUntil} from "rxjs";
+import {AuthService} from "./core/services/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,7 @@ export class AppComponent implements OnInit, OnDestroy{
    constructor(
      private loadingService: LoadingService,
      private readonly destroy$: DestroyService,
-     private authStore$: Store<AuthState>,
+     private authService: AuthService,
      private ref: ChangeDetectorRef,
    ) { }
 
@@ -28,7 +29,8 @@ export class AppComponent implements OnInit, OnDestroy{
     });
 
     //if token is expired, renew token
-    // this.authService.checkToken();
+    this.authService.checkToken();
+    this.authService.checkUserInfo();
   }
 
   @HostListener('window:beforeunload')

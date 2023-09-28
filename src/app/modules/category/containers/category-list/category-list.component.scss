@@ -1,0 +1,250 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  padding: 32px 24px 24px 24px;
+}
+.title{
+  color: #F8903A;
+}
+
+
+.header,
+.filter,
+.paginator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: calc(100% - 80px);
+  gap: 24px;
+
+  .typo-body-2 {
+    color: var(--color--text--subdued);
+  }
+}
+
+.header {
+  height: 36px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+
+  .left {
+    display: flex;
+    justify-content: center;
+
+    mat-icon {
+      margin-right: 8px;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+    }
+
+    span {
+      padding: 0;
+      margin: 0;
+      color: #F8903A;
+    }
+  }
+
+  .right{
+    display: flex;
+    justify-content: flex-start;
+  }
+}
+
+.main {
+  height: calc(100% - 64px);
+  border-radius: 8px;
+  border: 1px solid var(--color--divider--default);
+  background: var(--color--neutral--white);
+
+  .table-container {
+    position: relative;
+    height: calc(100% - 168px);
+    overflow: auto;
+
+    ::ng-deep {
+      tr.mat-header-row {
+        height: 48px;
+      }
+    }
+
+    tr {
+      &:hover {
+        background: var(--color--background--hover) !important;
+      }
+
+      &.inActive {
+        background: var(--color--background--disable);
+
+        td {
+          &:not(.primary-color) {
+            color: var(--color--text--disabled);
+          }
+
+          &.col-id {
+            color: var(--color--primary--100);
+          }
+        }
+      }
+    }
+
+    th {
+      background: var(--color--primary--50);
+      border: none;
+      padding: 0px 24px;
+      color: var(--color--primary--600);
+      height: 48px;
+      font: 600 14px/16px Inter, sans-serif !important;
+    }
+
+    td {
+      color: var(--color--text--default);
+      font: 400 14px/20px Inter, sans-serif !important;
+      padding: 0px 24px;
+      height: 52px;
+      border: none;
+      border-bottom: 1px solid var(--color--divider--default);
+    }
+
+    td.primary-color {
+      color: var(--color--primary--500);
+    }
+    .table-tr-custom {
+      &.isDisable {
+        background: var(--color--background--hover) !important;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .edit-btn {
+    padding: 0;
+    min-width: initial;
+
+    mat-icon {
+      margin-right: 4px;
+    }
+
+    ::ng-deep mat-icon {
+      svg {
+        width: 16px;
+
+        path {
+          stroke: var(--color--primary--500);
+        }
+      }
+    }
+  }
+}
+
+.filter {
+  height: 88px;
+  padding: 24px;
+
+  .left {
+
+
+    .typo-button-3 {
+      color: var(--color--text--default);
+      margin-right: 4px;
+    }
+
+    .typo-body-7 {
+      color: var(--color--text--subdued);
+    }
+
+    .filter_provider {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      span {
+        color: var(--color--text--default);
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    gap: 16px;
+
+    .search {
+      width: 500px;
+
+    }
+
+    .search-by {
+      width: 156px;
+    }
+
+    .sort {
+      width: 168px;
+    }
+
+    ::ng-deep {
+      .dropdown {
+        padding: 8px 0;
+      }
+    }
+
+    .item {
+      height: 40px;
+      line-height: 40px;
+      padding: 0 16px;
+      color: var(--color--text--default);
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--color--hover--default);
+      }
+    }
+
+    .filter-btn {
+      height: 36px;
+      background: var(--color--neutral--white);
+      border: 1px solid #ddddee;
+      border-radius: 6px;
+      width: 107px;
+      cursor: pointer;
+
+      img {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .filter .sort {
+    .mat-option {
+      height: 40px !important;
+      color: var(--color--text--default) !important;
+      font: 400 14px / 20px 'Inter', sans-serif !important;
+    }
+  }
+
+  .footer {
+    .mat-form-field-flex {
+      padding: 10px 12px !important;
+    }
+
+    app-paginator input {
+      font: 500 14px/20px Inter, sans-serif;
+      color: var(--color--text--default);
+    }
+  }
+}

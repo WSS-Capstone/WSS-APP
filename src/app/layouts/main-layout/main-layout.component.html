@@ -1,1 +1,13 @@
-<p>main-layout works!</p>
+<ng-container>
+  <div class="main-header">
+    <app-header></app-header>
+  </div>
+  <div class="main-layout">
+    <div class="main-menu-container">
+      <app-main-menu></app-main-menu>
+    </div>
+    <div class="page-content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</ng-container>
