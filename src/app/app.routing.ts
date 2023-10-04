@@ -71,6 +71,15 @@ export const appRoutes: Route[] = [
             initialData: InitialDataResolver,
         },
         children: [
+            // WSS
+            {
+                path: 'owner',
+                children: [
+                    {path: 'category', loadChildren: () => import('app/modules/admin/apps/category/category.module').then(m => m.CategoryModule)},
+                ]
+            },
+
+
 
             // Dashboards
             {path: 'dashboards', children: [

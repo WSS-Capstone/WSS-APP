@@ -16,7 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
 import { InventoryComponent } from 'app/modules/admin/apps/ecommerce/inventory/inventory.component';
 import { InventoryListComponent } from 'app/modules/admin/apps/ecommerce/inventory/list/inventory.component';
-import { ecommerceRoutes } from 'app/modules/admin/apps/ecommerce/ecommerce.routing';
+import { inventoryRoutes } from 'app/modules/admin/apps/ecommerce/ecommerce.routing';
 
 @NgModule({
     declarations: [
@@ -24,7 +24,7 @@ import { ecommerceRoutes } from 'app/modules/admin/apps/ecommerce/ecommerce.rout
         InventoryListComponent
     ],
     imports     : [
-        RouterModule.forChild(ecommerceRoutes),
+        RouterModule.forChild(inventoryRoutes),
         MatButtonModule,
         MatCheckboxModule,
         MatFormFieldModule,

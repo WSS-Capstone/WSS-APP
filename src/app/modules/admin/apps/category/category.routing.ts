@@ -1,27 +1,25 @@
-import { Route } from '@angular/router';
-import { InventoryComponent } from 'app/modules/admin/apps/ecommerce/inventory/inventory.component';
-import { InventoryListComponent } from 'app/modules/admin/apps/ecommerce/inventory/list/inventory.component';
-import { InventoryBrandsResolver, InventoryCategoriesResolver, InventoryProductsResolver, InventoryTagsResolver, InventoryVendorsResolver } from 'app/modules/admin/apps/ecommerce/inventory/inventory.resolvers';
+import {Route} from '@angular/router';
+import {CategoryComponent} from "./category.component";
+import {CategoryListComponent} from "./list/category.component";
+import {CategoriesResolver, CategoryResolver, ParentCategoriesResolver} from "./category.resolvers";
 
-export const inventoryRoutes: Route[] = [
+export const categoryRoutes: Route[] = [
     {
         path      : '',
         pathMatch : 'full',
-        redirectTo: 'inventory'
+        redirectTo: 'category'
     },
     {
-        path     : 'inventory',
-        component: InventoryComponent,
+        path     : 'category',
+        component: CategoryComponent,
         children : [
             {
                 path     : '',
-                component: InventoryListComponent,
+                component: CategoryListComponent,
                 resolve  : {
-                    brands    : InventoryBrandsResolver,
-                    categories: InventoryCategoriesResolver,
-                    products  : InventoryProductsResolver,
-                    tags      : InventoryTagsResolver,
-                    vendors   : InventoryVendorsResolver
+                    parentCategory    : ParentCategoriesResolver,
+                    categories: CategoriesResolver,
+                    // category  : CategoryResolver,
                 }
             }
         ]
