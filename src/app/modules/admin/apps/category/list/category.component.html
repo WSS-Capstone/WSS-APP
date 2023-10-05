@@ -171,6 +171,7 @@
                                                 <span
                                                     class="flex items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
                                             </ng-template>
+
                                         </div>
                                         <div
                                             class="flex items-center mt-2 whitespace-nowrap"
@@ -224,7 +225,7 @@
                                                 <mat-select [formControlName]="'categoryId'">
                                                     <ng-container *ngIf="parentCategories$ | async as cate">
                                                         <ng-container *ngFor="let category of cate">
-                                                            <mat-option [value]="category.id">
+                                                            <mat-option *ngIf="category.id != selectedCategory.id" [value]="category.id">
                                                                 {{category.name}}
                                                             </mat-option>
                                                         </ng-container>
