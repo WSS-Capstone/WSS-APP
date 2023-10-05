@@ -25,6 +25,7 @@ export class NavigationService
                 "id": "owner.category",
                 "title": "Loại dịch vụ",
                 "type": "basic",
+                icon: "mat_outline:layers",
                 "link": "/owner/category"
             },
             {
