@@ -4,3 +4,9 @@
     width: 100%;
     height: 100%;
 }
+
+::ng-deep .mat-mdc-snack-bar-container {
+    --mat-mdc-snack-bar-button-color: #95b8f1 !important;
+    --mdc-snackbar-container-color: #333333;
+    --mdc-snackbar-supporting-text-color: rgba(255, 255, 255, 0.87);
+}

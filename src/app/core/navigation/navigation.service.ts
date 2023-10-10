@@ -9,9 +9,36 @@ import { Navigation } from 'app/core/navigation/navigation.types';
 export class NavigationService
 {
     private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
+    private menuAdmin : Navigation = {
+        "compact": null,
+        "default": [
+            {
+                "id": "dashboards.home",
+                "title": "Trang chủ",
+                "type": "basic",
+                "icon": "heroicons_outline:chart-pie",
+                "link": "/dashboards/analytics"
+            },
+            {
+                "id": "admin.role",
+                "title": "Vai trò",
+                "type": "basic",
+                icon: "mat_outline:layers",
+                "link": "/admin/role"
+            },
+            {
+                "id": "admin.user",
+                "title": "Tài khoản",
+                "type": "basic",
+                icon: "mat_outline:layers",
+                "link": "/admin/user"
+            },
+        ],
+        "futuristic": null,
+        "horizontal": null
+    }
 
-
-    private data : Navigation = {
+    private menuOwner : Navigation = {
         "compact": null,
         "default": [
             {
@@ -23,23 +50,68 @@ export class NavigationService
             },
             {
                 "id": "owner.category",
-                "title": "Loại dịch vụ",
+                "title": "Loại Dịch Vụ",
                 "type": "basic",
-                icon: "mat_outline:layers",
+                "icon": "mat_outline:layers",
                 "link": "/owner/category"
             },
             {
-                "id": "apps.ecommerce.inventory",
-                "title": "Inventory",
+                "id": "owner.service",
+                "title": "Dịch Vụ",
+                "icon": "mat_outline:miscellaneous_services",
                 "type": "basic",
-                "link": "/apps/ecommerce/inventory"
+                "link": "/owner/service"
             },
             {
-                "id": "apps.ecommerce.inventory",
-                "title": "Inventory",
+                "id": "owner.combo",
+                "title": "Gói Dịch Vụ",
+                "icon": "mat_outline:shop_2",
                 "type": "basic",
-                "link": "/apps/ecommerce/inventory"
+                "link": "/owner/combo"
             },
+            {
+                "id": "owner.order",
+                "title": "Đơn Hàng",
+                "icon": "mat_outline:shopping_cart",
+                "type": "basic",
+                "link": "/owner/order"
+            },
+            {
+                "id": "owner.task",
+                "title": "Công Việc",
+                "icon": "mat_outline:task_alt",
+                "type": "basic",
+                "link": "/owner/task"
+            },
+            {
+                "id": "owner.approveService",
+                "title": "Duyệt Dịch Vụ",
+                "icon": "mat_outline:bookmark_added",
+                "type": "basic",
+                "link": "/owner/approve-service"
+            },
+            {
+                "id": "owner.discount",
+                "title": "Phiếu Giảm Giá",
+                "icon": "mat_outline:local_offer",
+                "type": "basic",
+                "link": "/owner/discount"
+            },
+            {
+                "id": "owner.feedback",
+                "title": "Đánh giá khách hàng",
+                "icon": "mat_outline:feedback",
+                "type": "basic",
+                "link": "/owner/feedback"
+            },
+            {
+                "id": "owner.message",
+                "title": "Tin nhắn",
+                "icon": "heroicons_outline:chat-alt",
+                "type": "basic",
+                "link": "/owner/message"
+            },
+
             {
                 "id": "dashboards",
                 "title": "Dashboards",
@@ -1179,6 +1251,11 @@ export class NavigationService
         "horizontal": null
     }
 
+    private menuCustomer: Navigation = {
+        compact: [], default: [], futuristic: [], horizontal: []
+
+    }
+
 
     /**
      * Constructor
@@ -1208,13 +1285,23 @@ export class NavigationService
      */
     get(): Observable<Navigation>
     {
-        // return this._httpClient.get<Navigation>('api/common/navigation').pipe(
-        //     tap((navigation) => {
-        //         console.log("navigation", navigation);
-        //         this._navigation.next(navigation);
-        //     })
-        // );
-        this._navigation.next(this.data);
-        return of(this.data);
+        let role= localStorage.getItem('role') ?? '';
+        let menu = this.menuAdmin;
+        switch (role) {
+            case 'Owner':{
+                menu = this.menuOwner;
+                break;
+            }
+            case 'Admin':{
+                menu = this.menuAdmin;
+                break;
+            }
+            default: {
+                menu = this.menuCustomer;
+            }
+        }
+
+        this._navigation.next(menu);
+        return of(menu);
     }
 }

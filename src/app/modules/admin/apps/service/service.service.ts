@@ -1,19 +1,19 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
-import {InventoryPagination} from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
-import {Category, CategoryPagination, CategoryResponse} from './category.types';
+import {Service, ServicePagination, ServiceResponse} from './service.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
+import {Category, CategoryResponse} from "../category/category.types";
 
 @Injectable({
     providedIn: 'root'
 })
-export class CategoryService {
+export class ServiceService {
     // Private
-    private _categories: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
-    private _pagination: BehaviorSubject<CategoryPagination | null> = new BehaviorSubject(null);
-    private _category: BehaviorSubject<Category | null> = new BehaviorSubject(null);
-    private _categorys: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
+    private _item: BehaviorSubject<Service | null> = new BehaviorSubject(null);
+    private _items: BehaviorSubject<Service[] | null> = new BehaviorSubject(null);
+    private _itemsCate: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
+    private _pagination: BehaviorSubject<ServicePagination | null> = new BehaviorSubject(null);
 
     /**
      * Constructor
@@ -25,33 +25,23 @@ export class CategoryService {
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
-
-    /**
-     * Getter for categories
-     */
-    get parentCategories$(): Observable<Category[]> {
-        return this._categories.asObservable();
-    }
-
     /**
      * Getter for pagination
      */
-    get pagination$(): Observable<InventoryPagination> {
+    get pagination$(): Observable<ServicePagination> {
         return this._pagination.asObservable();
     }
 
-    /**
-     * Getter for product
-     */
-    get category$(): Observable<Category> {
-        return this._category.asObservable();
+    get item$(): Observable<Service> {
+        return this._item.asObservable();
     }
 
-    /**
-     * Getter for products
-     */
+    get items$(): Observable<Service[]> {
+        return this._items.asObservable();
+    }
+
     get categories$(): Observable<Category[]> {
-        return this._categorys.asObservable();
+        return this._itemsCate.asObservable();
     }
 
 
@@ -71,7 +61,7 @@ export class CategoryService {
         }).pipe(
             tap((categories) => {
                 console.log(categories);
-                this._categories.next(categories.data);
+                this._itemsCate.next(categories.data);
             }),
             map((categories) => {
                 return categories.data;
@@ -79,22 +69,12 @@ export class CategoryService {
         );
     }
 
-    /**
-     * Get products
-     *
-     *
-     * @param page
-     * @param size
-     * @param sort
-     * @param order
-     * @param search
-     */
-    getCategories(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
-        Observable<CategoryResponse> {
-        return this._httpClient.get<CategoryResponse>(ENDPOINTS.category, {
+
+    getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+        Observable<ServiceResponse> {
+        return this._httpClient.get<ServiceResponse>(ENDPOINTS.service, {
             params: {
                 page: '' + (page),
-                'status': 'Active',
                 'page-size': '' + size,
                 'sort-key': 'CreateDate',
                 'sort-order': 'DESC',
@@ -111,7 +91,7 @@ export class CategoryService {
                     startIndex: 1,
                     endIndex: 5
                 });
-                this._categorys.next(response.data);
+                this._items.next(response.data);
             })
         );
     }
@@ -119,8 +99,8 @@ export class CategoryService {
     /**
      * Get product by id
      */
-    getCategoryById(id: string): Observable<Category> {
-        return this._categorys.pipe(
+    getItem(id: string): Observable<Service> {
+        return this._items.pipe(
             take(1),
             map((products) => {
 
@@ -128,7 +108,7 @@ export class CategoryService {
                 const product = products.find(item => item.id === id) || null;
 
                 // Update the product
-                this._category.next(product);
+                this._item.next(product);
 
                 // Return the product
                 return product;
@@ -144,83 +124,53 @@ export class CategoryService {
         );
     }
 
-    /**
-     * Create product
-     */
-    createCategory(category: Category): Observable<Category> {
-        return this.categories$.pipe(
+    create(item: Service): Observable<Service> {
+        return this.items$.pipe(
             take(1),
-            switchMap(cates => this._httpClient.post<Category>(ENDPOINTS.category, category).pipe(
-                map((newCate) => {
+            switchMap(items => this._httpClient.post<Service>(ENDPOINTS.service, item).pipe(
+                map((newItem) => {
 
 
-                    this._categorys.next([newCate, ...cates]);
+                    this._items.next([newItem, ...items]);
 
-                    return newCate;
+                    return newItem;
                 })
             ))
         );
     }
 
-    /**
-     * Update product
-     *
-     * @param id
-     * @param product
-     */
-    updateCategory(id: string, category: Category): Observable<Category> {
-        return this.categories$.pipe(
+    update(id: string, item: Service): Observable<Service> {
+        return this.items$.pipe(
             take(1),
-            switchMap(categories => this._httpClient.put<Category>(ENDPOINTS.category + `/${id}`, {
-                ...category
+            switchMap(itemsArr => this._httpClient.put<Service>(ENDPOINTS.service + `/${id}`, {
+                ...item
             }).pipe(
-                map((updatedCategory) => {
-
-                    // Find the index of the updated product
-                    const index = categories.findIndex(item => item.id === id);
-
-                    // Update the product
-                    categories[index] = updatedCategory;
-
-                    // Update the categories
-                    this._categorys.next(categories);
-
-                    // Return the updated product
-                    return updatedCategory;
+                map((updatedItem) => {
+                    const index = itemsArr.findIndex(item => item.id === id);
+                    itemsArr[index] = updatedItem;
+                    this._items.next(itemsArr);
+                    return updatedItem;
                 }),
-                switchMap(updatedCategory => this.category$.pipe(
+                switchMap(updatedItem => this.item$.pipe(
                     take(1),
                     filter(item => item && item.id === id),
                     tap(() => {
-
-                        // Update the product if it's selected
-                        this._category.next(updatedCategory);
-
-                        // Return the updated product
-                        return updatedCategory;
+                        this._item.next(updatedItem);
+                        return updatedItem;
                     })
                 ))
             ))
         );
     }
 
-    /**
-     * Delete the product
-     *
-     * @param id
-     */
-    deleteCategory(id: string): Observable<boolean> {
-        return this.categories$.pipe(
+    delete(id: string): Observable<boolean> {
+        return this.items$.pipe(
             take(1),
-            switchMap(products => this._httpClient.delete(ENDPOINTS.category + `/${id}`, {params: {id}}).pipe(
+            switchMap(items => this._httpClient.delete(ENDPOINTS.service + `/${id}`, {params: {id}}).pipe(
                 map((isDeleted: boolean) => {
-
-                    const index = products.findIndex(item => item.id === id);
-
-                    products.splice(index, 1);
-
-                    this._categorys.next(products);
-
+                    const index = items.findIndex(item => item.id === id);
+                    items.splice(index, 1);
+                    this._items.next(items);
                     return isDeleted;
                 })
             ))

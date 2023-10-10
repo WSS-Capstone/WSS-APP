@@ -97,7 +97,7 @@
                         class="-ml-2"
                         [color]="'primary'"
                         [formControlName]="'rememberMe'">
-                        Remember me
+                        Ghi nhớ
                     </mat-checkbox>
                     <a
                         class="text-md font-medium text-primary-500 hover:underline"
@@ -113,7 +113,7 @@
                     [disabled]="signInForm.disabled"
                     (click)="signIn()">
                     <span *ngIf="!signInForm.disabled">
-                        Sign in
+                        Đăng nhập
                     </span>
                     <mat-progress-spinner
                         *ngIf="signInForm.disabled"
@@ -130,7 +130,7 @@
 
                 <!-- Single sign-on buttons -->
                 <div class="flex items-center mt-8 space-x-4">
-                    <button
+                    <button (click)="signInWithGoogle()"
                         class="flex-auto"
                         type="button"
                         mat-stroked-button>

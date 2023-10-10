@@ -14,21 +14,21 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {SharedModule} from 'app/shared/shared.module';
-import {CategoryListComponent} from "./list/category.component";
-import {CategoryComponent} from "./category.component";
-import {categoryRoutes} from "./category.routing";
-import {CategoryDetailsComponent} from "./detail/details.component";
+import {ComboListComponent} from "./list/combo.component";
+import {ComboComponent} from "./combo.component";
+import {itemRoutes} from "./combo.routing";
+import {ComboDetailsComponent} from "./detail/details.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
     declarations: [
-        CategoryComponent,
-        CategoryListComponent,
-        CategoryDetailsComponent
+        ComboComponent,
+        ComboListComponent,
+        ComboDetailsComponent
     ],
     imports: [
-        RouterModule.forChild(categoryRoutes),
+        RouterModule.forChild(itemRoutes),
         MatButtonModule,
         MatCheckboxModule,
         MatFormFieldModule,
@@ -50,5 +50,5 @@ import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/materia
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
     ]
 })
-export class CategoryModule {
+export class ComboModule {
 }

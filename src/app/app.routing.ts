@@ -76,6 +76,9 @@ export const appRoutes: Route[] = [
                 path: 'owner',
                 children: [
                     {path: 'category', loadChildren: () => import('app/modules/admin/apps/category/category.module').then(m => m.CategoryModule)},
+                    {path: 'service', loadChildren: () => import('app/modules/admin/apps/service/service.module').then(m => m.ServiceModule)},
+                    {path: 'combo', loadChildren: () => import('app/modules/admin/apps/combo/combo.module').then(m => m.ComboModule)},
+                    {path: 'order', loadChildren: () => import('app/modules/admin/apps/order/order.module').then(m => m.OrderModule)},
                 ]
             },
 
