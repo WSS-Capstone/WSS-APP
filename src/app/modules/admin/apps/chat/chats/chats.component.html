@@ -28,7 +28,8 @@
 
             <!-- Chats list -->
             <ng-container *ngIf="chats && chats.length > 0; else noChats">
-                <div class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-100 lg:max-w-100 bg-card dark:bg-transparent">
+                <div
+                    class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-100 lg:max-w-100 bg-card dark:bg-transparent">
 
                     <!-- Header -->
                     <div class="flex flex-col flex-0 py-4 px-8 border-b bg-gray-50 dark:bg-transparent">
@@ -44,7 +45,8 @@
                                             alt="Profile avatar"/>
                                     </ng-container>
                                     <ng-container *ngIf="!profile.avatar">
-                                        <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                        <div
+                                            class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                             {{profile.name.charAt(0)}}
                                         </div>
                                     </ng-container>
@@ -65,29 +67,29 @@
                                 <mat-menu #chatsHeaderMenu>
                                     <button mat-menu-item>
                                         <mat-icon [svgIcon]="'heroicons_outline:user-group'"></mat-icon>
-                                        New group
+                                        Tạo nhóm
                                     </button>
                                     <button mat-menu-item>
                                         <mat-icon [svgIcon]="'heroicons_outline:chat-alt-2'"></mat-icon>
-                                        Create a room
+                                        Tạo phòng
                                     </button>
                                     <button
                                         mat-menu-item
                                         (click)="openProfile()">
                                         <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-                                        Profile
+                                        Hồ sơ
                                     </button>
                                     <button mat-menu-item>
                                         <mat-icon [svgIcon]="'heroicons_outline:archive'"></mat-icon>
-                                        Archived
+                                        Lưu trữ
                                     </button>
-                                    <button mat-menu-item>
-                                        <mat-icon [svgIcon]="'heroicons_outline:star'"></mat-icon>
-                                        Starred
-                                    </button>
+                                    <!--                                    <button mat-menu-item>-->
+                                    <!--                                        <mat-icon [svgIcon]="'heroicons_outline:star'"></mat-icon>-->
+                                    <!--                                        Starred-->
+                                    <!--                                    </button>-->
                                     <button mat-menu-item>
                                         <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
-                                        Settings
+                                        Cài đặt
                                     </button>
                                 </mat-menu>
                             </button>
@@ -104,7 +106,7 @@
                                 <input
                                     matInput
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Search or start new chat'"
+                                    [placeholder]="'Tìm kiếm hoặc soạn tin nhắn mới'"
                                     (input)="filterChats(searchField.value)"
                                     #searchField>
                             </mat-form-field>
@@ -133,7 +135,8 @@
                                                 alt="Contact avatar"/>
                                         </ng-container>
                                         <ng-container *ngIf="!chat.contact.avatar">
-                                            <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                            <div
+                                                class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                                 {{chat.contact.name.charAt(0)}}
                                             </div>
                                         </ng-container>

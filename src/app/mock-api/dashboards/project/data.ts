@@ -10,42 +10,42 @@ export const project = {
             'this-week': {
                 'new-issues'   : 214,
                 'closed-issues': 75,
-                'fixed'        : 3,
-                'wont-fix'     : 4,
-                're-opened'    : 8,
-                'needs-triage' : 6
+                'fixed'        : 168,
+                'wont-fix'     : 46,
+                're-opened'    : 68,
+                'needs-triage' : 7
             },
             'last-week': {
                 'new-issues'   : 197,
                 'closed-issues': 72,
-                'fixed'        : 6,
-                'wont-fix'     : 11,
-                're-opened'    : 6,
-                'needs-triage' : 5
+                'fixed'        : 172,
+                'wont-fix'     : 25,
+                're-opened'    : 66,
+                'needs-triage' : 6
             }
         },
-        labels  : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        labels  : ['Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
         series  : {
             'this-week': [
                 {
-                    name: 'New issues',
+                    name: 'Doanh thu',
                     type: 'line',
                     data: [42, 28, 43, 34, 20, 25, 22]
                 },
                 {
-                    name: 'Closed issues',
+                    name: 'Đơn hàng',
                     type: 'column',
                     data: [11, 10, 8, 11, 8, 10, 17]
                 }
             ],
             'last-week': [
                 {
-                    name: 'New issues',
+                    name: 'Doanh thu',
                     type: 'line',
                     data: [37, 32, 39, 27, 18, 24, 20]
                 },
                 {
-                    name: 'Closed issues',
+                    name: 'Đơn hàng',
                     type: 'column',
                     data: [9, 8, 10, 12, 7, 11, 15]
                 }
@@ -55,87 +55,88 @@ export const project = {
     taskDistribution  : {
         overview: {
             'this-week': {
-                'new'      : 594,
+                'new'      : 140,
                 'completed': 287
             },
             'last-week': {
-                'new'      : 526,
+                'new'      : 222,
                 'completed': 260
             }
         },
-        labels  : ['API', 'Backend', 'Frontend', 'Issues'],
+        labels  : ['Staff', 'Partner'],
         series  : {
-            'this-week': [15, 20, 38, 27],
-            'last-week': [19, 16, 42, 23]
+            'this-week': [147, 140],
+            'last-week': [130, 130]
         }
     },
     schedule          : {
         today   : [
             {
-                title   : 'Group Meeting',
-                time    : 'in 32 minutes',
-                location: 'Conference room 1B'
+                title   : 'Trang trí',
+                time    : 'trong 32 phút',
+                location: 'Sảnh 1B'
             },
             {
-                title: 'Coffee Break',
+                title: 'Chuẩn bị tiệc',
                 time : '10:30 AM'
             },
             {
-                title: 'Public Beta Release',
+                title: 'Phục vụ khai mạc',
                 time : '11:00 AM'
             },
             {
-                title: 'Lunch',
-                time : '12:10 PM'
+                title: 'Đưa đón khách',
+                time : '13:10 PM'
             },
             {
-                title   : 'Dinner with David',
+                title   : 'Tiệc cơm chiều của Phong',
                 time    : '05:30 PM',
-                location: 'Magnolia'
+                location: 'Phòng Asura'
             },
             {
-                title   : 'Jane\'s Birthday Party',
+                title   : 'Tiệc Cưới của Quang - Uyên',
                 time    : '07:30 PM',
-                location: 'Home'
+                location: 'White Place'
             },
             {
-                title   : 'Overseer\'s Retirement Party',
+                title   : 'Tiệc Cưới của Linh - Hoàng',
                 time    : '09:30 PM',
-                location: 'Overseer\'s room'
+                location: 'Phòng Overseer\'s'
             }
         ],
         tomorrow: [
             {
-                title   : 'Marketing Meeting',
+                title   : 'Sinh nhật của Duy',
                 time    : '09:00 AM',
-                location: 'Conference room 1A'
+                location: 'Sảnh Hollow Square'
             },
             {
-                title: 'Public Announcement',
+                title: 'Vũ đoàn chuẩn bị',
                 time : '11:00 AM'
             },
             {
-                title: 'Lunch',
+                title: 'Tiệc trưa của Hoàng',
                 time : '12:10 PM'
             },
             {
-                title   : 'Meeting with Beta Testers',
+                title   : 'Tiệc cưới của Phong - Huyền',
                 time    : '03:00 PM',
-                location: 'Conference room 2C'
+                location: 'Sảnh 2C'
             },
             {
-                title: 'Live Stream',
-                time : '05:30 PM'
+                title: 'Tiệc cơm chiều của Sương',
+                time : '05:30 PM',
+                location: 'Phòng Fiona'
             },
             {
-                title   : 'Release Party',
+                title   : 'Đưa đón khách',
                 time    : '07:30 PM',
-                location: 'CEO\'s house'
+
             },
             {
-                title   : 'CEO\'s Private Party',
+                title   : 'Tiệc sinh nhật của Nhi',
                 time    : '09:30 PM',
-                location: 'CEO\'s Penthouse'
+                location: 'Diamond Place'
             }
         ]
     },

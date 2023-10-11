@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ApexOptions } from 'ng-apexcharts';
 import { ProjectService } from 'app/modules/admin/dashboards/project/project.service';
+import {UserService} from "../../../../core/user/user.service";
 
 @Component({
     selector       : 'project',
@@ -21,12 +22,13 @@ export class ProjectComponent implements OnInit, OnDestroy
     data: any;
     selectedProject: string = 'ACME Corp. Backend App';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    user: any;
     /**
      * Constructor
      */
     constructor(
         private _projectService: ProjectService,
+        private _userService: UserService,
         private _router: Router
     )
     {
@@ -41,6 +43,10 @@ export class ProjectComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this._userService.user$.subscribe((user) => {
+            this.user = user;
+        });
+
         // Get the data
         this._projectService.data$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -67,6 +73,7 @@ export class ProjectComponent implements OnInit, OnDestroy
             }
         };
     }
+
 
     /**
      * On destroy
@@ -97,16 +104,6 @@ export class ProjectComponent implements OnInit, OnDestroy
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Fix the SVG fill references. This fix must be applied to all ApexCharts
-     * charts in order to fix 'black color on gradient fills on certain browsers'
-     * issue caused by the '<base>' tag.
-     *
-     * Fix based on https://gist.github.com/Kamshak/c84cdc175209d1a30f711abd6a81d472
-     *
-     * @param element
-     * @private
-     */
     private _fixSvgFill(element: Element): void
     {
         // Current URL

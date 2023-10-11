@@ -7,7 +7,7 @@
             (click)="drawer.close()">
             <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
         </button>
-        <div class="ml-2 text-lg font-medium">Contact info</div>
+        <div class="ml-2 text-lg font-medium">Thông tin liên hệ</div>
     </div>
 
     <div class="overflow-y-auto">
@@ -32,7 +32,7 @@
 
         <div class="py-10 px-7">
             <!-- Media -->
-            <div class="text-lg font-medium">Media</div>
+            <div class="text-lg font-medium">Hình ảnh</div>
             <div class="grid grid-cols-4 gap-1 mt-4">
                 <ng-container *ngFor="let media of chat.contact.attachments.media">
                     <img
@@ -42,7 +42,7 @@
             </div>
             <!-- Details -->
             <div class="mt-10 space-y-4">
-                <div class="text-lg font-medium mb-3">Details</div>
+                <div class="text-lg font-medium mb-3">Chi tiết</div>
                 <ng-container *ngIf="chat.contact.details.emails.length">
                     <div>
                         <div class="font-medium text-secondary">Email</div>
@@ -51,31 +51,31 @@
                 </ng-container>
                 <ng-container *ngIf="chat.contact.details.phoneNumbers.length">
                     <div>
-                        <div class="font-medium text-secondary">Phone number</div>
+                        <div class="font-medium text-secondary">Số điện thoại</div>
                         <div class="">{{chat.contact.details.phoneNumbers[0].phoneNumber}}</div>
                     </div>
                 </ng-container>
                 <ng-container *ngIf="chat.contact.details.title">
                     <div>
-                        <div class="font-medium text-secondary">Title</div>
+                        <div class="font-medium text-secondary">Chức vụ</div>
                         <div class="">{{chat.contact.details.title}}</div>
                     </div>
                 </ng-container>
                 <ng-container *ngIf="chat.contact.details.company">
                     <div>
-                        <div class="font-medium text-secondary">Company</div>
+                        <div class="font-medium text-secondary">Vai trò</div>
                         <div class="">{{chat.contact.details.company}}</div>
                     </div>
                 </ng-container>
                 <ng-container *ngIf="chat.contact.details.birthday">
                     <div>
-                        <div class="font-medium text-secondary">Birthday</div>
+                        <div class="font-medium text-secondary">Ngày sinh</div>
                         <div class="">{{chat.contact.details.birthday}}</div>
                     </div>
                 </ng-container>
                 <ng-container *ngIf="chat.contact.details.address">
                     <div>
-                        <div class="font-medium text-secondary">Address</div>
+                        <div class="font-medium text-secondary">Địa chỉ</div>
                         <div class="">{{chat.contact.details.address}}</div>
                     </div>
                 </ng-container>

@@ -75,12 +75,14 @@ export const appRoutes: Route[] = [
             {
                 path: 'owner',
                 children: [
+                    {path: 'home', loadChildren: () => import('app/modules/admin/dashboards/project/project.module').then(m => m.ProjectModule)},
                     {path: 'category', loadChildren: () => import('app/modules/admin/apps/category/category.module').then(m => m.CategoryModule)},
                     {path: 'service', loadChildren: () => import('app/modules/admin/apps/service/service.module').then(m => m.ServiceModule)},
                     {path: 'combo', loadChildren: () => import('app/modules/admin/apps/combo/combo.module').then(m => m.ComboModule)},
                     {path: 'order', loadChildren: () => import('app/modules/admin/apps/order/order.module').then(m => m.OrderModule)},
                     {path: 'approve-service', loadChildren: () => import('app/modules/admin/apps/service-approval/service-approval.module').then(m => m.ServiceApprovalModule)},
                     {path: 'discount', loadChildren: () => import('app/modules/admin/apps/discount/discount.module').then(m => m.DiscountModule)},
+                    {path: 'chat', loadChildren: () => import('app/modules/admin/apps/chat/chat.module').then(m => m.ChatModule)},
                 ]
             },
 

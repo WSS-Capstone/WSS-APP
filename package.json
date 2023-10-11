@@ -28,7 +28,6 @@
         "@ngneat/transloco": "4.2.2",
         "apexcharts": "3.36.3",
         "crypto-js": "3.3.0",
-        "firebase": "^10.4.0",
         "highlight.js": "11.7.0",
         "lodash-es": "4.17.21",
         "luxon": "3.2.1",
@@ -63,7 +62,7 @@
         "karma-jasmine": "5.1.0",
         "karma-jasmine-html-reporter": "2.0.0",
         "lodash": "4.17.21",
-        "postcss": "8.4.21",
+        "postcss": "^8.4.31",
         "tailwindcss": "3.2.4",
         "typescript": "4.9.4"
     }
