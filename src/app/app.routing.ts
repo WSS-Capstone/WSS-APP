@@ -79,6 +79,8 @@ export const appRoutes: Route[] = [
                     {path: 'service', loadChildren: () => import('app/modules/admin/apps/service/service.module').then(m => m.ServiceModule)},
                     {path: 'combo', loadChildren: () => import('app/modules/admin/apps/combo/combo.module').then(m => m.ComboModule)},
                     {path: 'order', loadChildren: () => import('app/modules/admin/apps/order/order.module').then(m => m.OrderModule)},
+                    {path: 'approve-service', loadChildren: () => import('app/modules/admin/apps/service-approval/service-approval.module').then(m => m.ServiceApprovalModule)},
+                    {path: 'discount', loadChildren: () => import('app/modules/admin/apps/discount/discount.module').then(m => m.DiscountModule)},
                 ]
             },
 
