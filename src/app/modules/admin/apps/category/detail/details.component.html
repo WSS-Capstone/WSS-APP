@@ -10,19 +10,25 @@
             <div class="flex flex-col items-center">
                 <div class="w-32 h-44 border rounded overflow-hidden">
                     <ng-container *ngIf="cate.imageUrl; else noImage">
-                        <img class="w-full h-full object-cover" [src]="cate.imageUrl">
+                        <img class="w-full h-full object-cover" [src]="sanitizeImageUrl(cate.imageUrl)" alt="Lỗi HÌnh Ảnh">
                     </ng-container>
                     <ng-template #noImage>
                         <span class="flex justify-center items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
                     </ng-template>
-
                 </div>
-
+                <button class="mt-2"
+                mat-flat-button
+                [color]="'primary'"
+                [disabled]="form.invalid"
+                (click)="fileInput.click()">
+                Chọn ảnh
+                </button>
+                <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
             </div>
 
             <div class="flex flex-auto flex-wrap">
                 <!-- Name, SKU & etc. -->
-                <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                <div class="flex flex-col w-full sm:pl-8">
 
                     <!-- Name -->
                     <mat-form-field class="w-full">
@@ -50,21 +56,22 @@
                     </div>
 
                     <!-- Stock and Reserved -->
+                    <div class="flex flex-col w-full">
+                        <mat-form-field class="w-full">
+                            <mat-label>Mô tả</mat-label>
+                            <textarea
+                                matInput
+                                [rows]="5"
+                                [formControlName]="'description'"></textarea>
+                            <mat-error *ngIf="form.get('description').hasError('maxlength')">
+                                Mô tả không được quá 300 ký tự
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
                 </div>
 
                 <!-- Cost, Base price, Tax & Price -->
-                <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
-                    <mat-form-field class="w-full">
-                        <mat-label>Mô tả</mat-label>
-                        <textarea
-                            matInput
-                            [rows]="5"
-                            [formControlName]="'description'"></textarea>
-                        <mat-error *ngIf="form.get('description').hasError('maxlength')">
-                            Mô tả không được quá 300 ký tự
-                        </mat-error>
-                    </mat-form-field>
-                </div>
 
             </div>
 

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
 import {InventoryPagination} from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
-import {Category, CategoryPagination, CategoryResponse} from './category.types';
+import {Category, CategoryPagination, CategoryResponse, FileInfo} from './category.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
 
 @Injectable({
@@ -227,51 +227,14 @@ export class CategoryService {
         );
     }
 
-    /**
-     * Update the avatar of the given contact
-     *
-     * @param id
-     * @param avatar
-     */
-    /*uploadAvatar(id: string, avatar: File): Observable<Contact>
+    uploadImage(data : File): Observable<string>
     {
-        return this.contacts$.pipe(
-            take(1),
-            switchMap(contacts => this._httpClient.post<Contact>('api/apps/contacts/avatar', {
-                id,
-                avatar
-            }, {
-                headers: {
-                    'Content-Type': avatar.type
-                }
-            }).pipe(
-                map((updatedContact) => {
-
-                    // Find the index of the updated contact
-                    const index = contacts.findIndex(item => item.id === id);
-
-                    // Update the contact
-                    contacts[index] = updatedContact;
-
-                    // Update the contacts
-                    this._contacts.next(contacts);
-
-                    // Return the updated contact
-                    return updatedContact;
-                }),
-                switchMap(updatedContact => this.contact$.pipe(
-                    take(1),
-                    filter(item => item && item.id === id),
-                    tap(() => {
-
-                        // Update the contact if it's selected
-                        this._contact.next(updatedContact);
-
-                        // Return the updated contact
-                        return updatedContact;
-                    })
-                ))
-            ))
+        let formData = new FormData();
+        formData.append('files', data);
+        return this._httpClient.post<FileInfo[]>(ENDPOINTS.file, formData).pipe(
+            map((res) => {
+                return res[0].link;
+            })
         );
-    }*/
+    }
 }

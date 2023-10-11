@@ -5,23 +5,24 @@ import {
     Inject,
     OnDestroy,
     OnInit,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {map, Observable, of, Subject} from 'rxjs';
-import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Category} from "../category.types";
-import {CategoryService} from "../category.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {fuseAnimations} from "../../../../../../@fuse/animations";
-import {FuseAlertService} from "../../../../../../@fuse/components/alert";
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { map, Observable, of, Subject } from 'rxjs';
+import { Label } from 'app/modules/admin/apps/notes/notes.types';
+import { Category } from '../category.types';
+import { CategoryService } from '../category.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { fuseAnimations } from '../../../../../../@fuse/animations';
+import { FuseAlertService } from '../../../../../../@fuse/components/alert';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'category-details',
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: fuseAnimations
+    animations: fuseAnimations,
 })
 export class CategoryDetailsComponent implements OnInit, OnDestroy {
     cate$: Observable<Category>;
@@ -30,7 +31,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
     flashMessage: 'success' | 'error' | null = null;
     cateChanged: Subject<Category> = new Subject<Category>();
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    imgDataOrLink: any;
     form: FormGroup;
 
     /**
@@ -39,18 +40,27 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
-        private _fuseAlertService: FuseAlertService,
+        private sanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) private _data: { category: Category },
         private _categoryService: CategoryService,
         private _matDialogRef: MatDialogRef<CategoryDetailsComponent>
     ) {
         this._initForm();
+        this.cate$ = this.form.valueChanges.pipe(
+            map((value) => {
+                const cate = { ...value}
+                return value;
+            })
+        );
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
+    sanitizeImageUrl(imageUrl: string): any {
+        return this.sanitizer.bypassSecurityTrustUrl('http://' + imageUrl);
+      }
     /**
      * On init
      */
@@ -58,9 +68,11 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
         this.parentCategories$ = this._categoryService.parentCategories$;
         // Edit
         if (this._data.category.id) {
-            console.log("Edit");
+            console.log('Edit');
             // Request the data from the server
-            this._categoryService.getCategoryById(this._data.category.id).subscribe();
+            this._categoryService
+                .getCategoryById(this._data.category.id)
+                .subscribe();
 
             // Get the note
             this.cate$ = this._categoryService.category$;
@@ -71,7 +83,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
         }
         // Add
         else {
-            console.log("Add");
+            console.log('Add');
             // Create an empty note
             const category: Category = {
                 id: null,
@@ -85,7 +97,6 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
 
             this.cate$ = of(category);
         }
-
 
         // Subscribe to note updates
         // this.cateChanged
@@ -138,12 +149,16 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     create(): void {
-        this._categoryService.createCategory(this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
+        this._categoryService
+            .createCategory(this.form.value)
+            .pipe(
+                map(() => {
+                    // Get the note
+                    // this.cate$ = this._categoryService.category$;
+                    this.showFlashMessage('success');
+                })
+            )
+            .subscribe();
 
         setTimeout(() => {
             this._matDialogRef.close();
@@ -151,12 +166,16 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
     }
 
     update(): void {
-        this._categoryService.updateCategory(this.form.get('id').value ,this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
+        this._categoryService
+            .updateCategory(this.form.get('id').value, this.form.value)
+            .pipe(
+                map(() => {
+                    // Get the note
+                    // this.cate$ = this._categoryService.category$;
+                    this.showFlashMessage('success');
+                })
+            )
+            .subscribe();
 
         setTimeout(() => {
             this._matDialogRef.close();
@@ -169,28 +188,46 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
      * @param cate
      * @param fileList
      */
-    uploadImage(cate: Category, fileList: FileList): void {
+    uploadImage(event: any): void {
         // Return if canceled
-        if (!fileList.length) {
+        if (!event.target.files[0]) {
             return;
         }
 
-        const allowedTypes = ['image/jpeg', 'image/png'];
-        const file = fileList[0];
+        const file = event.target.files[0];
+        // send request upload file
 
-        // Return if the file is not allowed
-        if (!allowedTypes.includes(file.type)) {
-            return;
-        }
-
-        this._readAsDataURL(file).then((data) => {
-
-            // Update the image
-            cate.imageUrl = data;
-
-            // Update the note
-            this.cateChanged.next(cate);
+        this._categoryService.uploadImage(file).subscribe((res) => {
+            this.imgDataOrLink = res;
+            this.form.patchValue({
+                imageUrl: this.imgDataOrLink,
+            });
         });
+
+
+        // if (file) {
+        //     const reader = new FileReader();
+        //     reader.readAsDataURL(file);
+        //     reader.onload = () => {
+        //         const base64String = reader.result?.toString().split(',')[1];
+        //         this.cateChanged.imageUrl = 'data:image/png;base64,' + base64String;
+        //     };
+        // } // const allowedTypes = ['image/jpeg', 'image/png'];
+        // const file = fileList[0];
+
+        // // Return if the file is not allowed
+        // if (!allowedTypes.includes(file.type)) {
+        //     return;
+        // }
+
+        // this._readAsDataURL(file).then((data) => {
+
+        //     // Update the image
+        //     cate.imageUrl = data;
+
+        //     // Update the note
+        //     this.cateChanged.next(cate);
+        // });
     }
 
     /**
@@ -227,7 +264,6 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
     private _readAsDataURL(file: File): Promise<any> {
         // Return a new promise
         return new Promise((resolve, reject) => {
-
             // Create a new reader
             const reader = new FileReader();
 
@@ -255,7 +291,6 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
 
         // Hide it after 3 seconds
         setTimeout(() => {
-
             this.flashMessage = null;
 
             // Mark for check

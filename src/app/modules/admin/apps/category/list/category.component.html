@@ -79,7 +79,7 @@
                                                 class="w-8"
                                                 *ngIf="cate.imageUrl"
                                                 [alt]="'Product thumbnail image'"
-                                                [src]="cate.imageUrl">
+                                                [src]="sanitizeImageUrl(cate.imageUrl)">
                                             <div
                                                 class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase"
                                                 *ngIf="!cate.imageUrl">

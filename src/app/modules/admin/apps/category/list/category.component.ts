@@ -6,19 +6,34 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {catchError, debounceTime, map, merge, Observable, Subject, switchMap, takeUntil} from 'rxjs';
-import {fuseAnimations} from '@fuse/animations';
-import {FuseConfirmationService} from '@fuse/services/confirmation';
-import {Category, CategoryPagination} from "../category.types";
-import {CategoryService} from "../category.service";
-import {MatDialog} from "@angular/material/dialog";
-import {CategoryDetailsComponent} from "../detail/details.component";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {
+    UntypedFormBuilder,
+    UntypedFormControl,
+    UntypedFormGroup,
+    Validators,
+} from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import {
+    catchError,
+    debounceTime,
+    map,
+    merge,
+    Observable,
+    Subject,
+    switchMap,
+    takeUntil,
+} from 'rxjs';
+import { fuseAnimations } from '@fuse/animations';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { Category, CategoryPagination } from '../category.types';
+import { CategoryService } from '../category.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CategoryDetailsComponent } from '../detail/details.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'category-list',
@@ -38,14 +53,14 @@ import {MatSnackBar} from "@angular/material/snack-bar";
                 }
 
                 @screen lg {
-                    grid-template-columns: 50px 165px auto 57px;
+                    grid-template-columns: 50px 165px auto 79px;
                 }
             }
-        `
+        `,
     ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: fuseAnimations
+    animations: fuseAnimations,
 })
 export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
@@ -70,16 +85,18 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseConfirmationService: FuseConfirmationService,
         private _formBuilder: UntypedFormBuilder,
+        private sanitizer: DomSanitizer,
         private _snackBar: MatSnackBar,
         private _matDialog: MatDialog,
         private _categoryService: CategoryService
-    ) {
-    }
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
-
+    sanitizeImageUrl(imageUrl: string): any {
+        return this.sanitizer.bypassSecurityTrustUrl('http://' + imageUrl);
+    }
     /**
      * On init
      */
@@ -99,7 +116,6 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
         this._categoryService.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: CategoryPagination) => {
-
                 // Update the pagination
                 this.pagination = pagination;
 
@@ -119,7 +135,13 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
                 switchMap((query) => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._categoryService.getCategories(0, 10, 'name', 'asc', query);
+                    return this._categoryService.getCategories(
+                        0,
+                        10,
+                        'name',
+                        'asc',
+                        query
+                    );
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -137,7 +159,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
             this._sort.sort({
                 id: 'name',
                 start: 'asc',
-                disableClear: true
+                disableClear: true,
             });
 
             // Mark for check
@@ -155,16 +177,23 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
 
             // Get products if sort or page changes
-            merge(this._sort.sortChange, this._paginator.page).pipe(
-                switchMap(() => {
-                    this.closeDetails();
-                    this.isLoading = true;
-                    return this._categoryService.getCategories(this._paginator.pageIndex, this._paginator.pageSize, this._sort.active, this._sort.direction);
-                }),
-                map(() => {
-                    this.isLoading = false;
-                })
-            ).subscribe();
+            merge(this._sort.sortChange, this._paginator.page)
+                .pipe(
+                    switchMap(() => {
+                        this.closeDetails();
+                        this.isLoading = true;
+                        return this._categoryService.getCategories(
+                            this._paginator.pageIndex,
+                            this._paginator.pageSize,
+                            this._sort.active,
+                            this._sort.direction
+                        );
+                    }),
+                    map(() => {
+                        this.isLoading = false;
+                    })
+                )
+                .subscribe();
         }
     }
 
@@ -186,9 +215,9 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         // Get the product by id
-        this._categoryService.getCategoryById(productId)
+        this._categoryService
+            .getCategoryById(productId)
             .subscribe((product) => {
-
                 // Set the selected product
                 this.selectedCategory = product;
 
@@ -212,7 +241,8 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
     cycleImages(forward: boolean = true): void {
         // Get the image count and current image index
         const count = this.selectedCategoryForm.get('images').value.length;
-        const currentIndex = this.selectedCategoryForm.get('currentImageIndex').value;
+        const currentIndex =
+            this.selectedCategoryForm.get('currentImageIndex').value;
 
         // Calculate the next and previous index
         const nextIndex = currentIndex + 1 === count ? 0 : currentIndex + 1;
@@ -220,11 +250,15 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // If cycling forward...
         if (forward) {
-            this.selectedCategoryForm.get('currentImageIndex').setValue(nextIndex);
+            this.selectedCategoryForm
+                .get('currentImageIndex')
+                .setValue(nextIndex);
         }
         // If cycling backwards...
         else {
-            this.selectedCategoryForm.get('currentImageIndex').setValue(prevIndex);
+            this.selectedCategoryForm
+                .get('currentImageIndex')
+                .setValue(prevIndex);
         }
     }
 
@@ -236,9 +270,9 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
         this._matDialog.open(CategoryDetailsComponent, {
             autoFocus: false,
             data: {
-                category: {}
+                category: {},
             },
-            width: '120vw',
+            width: '40vw',
         });
 
         // this._categoryService.createCategory().subscribe((newProduct) => {
@@ -258,23 +292,20 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
      * Update the selected product using the form data
      */
     update(id: string): void {
-        this._categoryService.getCategoryById(id)
-            .subscribe((cate) => {
+        this._categoryService.getCategoryById(id).subscribe((cate) => {
+            // Set the selected cate
+            this.selectedCategory = cate;
 
-                // Set the selected cate
-                this.selectedCategory = cate;
-
-                this._matDialog.open(CategoryDetailsComponent, {
-                    autoFocus: false,
-                    data: {
-                        category: this.selectedCategory
-                    },
-                    width: '120vw',
-                });
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+            this._matDialog.open(CategoryDetailsComponent, {
+                autoFocus: false,
+                data: {
+                    category: this.selectedCategory,
+                },
+                width: '40vw',
             });
-
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
 
         // const cate = this.selectedCategoryForm.getRawValue();
         // delete cate.currentImageIndex;
@@ -311,17 +342,16 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
             message: 'Bạn có chắc chắn muốn xóa loại dịch vụ này?!',
             actions: {
                 confirm: {
-                    label: 'Xóa'
+                    label: 'Xóa',
                 },
                 cancel: {
-                    label: 'Hủy'
-                }
-            }
+                    label: 'Hủy',
+                },
+            },
         });
 
         // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed().subscribe((result) => {
-
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 console.log(id);
@@ -347,7 +377,6 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Hide it after 3 seconds
         setTimeout(() => {
-
             this.flashMessage = null;
 
             // Mark for check

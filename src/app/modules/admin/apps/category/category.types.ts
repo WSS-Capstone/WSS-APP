@@ -53,3 +53,10 @@ export interface InventoryVendor
     name: string;
     slug: string;
 }
+
+export interface FileInfo{
+    filename: string;
+    link: string;
+    size: string;
+    type: string;
+}
