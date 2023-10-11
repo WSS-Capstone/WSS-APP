@@ -49,35 +49,31 @@
                     <div class="grid">
                         <!-- Header -->
                         <div
-                            class="category-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            class="combo-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                             matSort
                             matSortDisableClear>
                             <div></div>
                             <div
                                 class="">
-                                Tên dịch vụ
+                                Tên gói dịch vụ
                             </div>
                             <div
                                 class="hidden md:block sm:block">
-                                Loại dịch vụ
+                                Giảm giá
                             </div>
                             <div
                                 class="hidden lg:block ">
-                                Số lượng
+                                Giá cho thuê
                             </div>
                             <div class="hidden lg:block">Mô tả</div>
 
-                            <!--                            <div-->
-                            <!--                                class="hidden lg:block"-->
-                            <!--                                [mat-sort-header]="'active'">-->
-                            <!--                                Active-->
-                            <!--                            </div>-->
+                            <div class="hidden sm:block">Trạng thái</div>
                             <div class="hidden sm:block">Chi tiết</div>
                         </div>
                         <!-- Rows -->
                         <ng-container *ngIf="(items$ | async) as items1">
                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                <div class="category-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                <div class="combo-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
 
                                     <!-- Image -->
                                     <div class="flex items-center">
@@ -100,29 +96,31 @@
                                         {{item.name}}
                                     </div>
                                     <div class="hidden md:block truncate">
-                                        {{item.name}}
+                                        {{item.discountValueCombo | number : '1.0-0' }}%
                                     </div>
                                     <div class="hidden lg:block truncate">
-                                        {{item.discountValueCombo}}
+                                        {{item.totalAmount | number : '1.0-0'}} VNĐ
                                     </div>
 
                                     <div class="hidden lg:block truncate">
                                         {{item.description}}
                                     </div>
 
-                                    <!--                                    &lt;!&ndash; Active &ndash;&gt;-->
-                                    <!--                                    <div class="hidden lg:block">-->
-                                    <!--                                        <ng-container *ngIf="product.active">-->
-                                    <!--                                            <mat-icon-->
-                                    <!--                                                class="text-green-400 icon-size-5"-->
-                                    <!--                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>-->
-                                    <!--                                        </ng-container>-->
-                                    <!--                                        <ng-container *ngIf="!product.active">-->
-                                    <!--                                            <mat-icon-->
-                                    <!--                                                class="text-gray-400 icon-size-5"-->
-                                    <!--                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>-->
-                                    <!--                                        </ng-container>-->
-                                    <!--                                    </div>-->
+                                    <div class="flex flex-row justify-center content-center truncate">
+                                        <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-green-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:check'">
+                                            </mat-icon>
+                                            <span class="text-green-400">Đang hoạt động</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="item.status !== 'Active'">
+                                            <mat-icon
+                                                class="text-gray-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                            <span class="text-gray-400">Ngưng hoạt động</span>
+                                        </ng-container>
+                                    </div>
 
                                     <!-- Details button -->
                                     <div class="flex flex-row">

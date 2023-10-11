@@ -49,7 +49,7 @@
                     <div class="grid">
                         <!-- Header -->
                         <div
-                            class="category-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            class="service-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                             matSort
                             matSortDisableClear>
                             <div></div>
@@ -67,17 +67,13 @@
                             </div>
                             <div class="hidden lg:block">Giá cho thuê</div>
 
-                            <!--                            <div-->
-                            <!--                                class="hidden lg:block"-->
-                            <!--                                [mat-sort-header]="'active'">-->
-                            <!--                                Active-->
-                            <!--                            </div>-->
+                            <div class="hidden lg:block">Trạng thái</div>
                             <div class="hidden sm:block">Chi tiết</div>
                         </div>
                         <!-- Rows -->
                         <ng-container *ngIf="(items$ | async) as items1">
                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                <div class="category-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                <div class="service-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
 
                                     <!-- Image -->
                                     <div class="flex items-center">
@@ -85,12 +81,12 @@
                                             class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden border">
                                             <img
                                                 class="w-8"
-                                                *ngIf="item.CoverUrl"
+                                                *ngIf="item.coverUrl"
                                                 [alt]="'Product thumbnail image'"
-                                                [src]="item.CoverUrl">
+                                                [src]="item.coverUrl">
                                             <div
                                                 class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase"
-                                                *ngIf="!item.CoverUrl">
+                                                *ngIf="!item.coverUrl">
                                                 NO THUMB
                                             </div>
                                         </div>
@@ -107,22 +103,26 @@
                                     </div>
 
                                     <div class="hidden lg:block truncate">
-                                        {{item.currentPrices?.price | number: '1.0-0'}}
+                                        {{item.currentPrices?.price | number: '1.0-0' }} VNĐ
                                     </div>
 
-                                    <!--                                    &lt;!&ndash; Active &ndash;&gt;-->
-                                    <!--                                    <div class="hidden lg:block">-->
-                                    <!--                                        <ng-container *ngIf="product.active">-->
-                                    <!--                                            <mat-icon-->
-                                    <!--                                                class="text-green-400 icon-size-5"-->
-                                    <!--                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>-->
-                                    <!--                                        </ng-container>-->
-                                    <!--                                        <ng-container *ngIf="!product.active">-->
-                                    <!--                                            <mat-icon-->
-                                    <!--                                                class="text-gray-400 icon-size-5"-->
-                                    <!--                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>-->
-                                    <!--                                        </ng-container>-->
-                                    <!--                                    </div>-->
+                                    <div class="flex flex-row justify-center content-center truncate">
+                                        <ng-container *ngIf="item.status === 'ACTIVE'" class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-green-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:check'">
+                                            </mat-icon>
+                                            <span class="text-green-400">Đang hoạt động</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="item.status !== 'ACTIVE'">
+                                            <mat-icon
+                                                class="text-gray-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                            <span class="text-gray-400">Ngưng hoạt động</span>
+                                        </ng-container>
+                                    </div>
+
+
 
                                     <!-- Details button -->
                                     <div class="flex flex-row">

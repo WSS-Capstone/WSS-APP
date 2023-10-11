@@ -49,11 +49,11 @@ import { DomSanitizer } from '@angular/platform-browser';
                 }
 
                 @screen md {
-                    grid-template-columns: 50px 165px auto 64px;
+                    grid-template-columns: 50px auto 159px 79px;
                 }
 
                 @screen lg {
-                    grid-template-columns: 50px 165px auto 79px;
+                    grid-template-columns: 50px 141px auto 159px 79px;
                 }
             }
         `,

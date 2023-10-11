@@ -58,6 +58,7 @@
                                 Tên loại dịch vụ
                             </div>
                             <div>Mô tả</div>
+                            <div>Trạng thái</div>
 
                             <!--                            <div-->
                             <!--                                class="hidden lg:block"-->
@@ -94,6 +95,22 @@
 
                                     <div class="truncate">
                                         {{cate.description}}
+                                    </div>
+
+                                    <div class="flex flex-row justify-center content-center truncate">
+                                        <ng-container *ngIf="cate.status === 'Active'" class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-green-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:check'">
+                                            </mat-icon>
+                                            <span class="text-green-400">Đang hoạt động</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="cate.status !== 'Active'">
+                                            <mat-icon
+                                                class="text-gray-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                            <span class="text-gray-400">Ngưng hoạt động</span>
+                                        </ng-container>
                                     </div>
 
                                     <!--                                    &lt;!&ndash; Active &ndash;&gt;-->

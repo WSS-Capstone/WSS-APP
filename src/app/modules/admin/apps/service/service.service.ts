@@ -56,7 +56,7 @@ export class ServiceService {
         return this._httpClient.get<CategoryResponse>(ENDPOINTS.category, {
             params: {
                 'page-size': '' + 250,
-                'status': 'Active'
+
             }
         }).pipe(
             tap((categories) => {

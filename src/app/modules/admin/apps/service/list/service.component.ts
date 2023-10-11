@@ -27,8 +27,8 @@ import {Category} from "../../category/category.types";
     styles: [
         /* language=SCSS */
         `
-            .category-grid {
-                grid-template-columns: 56px 126px 84px 67px auto 80px;
+            .service-grid {
+                grid-template-columns: 77px auto 218px 134px 156px 145px 113px;
 
                 @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -39,7 +39,7 @@ import {Category} from "../../category/category.types";
                 }
 
                 @screen lg {
-                    grid-template-columns: 56px 126px 84px 67px auto 80px;
+                    grid-template-columns: 77px auto 218px 134px 156px 145px 113px;
                 }
             }
         `
