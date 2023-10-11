@@ -7,18 +7,18 @@ export const itemRoutes: Route[] = [
     {
         path      : '',
         pathMatch : 'full',
-        redirectTo: 'combo'
+        redirectTo: 'order'
     },
     {
-        path     : 'combo',
+        path     : 'order',
         component: OrderComponent,
         children : [
             {
                 path     : '',
                 component: OrderListComponent,
                 resolve  : {
-                    category    : CategoriesServiceResolver,
-                    items: OrdersResolver,
+                    // category    : CategoriesServiceResolver,
+                    // items: OrdersResolver,
                     // category  : CategoryResolver,
                 }
             }

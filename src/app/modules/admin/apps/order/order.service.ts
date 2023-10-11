@@ -66,7 +66,7 @@ export class OrderService {
 
     getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<OrderResponse> {
-        return this._httpClient.get<OrderResponse>(ENDPOINTS.combo, {
+        return this._httpClient.get<OrderResponse>(ENDPOINTS.order, {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
