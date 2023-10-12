@@ -1,3 +1,10 @@
+export enum OrderStatus
+{
+    ACTIVE = 1,
+    INACTIVE = 2,
+    DELETED = 3,
+}
+
 export interface Order {
     id: string;
     customerId: string;
@@ -11,7 +18,8 @@ export interface Order {
     totalAmount?: number;
     totalAmountRequest?: number;
     description?: string;
-    status: boolean;
+    createDate?: string;
+    status: OrderStatus;
 }
 
 export interface OrderPagination {

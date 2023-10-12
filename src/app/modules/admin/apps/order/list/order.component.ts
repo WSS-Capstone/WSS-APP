@@ -14,12 +14,13 @@ import {MatSort} from '@angular/material/sort';
 import {debounceTime, map, merge, Observable, Subject, switchMap, takeUntil} from 'rxjs';
 import {fuseAnimations} from '@fuse/animations';
 import {FuseConfirmationService} from '@fuse/services/confirmation';
-import {Order, OrderPagination} from "../order.types";
+import {Order, OrderPagination, OrderStatus} from "../order.types";
 import {OrderService} from "../order.service";
 import {MatDialog} from "@angular/material/dialog";
 import {OrderDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
+import { Route, Router } from '@angular/router';
 
 @Component({
     selector: 'service-list',
@@ -28,7 +29,7 @@ import {Category} from "../../category/category.types";
         /* language=SCSS */
         `
             .order-grid {
-                grid-template-columns: 56px 150px 150px 150px 150px 150px auto 150px;
+                grid-template-columns: 56px 150px 150px 150px 150px 150px auto 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -55,6 +56,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     items$: Observable<Order[]>;
     categories$: Observable<Category[]>;
 
+    orderStatus = OrderStatus;
     parentCategories$: Observable<Order[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
@@ -74,7 +76,9 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
         private _formBuilder: UntypedFormBuilder,
         private _snackBar: MatSnackBar,
         private _matDialog: MatDialog,
-        private _service: OrderService
+        private _service: OrderService,
+        private _router: Router,
+        // private _route: Route
     ) {
     }
 
@@ -188,6 +192,11 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+    }
+
+    viewDetail(orderId: string) {
+        // this._router.navigate([orderId]);
+        window.location.href = window.location + '/' + orderId;
     }
 
     /**

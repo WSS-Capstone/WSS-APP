@@ -17,7 +17,7 @@ import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 
 @Component({
-    selector: 'category-details',
+    selector: 'order-details',
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -79,7 +79,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
                 description: '',
                 customerId: null,
                 ownerId: null,
-                status: true
+                status: 1
             };
 
             this.item$ = of(item);
