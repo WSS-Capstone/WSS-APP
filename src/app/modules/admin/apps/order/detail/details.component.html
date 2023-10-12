@@ -1,1 +1,115 @@
-<div>aaaaaa</div>
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+    <ng-container *ngIf="(item$ | async) as item">
+        <!-- Header -->
+        <div
+            class="relative flex flex-col flex-0 py-8 px-6 md:px-8 border-b">
+            <!-- Loader -->
+            <div
+                class="absolute inset-x-0 bottom-0"
+                *ngIf="isLoading">
+                <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+            </div>
+                <div class="flex flex-row cursor-pointer w-fit" routerLink="../">
+                    <mat-icon [svgIcon]="'heroicons_solid:arrow-left'"></mat-icon>
+                    <div class="text-2xl font-extrabold tracking-tight ml-4">Quay lại</div>
+                </div>
+            
+
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2">
+                <div class="">
+                    <div class="text-2xl font-extrabold tracking-tight">Đơn hàng #{{item.id}}</div>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
+                        <div>
+                            <div class="flex flex-row h-18">
+                                <div class="w-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_solid:clock'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Ngày đặt hàng</div>
+                                    <div class="text-lg font-semibold">{{item.createDate | date: 'dd/MM/yyyy'}}</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="w-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Phiếu giảm giá</div>
+                                    <div class="text-lg font-semibold">{{item.voucherId ?? 'Không áp dụng'}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex flex-row h-18">
+                                <div class="w-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Giá trị đơn hàng</div>
+                                    <div class="text-lg font-semibold">{{item.totalAmount | number: '1.0-0'}}  VNĐ</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="w-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:cash'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Số tiền đã đặt cọc</div>
+                                    <div class="text-lg font-semibold">{{item.totalAmountRequest | number: '1.0-0'}}  VNĐ</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="text-2xl font-extrabold tracking-tight">Thông tin khách hàng</div>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
+                        <div>
+                            <div class="flex flex-row h-18">
+                                <div class="w-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_solid:identification'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Tên khách hàng</div>
+                                    <div class="text-lg font-semibold">{{item.fullname}}</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="w-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:map'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Địa chị</div>
+                                    <div class="text-lg font-semibold">{{item.address}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex flex-row h-18">
+                                <div class="w-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_solid:phone'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Số điện thoại</div>
+                                    <div class="text-lg font-semibold">{{item.phone}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold tracking-tight">Ghi chú</div>
+                        <div>{{item.description}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div class="flex flex-auto overflow-hidden">
+
+            <!-- Products list -->
+            <div>body</div>
+
+        </div>
+    </ng-container>
+</div>

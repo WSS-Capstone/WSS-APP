@@ -5,15 +5,15 @@ import {CategoriesServiceResolver, OrderResolver, OrdersResolver} from "./order.
 import { OrderDetailsComponent } from './detail/details.component';
 
 export const itemRoutes: Route[] = [
-    {
-        path      : '',
-        pathMatch : 'full',
-        redirectTo: 'order'
-    },
-    {
-        path     : 'order',
-        component: OrderComponent,
-        children : [
+    // {
+    //     path      : '',
+    //     pathMatch : 'full',
+    //     redirectTo: 'order'
+    // },
+    // {
+        // path     : 'order',
+        // component: OrderComponent,
+        // children : [
             {
                 path     : '',
                 component: OrderListComponent,
@@ -29,7 +29,7 @@ export const itemRoutes: Route[] = [
                     item     : OrderResolver,
                 },
             }
-        ]
+        // ]
         /*children : [
             {
                 path     : '',
@@ -51,5 +51,5 @@ export const itemRoutes: Route[] = [
                 ]
             }
         ]*/
-    }
+    // }
 ];

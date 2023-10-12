@@ -29,7 +29,7 @@ import { Route, Router } from '@angular/router';
         /* language=SCSS */
         `
             .order-grid {
-                grid-template-columns: 56px 150px 150px 150px 150px 150px auto 80px;
+                grid-template-columns: 32px 240px 150px 150px 150px 150px auto 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -172,32 +172,27 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    toggleDetails(productId: string): void {
-        // If the product is already selected...
-        if (this.selectedCategory && this.selectedCategory.id === productId) {
-            // Close the details
-            this.closeDetails();
-            return;
-        }
+    // toggleDetails(productId: string): void {
+    //     // If the product is already selected...
+    //     if (this.selectedCategory && this.selectedCategory.id === productId) {
+    //         // Close the details
+    //         this.closeDetails();
+    //         return;
+    //     }
 
-        // Get the product by id
-        this._service.getItem(productId)
-            .subscribe((item) => {
+    //     // Get the product by id
+    //     this._service.getItem(productId)
+    //         .subscribe((item) => {
 
-                // Set the selected item
-                this.selectedCategory = item;
+    //             // Set the selected item
+    //             this.selectedCategory = item;
 
-                // Fill the form
-                this.selectedCategoryForm.patchValue(item);
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-    }
-
-    viewDetail(orderId: string) {
-        // this._router.navigate([orderId]);
-        window.location.href = window.location + '/' + orderId;
-    }
+    //             // Fill the form
+    //             this.selectedCategoryForm.patchValue(item);
+    //             // Mark for check
+    //             this._changeDetectorRef.markForCheck();
+    //         });
+    // }
 
     /**
      * Close the details
@@ -206,33 +201,33 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedCategory = null;
     }
 
-    createItem(): void {
-        // Create the product
-        this._matDialog.open(OrderDetailsComponent, {
-            autoFocus: false,
-            data: {
-                service: {}
-            },
-            width: '50vw',
-        });
-    }
+    // createItem(): void {
+    //     // Create the product
+    //     this._matDialog.open(OrderDetailsComponent, {
+    //         autoFocus: false,
+    //         data: {
+    //             service: {}
+    //         },
+    //         width: '50vw',
+    //     });
+    // }
 
-    update(id: string): void {
-        this._service.getItem(id)
-            .subscribe((item) => {
-                this.selectedCategory = item;
+    // update(id: string): void {
+    //     this._service.getItem(id)
+    //         .subscribe((item) => {
+    //             this.selectedCategory = item;
 
-                this._matDialog.open(OrderDetailsComponent, {
-                    autoFocus: false,
-                    data: {
-                        service: this.selectedCategory
-                    },
-                    width: '50vw',
-                });
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-    }
+    //             this._matDialog.open(OrderDetailsComponent, {
+    //                 autoFocus: false,
+    //                 data: {
+    //                     service: this.selectedCategory
+    //                 },
+    //                 width: '50vw',
+    //             });
+    //             // Mark for check
+    //             this._changeDetectorRef.markForCheck();
+    //         });
+    // }
 
     delete(id: string): void {
         // Open the confirmation dialog

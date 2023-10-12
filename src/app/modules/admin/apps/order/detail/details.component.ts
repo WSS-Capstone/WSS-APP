@@ -15,6 +15,7 @@ import {OrderService} from "../order.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'order-details',
@@ -30,7 +31,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     item$: Observable<Order>;
     categories$: Observable<Category[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    isLoading: boolean = false;
     form: FormGroup;
 
     /**
@@ -39,9 +40,10 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
-        @Inject(MAT_DIALOG_DATA) private _data: { service: Order },
+        // @Inject(MAT_DIALOG_DATA) private _data: { service: Order },
         private _service: OrderService,
-        private _matDialogRef: MatDialogRef<OrderDetailsComponent>
+        // private _matDialogRef: MatDialogRef<OrderDetailsComponent>,
+        private acitvatedRoute: ActivatedRoute,
     ) {
         this._initForm();
     }
@@ -55,35 +57,50 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         this.categories$ = this._service.categories$;
-        // Edit
-        if (this._data.service.id) {
-            console.log("Edit");
-            // Request the data from the server
-            this._service.getItem(this._data.service.id).subscribe();
+        this.acitvatedRoute.paramMap.subscribe(param => {
+            this.isLoading = true;
+            const id = param.get('id');
+            this._service.getItem(id).subscribe(p => {
+                console.log(p)
+                this.isLoading = false;
+            });
 
             // Get the note
             this.item$ = this._service.item$;
 
-            this.item$.subscribe((value) => {
-                this._patchValue(value);
-            });
-        }
-        // Add
-        else {
-            console.log("Add");
-            // Create an empty note
-            const item: Order = {
-                vouncherId: "",
-                id: null,
-                fullname: '',
-                description: '',
-                customerId: null,
-                ownerId: null,
-                status: 1
-            };
+            // this.item$.subscribe((value) => {
+            //     this._patchValue(value);
+            // });
+          })
+        // Edit
+        // if (this._data.service.id) {
+        //     console.log("Edit");
+        //     // Request the data from the server
+        //     this._service.getItem(this._data.service.id).subscribe();
 
-            this.item$ = of(item);
-        }
+        //     // Get the note
+        //     this.item$ = this._service.item$;
+
+        //     this.item$.subscribe((value) => {
+        //         this._patchValue(value);
+        //     });
+        // }
+        // Add
+        // else {
+        //     console.log("Add");
+        //     // Create an empty note
+        //     const item: Order = {
+        //         vouncherId: "",
+        //         id: null,
+        //         fullname: '',
+        //         description: '',
+        //         customerId: null,
+        //         ownerId: null,
+        //         status: 1
+        //     };
+
+        //     this.item$ = of(item);
+        // }
     }
 
     private _initForm(): void {
@@ -99,18 +116,18 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
         });
     }
 
-    private _patchValue(value: Order) {
-        this.form.patchValue({
-            id: value.id,
-            fullname: value.fullname,
-            // categoryId: value.categoryId,
-            description: value.description,
-            // ownerId: value.ownerId,
-            // quantity: value.quantity,
-            // coverUrl: value.coverUrl,
-            status: value.status,
-        });
-    }
+    // private _patchValue(value: Order) {
+    //     this.form.patchValue({
+    //         id: value.id,
+    //         fullname: value.fullname,
+    //         // categoryId: value.categoryId,
+    //         description: value.description,
+    //         // ownerId: value.ownerId,
+    //         // quantity: value.quantity,
+    //         // coverUrl: value.coverUrl,
+    //         status: value.status,
+    //     });
+    // }
 
     /**
      * On destroy
@@ -125,31 +142,31 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    create(): void {
-        this._service.create(this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
+    // create(): void {
+    //     this._service.create(this.form.value).pipe(
+    //         map(() => {
+    //             // Get the note
+    //             // this.cate$ = this._categoryService.category$;
+    //             this.showFlashMessage('success');
+    //         })).subscribe();
 
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 3100);
-    }
+    //     setTimeout(() => {
+    //         // this._matDialogRef.close();
+    //     }, 3100);
+    // }
 
-    update(): void {
-        this._service.update(this.form.get('id').value ,this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
+    // update(): void {
+    //     this._service.update(this.form.get('id').value ,this.form.value).pipe(
+    //         map(() => {
+    //             // Get the note
+    //             // this.cate$ = this._categoryService.category$;
+    //             this.showFlashMessage('success');
+    //         })).subscribe();
 
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 1200);
-    }
+    //     setTimeout(() => {
+    //         // this._matDialogRef.close();
+    //     }, 1200);
+    // }
 
     /**
      * Upload image to given note
@@ -157,41 +174,41 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
      * @param cate
      * @param fileList
      */
-    uploadImage(cate: Order, fileList: FileList): void {
-        // Return if canceled
-        if (!fileList.length) {
-            return;
-        }
+    // uploadImage(cate: Order, fileList: FileList): void {
+    //     // Return if canceled
+    //     if (!fileList.length) {
+    //         return;
+    //     }
 
-        const allowedTypes = ['image/jpeg', 'image/png'];
-        const file = fileList[0];
+    //     const allowedTypes = ['image/jpeg', 'image/png'];
+    //     const file = fileList[0];
 
-        // Return if the file is not allowed
-        if (!allowedTypes.includes(file.type)) {
-            return;
-        }
+    //     // Return if the file is not allowed
+    //     if (!allowedTypes.includes(file.type)) {
+    //         return;
+    //     }
 
-        this._readAsDataURL(file).then((data) => {
+    //     this._readAsDataURL(file).then((data) => {
 
-            // Update the image
-            cate.description = data;
+    //         // Update the image
+    //         cate.description = data;
 
-            // Update the note
-            this.itemChanged.next(cate);
-        });
-    }
+    //         // Update the note
+    //         this.itemChanged.next(cate);
+    //     });
+    // }
 
     /**
      * Remove the image on the given note
      *
      * @param note
      */
-    removeImage(cate: Order): void {
-        cate.description = null;
+    // removeImage(cate: Order): void {
+    //     cate.description = null;
 
-        // Update the cate
-        this.itemChanged.next(cate);
-    }
+    //     // Update the cate
+    //     this.itemChanged.next(cate);
+    // }
 
     /**
      * Track by function for ngFor loops
