@@ -1,3 +1,5 @@
+import { Combo } from "../combo/combo.types";
+
 export enum OrderStatus
 {
     ACTIVE = 1,
@@ -15,6 +17,7 @@ export interface Order {
     phone?: string;
     vouncherId: string;
     comboId?: string;
+    combo: Combo;
     totalAmount?: number;
     totalAmountRequest?: number;
     description?: string;

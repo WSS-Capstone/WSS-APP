@@ -20,6 +20,26 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
     selector: 'order-details',
     templateUrl: './details.component.html',
+    styles: [
+        /* language=SCSS */
+        `
+            .order-detail-grid {
+                grid-template-columns: 32px 150px 150px 150px 150px 150px auto 80px;
+
+                /* @screen sm {
+                    grid-template-columns: 57px auto 80px;
+                }
+
+                @screen md {
+                    grid-template-columns: 56px 126px auto 80px;
+                } */
+
+                /* @screen lg {
+                    grid-template-columns: 56px 200px 200px 200px 200px 200px auto 200px;
+                } */
+            }
+        `
+    ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations

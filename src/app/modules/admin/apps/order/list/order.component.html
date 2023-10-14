@@ -43,7 +43,7 @@
     <div class="flex flex-auto overflow-hidden">
 
         <!-- Products list -->
-        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+        <div class="flex flex-col flex-auto sm:mb-18 sm:overflow-y-auto">
             <ng-container *ngIf="(items$ | async) as items">
                 <ng-container *ngIf="items.length > 0; else noProducts">
                     <div class="grid">
