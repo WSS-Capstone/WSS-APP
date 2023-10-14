@@ -8,25 +8,24 @@ import {MatInputModule} from '@angular/material/input';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
+import {MatRippleModule} from '@angular/material/core';
 import {MatSortModule} from '@angular/material/sort';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {SharedModule} from 'app/shared/shared.module';
-import {DiscountListComponent} from "./list/discount.component";
-import {DiscountComponent} from "./discount.component";
-import {itemRoutes} from "./discount.routing";
-import {DiscountDetailsComponent} from "./detail/details.component";
+import {FeedbackListComponent} from "./list/feedback-list.component";
+import {FeedbackComponent} from "./feedback.component";
+import {itemRoutes} from "./feedback.routing";
+import {FeedbackDetailsComponent} from "./detail/details.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
-import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
     declarations: [
-        DiscountComponent,
-        DiscountListComponent,
-        DiscountDetailsComponent
+        FeedbackComponent,
+        FeedbackListComponent,
+        FeedbackDetailsComponent,
     ],
     imports: [
         RouterModule.forChild(itemRoutes),
@@ -45,13 +44,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
         MatTooltipModule,
         MatDialogModule,
         MatSnackBarModule,
-        SharedModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
+        SharedModule
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
     ]
 })
-export class DiscountModule {
+export class FeedbackModule {
 }

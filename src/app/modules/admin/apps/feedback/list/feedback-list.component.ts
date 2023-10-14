@@ -14,21 +14,21 @@ import {MatSort} from '@angular/material/sort';
 import {debounceTime, map, merge, Observable, Subject, switchMap, takeUntil} from 'rxjs';
 import {fuseAnimations} from '@fuse/animations';
 import {FuseConfirmationService} from '@fuse/services/confirmation';
-import {ApproveService, ApproveServicePagination} from "../service-approval.types";
-import {ApproveServiceService} from "../service-approval.service";
+import {Feedback, FeedbackPagination} from "../feedback.types";
+import {FeedbackService} from "../feedback.service";
 import {MatDialog} from "@angular/material/dialog";
-import {ServiceApprovalDetailsComponent} from "../detail/details.component";
+import {FeedbackDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
 
 @Component({
-    selector: 'service-approval-list',
-    templateUrl: './service-approval-list.component.html',
+    selector: 'feedback-list',
+    templateUrl: './feedback-list.component.html',
     styles: [
         /* language=SCSS */
         `
-            .service-approval-grid {
-                grid-template-columns: 32px 240px 150px 180px 180px 150px auto 80px;
+            .feedback-grid {
+                grid-template-columns: 32px 150px 180px 180px 180px auto 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -48,19 +48,19 @@ import {Category} from "../../category/category.types";
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations
 })
-export class ServiceApprovalListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
-    items$: Observable<ApproveService[]>;
+    items$: Observable<Feedback[]>;
     categories$: Observable<Category[]>;
 
-    parentCategories$: Observable<ApproveService[]>;
+    parentCategories$: Observable<Feedback[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
-    pagination: ApproveServicePagination;
+    pagination: FeedbackPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
-    selectedCategory: ApproveService | null = null;
+    selectedCategory: Feedback | null = null;
     selectedCategoryForm: UntypedFormGroup;
     isNew: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -74,7 +74,7 @@ export class ServiceApprovalListComponent implements OnInit, AfterViewInit, OnDe
         private _formBuilder: UntypedFormBuilder,
         private _snackBar: MatSnackBar,
         private _matDialog: MatDialog,
-        private _service: ApproveServiceService
+        private _service: FeedbackService
     ) {
     }
 
@@ -100,7 +100,7 @@ export class ServiceApprovalListComponent implements OnInit, AfterViewInit, OnDe
         // Get the pagination
         this._service.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((pagination: ApproveServicePagination) => {
+            .subscribe((pagination: FeedbackPagination) => {
 
                 // Update the pagination
                 this.pagination = pagination;
@@ -210,7 +210,7 @@ export class ServiceApprovalListComponent implements OnInit, AfterViewInit, OnDe
 
     createItem(): void {
         // Create the product
-        this._matDialog.open(ServiceApprovalDetailsComponent, {
+        this._matDialog.open(FeedbackDetailsComponent, {
             autoFocus: false,
             data: {
                 service: {}
@@ -224,7 +224,7 @@ export class ServiceApprovalListComponent implements OnInit, AfterViewInit, OnDe
         //     .subscribe((item) => {
         //         this.selectedCategory = item;
 
-        //         this._matDialog.open(ServiceApprovalDetailsComponent, {
+        //         this._matDialog.open(FeedbackDetailsComponent, {
         //             autoFocus: false,
         //             data: {
         //                 service: this.selectedCategory
@@ -238,7 +238,7 @@ export class ServiceApprovalListComponent implements OnInit, AfterViewInit, OnDe
         //temp
         this.selectedCategory = null;
 
-                this._matDialog.open(ServiceApprovalDetailsComponent, {
+                this._matDialog.open(FeedbackDetailsComponent, {
                     autoFocus: false,
                     data: {
                         service: this.selectedCategory

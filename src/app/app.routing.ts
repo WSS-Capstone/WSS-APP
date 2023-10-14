@@ -83,6 +83,7 @@ export const appRoutes: Route[] = [
                     {path: 'approve-service', loadChildren: () => import('app/modules/admin/apps/service-approval/service-approval.module').then(m => m.ServiceApprovalModule)},
                     {path: 'discount', loadChildren: () => import('app/modules/admin/apps/discount/discount.module').then(m => m.DiscountModule)},
                     {path: 'chat', loadChildren: () => import('app/modules/admin/apps/chat/chat.module').then(m => m.ChatModule)},
+                    {path: 'feedback', loadChildren: () => import('app/modules/admin/apps/feedback/feedback.module').then(m => m.FeedbackModule)},
                 ]
             },
 

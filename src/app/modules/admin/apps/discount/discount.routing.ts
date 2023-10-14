@@ -4,15 +4,15 @@ import {DiscountListComponent} from "./list/discount.component";
 import {CategoriesServiceResolver, CombosResolver} from "./discount.resolvers";
 
 export const itemRoutes: Route[] = [
-    {
-        path      : '',
-        pathMatch : 'full',
-        redirectTo: 'discount'
-    },
-    {
-        path     : 'discount',
-        component: DiscountComponent,
-        children : [
+    // {
+    //     path      : '',
+    //     pathMatch : 'full',
+    //     redirectTo: 'discount'
+    // },
+    // {
+    //     path     : 'discount',
+    //     component: DiscountComponent,
+    //     children : [
             {
                 path     : '',
                 component: DiscountListComponent,
@@ -22,7 +22,7 @@ export const itemRoutes: Route[] = [
                     // category  : CategoryResolver,
                 }
             }
-        ]
+        // ]
         /*children : [
             {
                 path     : '',
@@ -44,5 +44,5 @@ export const itemRoutes: Route[] = [
                 ]
             }
         ]*/
-    }
+    // }
 ];

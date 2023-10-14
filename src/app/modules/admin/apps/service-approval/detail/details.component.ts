@@ -89,13 +89,19 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
-            name: [null, [Validators.required, Validators.maxLength(80)]],
-            categoryId: [null],
-            description: [null],
-            ownerId: [null],
+            name: [null],
+            categoryName: [null],
+            category: [null],
+            price: [null],
             quantity: [null],
+            discount: [null],
             coverUrl: [null],
             status: [null],
+
+
+            // categoryId: [null],
+            // description: [null],
+            // ownerId: [null],
         });
     }
 

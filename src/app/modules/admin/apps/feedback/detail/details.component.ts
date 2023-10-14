@@ -10,24 +10,24 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Discount} from "../discount.types";
-import {ComboService} from "../discount.service";
+import {Feedback} from "../feedback.types";
+import {FeedbackService} from "../feedback.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 
 @Component({
-    selector: 'discount-details',
+    selector: 'service-approval-details',
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations
 })
-export class DiscountDetailsComponent implements OnInit, OnDestroy {
+export class FeedbackDetailsComponent implements OnInit, OnDestroy {
     flashMessage: 'success' | 'error' | null = null;
     labels$: Observable<Label[]>;
-    itemChanged: Subject<Discount> = new Subject<Discount>();
-    item$: Observable<Discount>;
+    itemChanged: Subject<Feedback> = new Subject<Feedback>();
+    item$: Observable<Feedback>;
     categories$: Observable<Category[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -39,9 +39,9 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
-        @Inject(MAT_DIALOG_DATA) private _data: { service: Discount },
-        private _service: ComboService,
-        private _matDialogRef: MatDialogRef<DiscountDetailsComponent>
+        @Inject(MAT_DIALOG_DATA) private _data: { service: Feedback },
+        private _service: FeedbackService,
+        private _matDialogRef: MatDialogRef<FeedbackDetailsComponent>
     ) {
         this._initForm();
     }
@@ -72,7 +72,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
         else {
             console.log("Add");
             // Create an empty note
-            const item: Discount = {
+            const item: Feedback = {
                 // ownerId: "", quantity: "",
                 id: null,
                 name: '',
@@ -89,22 +89,23 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
-            name: [null, [Validators.required, Validators.maxLength(80)]],
-            startDate: [null, [Validators.required]],
-            endDate: [null, [Validators.required]],
-            minThreshold: [null, [Validators.required]],
-            discountAmount: [null, [Validators.required]],
-
-            categoryId: [null],
-            description: [null],
-            ownerId: [null],
+            name: [null],
+            categoryName: [null],
+            category: [null],
+            price: [null],
             quantity: [null],
+            discount: [null],
             coverUrl: [null],
             status: [null],
+
+
+            // categoryId: [null],
+            // description: [null],
+            // ownerId: [null],
         });
     }
 
-    private _patchValue(value: Discount) {
+    private _patchValue(value: Feedback) {
         this.form.patchValue({
             id: value.id,
             name: value.name,
@@ -129,22 +130,6 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-
-    filterStart = (date: Date | null): boolean => {
-        const endDate = this.form.get('endDate').value;
-
-        return (
-          !endDate || date <= endDate
-        );
-    }
-
-    filterEnd = (date: Date | null): boolean => {
-        const startDate = this.form.get('startDate').value;
-
-        return (
-            !startDate || date >= startDate
-        );
-    }
 
     create(): void {
         this._service.create(this.form.value).pipe(
@@ -178,7 +163,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
      * @param cate
      * @param fileList
      */
-    uploadImage(cate: Discount, fileList: FileList): void {
+    uploadImage(cate: Feedback, fileList: FileList): void {
         // Return if canceled
         if (!fileList.length) {
             return;
@@ -207,7 +192,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
      *
      * @param note
      */
-    removeImage(cate: Discount): void {
+    removeImage(cate: Feedback): void {
         cate.imageUrl = null;
 
         // Update the cate

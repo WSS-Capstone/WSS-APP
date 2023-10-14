@@ -1,7 +1,7 @@
 import {Route} from '@angular/router';
-import {ServiceApprovalComponent} from "./service-approval.component";
-import {ServiceApprovalListComponent} from "./list/service-approval-list.component";
-import {CategoriesServiceResolver, ApproveServicesResolver} from "./service-approval.resolvers";
+import {FeedbackComponent} from "./feedback.component";
+import {FeedbackListComponent} from "./list/feedback-list.component";
+import {CategoriesServiceResolver, FeedbackResolver} from "./feedback.resolvers";
 
 export const itemRoutes: Route[] = [
     // {
@@ -11,11 +11,11 @@ export const itemRoutes: Route[] = [
     // },
     // {
     //     path     : 'approve-service',
-    //     component: ServiceApprovalComponent,
+    //     component: FeedbackComponent,
     //     children : [
             {
                 path     : '',
-                component: ServiceApprovalListComponent,
+                component: FeedbackListComponent,
                 resolve  : {
                     // category    : CategoriesServiceResolver,
                     // items: CombosResolver,
