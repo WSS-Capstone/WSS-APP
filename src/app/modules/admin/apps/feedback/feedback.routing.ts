@@ -1,7 +1,7 @@
 import {Route} from '@angular/router';
 import {FeedbackComponent} from "./feedback.component";
 import {FeedbackListComponent} from "./list/feedback-list.component";
-import {CategoriesServiceResolver, FeedbackResolver} from "./feedback.resolvers";
+import {CategoriesServiceResolver, FeedbackResolver, FeedbacksResolver} from "./feedback.resolvers";
 
 export const itemRoutes: Route[] = [
     // {
@@ -18,7 +18,7 @@ export const itemRoutes: Route[] = [
                 component: FeedbackListComponent,
                 resolve  : {
                     // category    : CategoriesServiceResolver,
-                    // items: CombosResolver,
+                    items: FeedbacksResolver,
                     // category  : CategoryResolver,
                 }
             }

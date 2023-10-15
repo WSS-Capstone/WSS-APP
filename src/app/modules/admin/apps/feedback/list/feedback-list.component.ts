@@ -52,10 +52,11 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
+    readonly MAX_RATING = 5;
+
     items$: Observable<Feedback[]>;
     categories$: Observable<Category[]>;
 
-    parentCategories$: Observable<Feedback[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
     pagination: FeedbackPagination;
@@ -87,15 +88,15 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit(): void {
         // Create the selected product form
-        this.selectedCategoryForm = this._formBuilder.group({
-            id: [''],
-            name: ['', [Validators.required]],
-            description: [''],
-            imageUrl: [''],
-            categoryId: [''],
-            images: [[]],
-            currentImageIndex: [0], // Image index that is currently being viewed
-        });
+        // this.selectedCategoryForm = this._formBuilder.group({
+        //     id: [''],
+        //     name: ['', [Validators.required]],
+        //     description: [''],
+        //     imageUrl: [''],
+        //     categoryId: [''],
+        //     images: [[]],
+        //     currentImageIndex: [0], // Image index that is currently being viewed
+        // });
 
         // Get the pagination
         this._service.pagination$
@@ -111,7 +112,8 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Get the products
         this.items$ = this._service.items$;
-        this.categories$ = this._service.categories$;
+
+        // this.categories$ = this._service.categories$;
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
@@ -179,26 +181,8 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    toggleDetails(productId: string): void {
-        // If the product is already selected...
-        if (this.selectedCategory && this.selectedCategory.id === productId) {
-            // Close the details
-            this.closeDetails();
-            return;
-        }
-
-        // Get the product by id
-        this._service.getItem(productId)
-            .subscribe((item) => {
-
-                // Set the selected item
-                this.selectedCategory = item;
-
-                // Fill the form
-                this.selectedCategoryForm.patchValue(item);
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+    numSequence(n: number): Array<number> {
+        return Array(n);
     }
 
     /**
@@ -208,35 +192,10 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedCategory = null;
     }
 
-    createItem(): void {
-        // Create the product
-        this._matDialog.open(FeedbackDetailsComponent, {
-            autoFocus: false,
-            data: {
-                service: {}
-            },
-            width: '50vw',
-        });
-    }
-
     update(id: string): void {
-        // this._service.getItem(id)
-        //     .subscribe((item) => {
-        //         this.selectedCategory = item;
-
-        //         this._matDialog.open(FeedbackDetailsComponent, {
-        //             autoFocus: false,
-        //             data: {
-        //                 service: this.selectedCategory
-        //             },
-        //             width: '50vw',
-        //         });
-        //         // Mark for check
-        //         this._changeDetectorRef.markForCheck();
-        //     });
-
-        //temp
-        this.selectedCategory = null;
+        this._service.getItem(id)
+            .subscribe((item) => {
+                this.selectedCategory = item;
 
                 this._matDialog.open(FeedbackDetailsComponent, {
                     autoFocus: false,
@@ -247,6 +206,7 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
+            });
     }
 
     delete(id: string): void {

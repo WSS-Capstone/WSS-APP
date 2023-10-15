@@ -15,9 +15,10 @@ import {FeedbackService} from "../feedback.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
+import {formatDate} from "@angular/common";
 
 @Component({
-    selector: 'service-approval-details',
+    selector: 'feedback-details',
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +30,7 @@ export class FeedbackDetailsComponent implements OnInit, OnDestroy {
     itemChanged: Subject<Feedback> = new Subject<Feedback>();
     item$: Observable<Feedback>;
     categories$: Observable<Category[]>;
+    readonly MAX_RATING = 5;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     form: FormGroup;
@@ -54,12 +56,12 @@ export class FeedbackDetailsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this.categories$ = this._service.categories$;
+        // this.categories$ = this._service.categories$;
         // Edit
         if (this._data.service.id) {
             console.log("Edit");
             // Request the data from the server
-            this._service.getItem(this._data.service.id).subscribe();
+            this._service.getItem(this._data.service.id).subscribe(f => console.log(f));
 
             // Get the note
             this.item$ = this._service.item$;
@@ -68,52 +70,29 @@ export class FeedbackDetailsComponent implements OnInit, OnDestroy {
                 this._patchValue(value);
             });
         }
-        // Add
-        else {
-            console.log("Add");
-            // Create an empty note
-            const item: Feedback = {
-                // ownerId: "", quantity: "",
-                id: null,
-                name: '',
-                description: '',
-                imageUrl: null,
-                discountValueCombo: null,
-                status: true
-            };
-
-            this.item$ = of(item);
-        }
     }
 
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
-            name: [null],
-            categoryName: [null],
-            category: [null],
-            price: [null],
-            quantity: [null],
-            discount: [null],
-            coverUrl: [null],
+            createDate: [null],
+            content: [null],
+            rating: [null],
+            orderDetailId: [null],
+            userId: [null],
             status: [null],
-
-
-            // categoryId: [null],
-            // description: [null],
-            // ownerId: [null],
+            imageUrl: [null],
         });
     }
 
     private _patchValue(value: Feedback) {
         this.form.patchValue({
             id: value.id,
-            name: value.name,
-            // categoryId: value.categoryId,
-            // description: value.description,
-            // ownerId: value.ownerId,
-            // quantity: value.quantity,
-            // coverUrl: value.coverUrl,
+            userId: value.userId,
+            orderDetailId: value.orderDetailId,
+            createDate: formatDate(value.createDate, 'dd/MM/yyyy hh:mm', 'en'),
+            content: value.content,
+            rating: value.rating,
             status: value.status,
         });
     }
@@ -130,6 +109,10 @@ export class FeedbackDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    numSequence(n: number): Array<number> {
+        return Array(n);
+    }
 
     create(): void {
         this._service.create(this.form.value).pipe(

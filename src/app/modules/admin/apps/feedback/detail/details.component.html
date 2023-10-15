@@ -2,20 +2,20 @@
     <!-- Title -->
     <div class="flex justify-between">
         <div class="text-3xl font-extrabold tracking-tight p-5">Đánh giá từ khách hàng</div>
-        <mat-icon matDialogClose
-            class="icon-size-10 pr-4 pt-4"
-            [svgIcon]="'heroicons_outline:x'"></mat-icon>
+<!--        <mat-icon matDialogClose-->
+<!--            class="icon-size-10 pr-4 pt-4"-->
+<!--            [svgIcon]="'heroicons_outline:x'"></mat-icon>-->
     </div>
 
 
-    <ng-container *ngIf="(item$ | async) as cate" [formGroup]="form">
+    <ng-container *ngIf="(item$ | async) as item" [formGroup]="form">
         <!-- Image -->
         <div class="flex flex-auto flex-row p-5">
             <!--            image-->
             <div class="flex flex-col items-center">
                 <div class="w-32 h-44 border rounded overflow-hidden">
-                    <ng-container *ngIf="cate.imageUrl; else noImage">
-                        <img class="w-full h-full object-cover" [src]="cate.imageUrl">
+                    <ng-container *ngIf="item.imageUrl; else noImage">
+                        <img class="w-full h-full object-cover" [src]="item.imageUrl">
                     </ng-container>
                     <ng-template #noImage>
                         <span class="flex justify-center items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
@@ -31,55 +31,36 @@
                 <!-- id -->
                 <mat-form-field class="w-full">
                     <mat-label>Ngày</mat-label>
-                    <input matInput readonly [formControlName]="'id'">
+                    <input matInput readonly [formControlName]="'createDate'">
                 </mat-form-field>
 
                 <!-- name -->
                 <mat-form-field class="w-full">
                     <mat-label>Tên khách hàng</mat-label>
-                    <input matInput readonly [formControlName]="'name'">
+                    <input matInput readonly [formControlName]="'userId'">
                 </mat-form-field>
 
                 <mat-form-field class="w-full">
                     <mat-label>Người thực hiện</mat-label>
-                    <input matInput readonly [formControlName]="'name'">
+                    <input matInput readonly [formControlName]="'userId'">
                 </mat-form-field>
 
                 <mat-form-field class="w-full">
                     <mat-label>Tên dịch vụ</mat-label>
-                    <input matInput readonly [formControlName]="'name'">
+                    <input matInput readonly [formControlName]="'orderDetailId'">
                 </mat-form-field>
 
                 <div class="flex flex-row mb-4 font-medium">
                     <div>Đánh giá</div>
                     <div class="flex flex-row ml-4">
-                        <span>
+                        <span *ngFor="let n of numSequence(MAX_RATING - item.rating)">
                             <mat-icon
                                 class="icon-size-5 text-[#E8E8E8]"
                                 matPrefix
                                 [svgIcon]="'heroicons_solid:star'">
                             </mat-icon>
-                            <mat-icon
-                                class="icon-size-5 text-[#FABF35]"
-                                matPrefix
-                                [svgIcon]="'heroicons_solid:star'">
-                            </mat-icon>
                         </span>
-                        <span>
-                            <mat-icon
-                                class="icon-size-5 text-[#FABF35]"
-                                matPrefix
-                                [svgIcon]="'heroicons_solid:star'">
-                            </mat-icon>
-                        </span>
-                        <span>
-                            <mat-icon
-                                class="icon-size-5 text-[#FABF35]"
-                                matPrefix
-                                [svgIcon]="'heroicons_solid:star'">
-                            </mat-icon>
-                        </span>
-                        <span>
+                        <span *ngFor="let n of numSequence(item.rating)">
                             <mat-icon
                                 class="icon-size-5 text-[#FABF35]"
                                 matPrefix
@@ -95,11 +76,18 @@
                         matInput
                         readonly
                         [rows]="5"
-                        [formControlName]="'name'"></textarea>
-                    <mat-error *ngIf="form.get('name').hasError('maxlength')">
-                        Mô tả không được quá 300 ký tự
-                    </mat-error>
+                        [formControlName]="'content'"></textarea>
+<!--                    <mat-error *ngIf="form.get('content').hasError('content')">-->
+<!--                        Mô tả không được quá 300 ký tự-->
+<!--                    </mat-error>-->
                 </mat-form-field>
+
+                <div class="flex flex-row mb-4  font-medium">
+                    <div>Trạng thái</div>
+                    <mat-slide-toggle color="warn" [formControlName]="'status'" class="ml-4">
+                        {{item.status === "New" ? 'Hiện' : 'Ẩn' }}
+                    </mat-slide-toggle>
+                </div>
             </div>
         </div>
         <div class="flex justify-end items-center m-4">
@@ -119,31 +107,17 @@
                     <span class="ml-2">Có lỗi xảy ra, vui lòng thử lại!</span>
                 </ng-container>
             </div>
-            <!-- Add Actions -->
-            <!-- <ng-container *ngIf="!cate.id">
-                <div class="flex items-center justify-end mt-4">
-                    <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
-                    <button
-                        mat-flat-button
-                        [color]="'primary'"
-                        [disabled]="form.invalid"
-                        (click)="create()">
-                        Thêm mới
-                    </button>
-                </div>
-            </ng-container> -->
             <!-- Edit Actions -->
             <ng-container>
                 <div class="flex items-center justify-between mt-4">
                     <!-- Close -->
-                    <button class="mr-4" mat-flat-button matDialogClose>Từ chối</button>
+                    <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
                     <button
                         mat-flat-button
                         [color]="'primary'"
                         (click)="update()">
-                        Chấp nhận
+                        Cập nhật
                     </button>
-
                 </div>
             </ng-container>
         </div>

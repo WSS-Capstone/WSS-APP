@@ -2,12 +2,13 @@ import {Service} from "../service/service.types";
 
 export interface Feedback {
     id: string;
-    name?: string;
-    discountValueCombo?: number;
-    totalAmount?: number;
-    description?: string;
+    content: string;
+    createDate: string;
+    rating: number;
+    orderDetailId: string;
+    userId: string;
+    status: string;
     imageUrl: string;
-    status: boolean;
 }
 
 export interface FeedbackPagination {

@@ -66,7 +66,7 @@ export class FeedbackService {
 
     getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<FeedbackResponse> {
-        return this._httpClient.get<FeedbackResponse>(ENDPOINTS.combo, {
+        return this._httpClient.get<FeedbackResponse>(ENDPOINTS.feedback, {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
@@ -136,7 +136,7 @@ export class FeedbackService {
     update(id: string, item: Feedback): Observable<Feedback> {
         return this.items$.pipe(
             take(1),
-            switchMap(itemsArr => this._httpClient.put<Feedback>(ENDPOINTS.combo + `/${id}`, {
+            switchMap(itemsArr => this._httpClient.put<Feedback>(ENDPOINTS.feedback + `/${id}`, {
                 ...item
             }).pipe(
                 map((updatedItem) => {
