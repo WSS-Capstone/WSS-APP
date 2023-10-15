@@ -6,7 +6,7 @@
             class="icon-size-10 pr-4 pt-4"
             [svgIcon]="'heroicons_outline:x'"></mat-icon>
     </div>
-    
+
 
     <ng-container *ngIf="(item$ | async) as cate" [formGroup]="form">
         <!-- Image -->
@@ -93,6 +93,7 @@
                     <mat-label>Mô tả</mat-label>
                     <textarea
                         matInput
+                        readonly
                         [rows]="5"
                         [formControlName]="'name'"></textarea>
                     <mat-error *ngIf="form.get('name').hasError('maxlength')">
