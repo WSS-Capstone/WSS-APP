@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
 import {catchError, Observable, throwError} from 'rxjs';
-import {ComboService} from "./discount.service";
+import {DiscountService} from "./discount.service";
 import {Discount, DiscountResponse} from "./discount.types";
 import {Category} from "../category/category.types";
 
 @Injectable({
     providedIn: 'root'
 })
-export class CategoriesServiceResolver implements Resolve<any> {
-    constructor(private _service: ComboService) {
+export class CategoriesDiscountResolver implements Resolve<any> {
+    constructor(private _service: DiscountService) {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Category[]> {
@@ -20,9 +20,9 @@ export class CategoriesServiceResolver implements Resolve<any> {
 @Injectable({
     providedIn: 'root'
 })
-export class ComboResolver implements Resolve<any> {
+export class DiscountResolver implements Resolve<any> {
     constructor(
-        private _service: ComboService,
+        private _service: DiscountService,
         private _router: Router
     ) {
     }
@@ -52,8 +52,8 @@ export class ComboResolver implements Resolve<any> {
 @Injectable({
     providedIn: 'root'
 })
-export class CombosResolver implements Resolve<any> {
-    constructor(private _service: ComboService) {
+export class DiscountsResolver implements Resolve<any> {
+    constructor(private _service: DiscountService) {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<DiscountResponse> {

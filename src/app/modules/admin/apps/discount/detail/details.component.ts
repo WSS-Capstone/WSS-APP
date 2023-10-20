@@ -11,7 +11,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Discount} from "../discount.types";
-import {ComboService} from "../discount.service";
+import {DiscountService} from "../discount.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
@@ -30,7 +30,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     item$: Observable<Discount>;
     categories$: Observable<Category[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    imgDataOrLink: any;
     form: FormGroup;
 
     /**
@@ -40,7 +40,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         @Inject(MAT_DIALOG_DATA) private _data: { service: Discount },
-        private _service: ComboService,
+        private _service: DiscountService,
         private _matDialogRef: MatDialogRef<DiscountDetailsComponent>
     ) {
         this._initForm();
@@ -73,13 +73,13 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
             console.log("Add");
             // Create an empty note
             const item: Discount = {
-                // ownerId: "", quantity: "",
                 id: null,
-                name: '',
-                description: '',
+                name: "",
+                code: "",
+                endTime: null,
+                startTime: null,
                 imageUrl: null,
-                discountValueCombo: null,
-                status: true
+                discountValueVoucher: null,
             };
 
             this.item$ = of(item);
@@ -89,18 +89,13 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
+            code: [null, Validators.required],
             name: [null, [Validators.required, Validators.maxLength(80)]],
-            startDate: [null, [Validators.required]],
-            endDate: [null, [Validators.required]],
-            minThreshold: [null, [Validators.required]],
-            discountAmount: [null, [Validators.required]],
-
-            categoryId: [null],
-            description: [null],
-            ownerId: [null],
-            quantity: [null],
+            startTime: [null, [Validators.required]],
+            endTime: [null, [Validators.required]],
+            minAmount: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
+            discountValueVoucher: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
             coverUrl: [null],
-            status: [null],
         });
     }
 
@@ -108,12 +103,12 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
         this.form.patchValue({
             id: value.id,
             name: value.name,
-            // categoryId: value.categoryId,
-            // description: value.description,
-            // ownerId: value.ownerId,
-            // quantity: value.quantity,
-            // coverUrl: value.coverUrl,
-            status: value.status,
+            code: value.code,
+            startTime: new Date(value.startTime),
+            endTime: new Date(value.endTime),
+            minAmount: value.minAmount,
+            discountValueVoucher: value.discountValueVoucher,
+            coverUrl: value.imageUrl
         });
     }
 
@@ -131,7 +126,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     filterStart = (date: Date | null): boolean => {
-        const endDate = this.form.get('endDate').value;
+        const endDate = this.form.get('endTime').value;
 
         return (
           !endDate || date <= endDate
@@ -139,7 +134,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     }
 
     filterEnd = (date: Date | null): boolean => {
-        const startDate = this.form.get('startDate').value;
+        const startDate = this.form.get('startTime').value;
 
         return (
             !startDate || date >= startDate
@@ -178,28 +173,43 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
      * @param cate
      * @param fileList
      */
-    uploadImage(cate: Discount, fileList: FileList): void {
-        // Return if canceled
-        if (!fileList.length) {
+    uploadImage(event: any): void {
+        if (!event.target.files[0]) {
             return;
         }
 
-        const allowedTypes = ['image/jpeg', 'image/png'];
-        const file = fileList[0];
+        const file = event.target.files[0];
+        // send request upload file
 
-        // Return if the file is not allowed
-        if (!allowedTypes.includes(file.type)) {
-            return;
-        }
-
-        this._readAsDataURL(file).then((data) => {
-
-            // Update the image
-            cate.imageUrl = data;
-
-            // Update the note
-            this.itemChanged.next(cate);
+        this._service.uploadImage(file).subscribe((res) => {
+            this.imgDataOrLink = res;
+            this.form.patchValue({
+                imageUrl: this.imgDataOrLink,
+            });
         });
+
+
+        // Return if canceled
+        // if (!fileList.length) {
+        //     return;
+        // }
+        //
+        // const allowedTypes = ['image/jpeg', 'image/png'];
+        // const file = fileList[0];
+        //
+        // // Return if the file is not allowed
+        // if (!allowedTypes.includes(file.type)) {
+        //     return;
+        // }
+        //
+        // this._readAsDataURL(file).then((data) => {
+        //
+        //     // Update the image
+        //     cate.imageUrl = data;
+        //
+        //     // Update the note
+        //     this.itemChanged.next(cate);
+        // });
     }
 
     /**

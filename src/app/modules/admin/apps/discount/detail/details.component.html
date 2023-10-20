@@ -39,23 +39,31 @@
                     </mat-error>
                 </mat-form-field>
 
+                <mat-form-field class="w-full">
+                    <mat-label>Mã giảm giá</mat-label>
+                    <input matInput [formControlName]="'code'">
+                    <mat-error *ngIf="form.get('code').hasError('required')">
+                        Mã giảm giá không được để trống
+                    </mat-error>
+                </mat-form-field>
+
                 <!-- Category -->
                 <div class="flex">
                     <mat-form-field class="w-full pr-2">
                         <mat-label>Ngày bắt đầu</mat-label>
-                        <input matInput [matDatepicker]="picker" [formControlName]="'startDate'" [matDatepickerFilter]="filterStart">
+                        <input matInput [matDatepicker]="picker" [formControlName]="'startTime'" [matDatepickerFilter]="filterStart">
                         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
-                        <mat-error *ngIf="form.get('startDate').hasError('required')">
+                        <mat-error *ngIf="form.get('startTime').hasError('required')">
                             Ngày bắt đầu áp dụng không được bỏ trống
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field class="w-full">
                         <mat-label>Ngày kết thúc</mat-label>
-                        <input matInput [matDatepicker]="picker2" [formControlName]="'endDate'" [matDatepickerFilter]="filterEnd">
+                        <input matInput [matDatepicker]="picker2" [formControlName]="'endTime'" [matDatepickerFilter]="filterEnd">
                         <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                         <mat-datepicker #picker2></mat-datepicker>
-                        <mat-error *ngIf="form.get('endDate').hasError('required')">
+                        <mat-error *ngIf="form.get('endTime').hasError('required')">
                             Ngày kết thúc không được bỏ trống
                         </mat-error>
                     </mat-form-field>
@@ -63,17 +71,29 @@
 
                 <mat-form-field class="w-full">
                     <mat-label>Số tiền tối thiểu để áp dụng</mat-label>
-                    <input matInput [formControlName]="'minThreshold'">
-                    <mat-error *ngIf="form.get('minThreshold').hasError('required')">
+                    <input matInput [formControlName]="'minAmount'">
+                    <mat-error *ngIf="form.get('minAmount').hasError('required')">
                         Số tiền tối thiểu để áp dụng không được để trống
+                    </mat-error>
+                    <mat-error *ngIf="form.get('minAmount').hasError('min')">
+                        Số tiền tối thiểu phải lớn hơn hoặc bằng 1,000 VNĐ
+                    </mat-error>
+                    <mat-error *ngIf="form.get('minAmount').hasError('pattern')">
+                        Số tiền tối thiểu chỉ được nhập số
                     </mat-error>
                 </mat-form-field>
 
                 <mat-form-field class="w-full">
                     <mat-label>Số tiền giảm</mat-label>
-                    <input matInput [formControlName]="'discountAmount'">
-                    <mat-error *ngIf="form.get('discountAmount').hasError('required')">
+                    <input matInput [formControlName]="'discountValueVoucher'">
+                    <mat-error *ngIf="form.get('discountValueVoucher').hasError('required')">
                         Số tiền giảm không được để trống
+                    </mat-error>
+                    <mat-error *ngIf="form.get('minAmount').hasError('min')">
+                        Số tiền giảm phải lớn hơn hoặc bằng 1,000 VNĐ
+                    </mat-error>
+                    <mat-error *ngIf="form.get('minAmount').hasError('pattern')">
+                        Số tiền giảm chỉ được nhập số
                     </mat-error>
                 </mat-form-field>
             </div>

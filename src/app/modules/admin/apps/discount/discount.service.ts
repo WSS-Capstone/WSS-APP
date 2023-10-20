@@ -3,12 +3,12 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
 import {Discount, DiscountPagination, DiscountResponse} from './discount.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
-import {Category, CategoryResponse} from "../category/category.types";
+import {Category, CategoryResponse, FileInfo} from "../category/category.types";
 
 @Injectable({
     providedIn: 'root'
 })
-export class ComboService {
+export class DiscountService {
     // Private
     private _item: BehaviorSubject<Discount | null> = new BehaviorSubject(null);
     private _items: BehaviorSubject<Discount[] | null> = new BehaviorSubject(null);
@@ -66,11 +66,11 @@ export class ComboService {
 
     getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<DiscountResponse> {
-        return this._httpClient.get<DiscountResponse>(ENDPOINTS.combo, {
+        return this._httpClient.get<DiscountResponse>(ENDPOINTS.voucher, {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
-                'sort-key': 'CreateDate',
+                'sort-key': 'MinAmount',
                 'sort-order': 'DESC',
                 name: search
             }
@@ -121,7 +121,7 @@ export class ComboService {
     create(item: Discount): Observable<Discount> {
         return this.items$.pipe(
             take(1),
-            switchMap(items => this._httpClient.post<Discount>(ENDPOINTS.combo, item).pipe(
+            switchMap(items => this._httpClient.post<Discount>(ENDPOINTS.voucher, item).pipe(
                 map((newItem) => {
 
 
@@ -136,7 +136,7 @@ export class ComboService {
     update(id: string, item: Discount): Observable<Discount> {
         return this.items$.pipe(
             take(1),
-            switchMap(itemsArr => this._httpClient.put<Discount>(ENDPOINTS.combo + `/${id}`, {
+            switchMap(itemsArr => this._httpClient.put<Discount>(ENDPOINTS.voucher + `/${id}`, {
                 ...item
             }).pipe(
                 map((updatedItem) => {
@@ -160,7 +160,7 @@ export class ComboService {
     delete(id: string): Observable<boolean> {
         return this.items$.pipe(
             take(1),
-            switchMap(items => this._httpClient.delete(ENDPOINTS.combo + `/${id}`, {params: {id}}).pipe(
+            switchMap(items => this._httpClient.delete(ENDPOINTS.voucher + `/${id}`, {params: {id}}).pipe(
                 map((isDeleted: boolean) => {
                     const index = items.findIndex(item => item.id === id);
                     items.splice(index, 1);
@@ -168,6 +168,17 @@ export class ComboService {
                     return isDeleted;
                 })
             ))
+        );
+    }
+
+    uploadImage(data : File): Observable<string>
+    {
+        let formData = new FormData();
+        formData.append('files', data);
+        return this._httpClient.post<FileInfo[]>(ENDPOINTS.file, formData).pipe(
+            map((res) => {
+                return res[0].link;
+            })
         );
     }
 

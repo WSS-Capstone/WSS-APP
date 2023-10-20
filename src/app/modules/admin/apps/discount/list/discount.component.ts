@@ -15,7 +15,7 @@ import {debounceTime, map, merge, Observable, Subject, switchMap, takeUntil} fro
 import {fuseAnimations} from '@fuse/animations';
 import {FuseConfirmationService} from '@fuse/services/confirmation';
 import {Discount, DiscountPagination} from "../discount.types";
-import {ComboService} from "../discount.service";
+import {DiscountService} from "../discount.service";
 import {MatDialog} from "@angular/material/dialog";
 import {DiscountDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -28,7 +28,7 @@ import {Category} from "../../category/category.types";
         /* language=SCSS */
         `
             .discount-grid {
-                grid-template-columns: 56px 150px 150px 180px 180px 150px auto 150px;
+                grid-template-columns: 56px 150px 150px 150px 180px 180px auto 150px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -74,7 +74,7 @@ export class DiscountListComponent implements OnInit, AfterViewInit, OnDestroy {
         private _formBuilder: UntypedFormBuilder,
         private _snackBar: MatSnackBar,
         private _matDialog: MatDialog,
-        private _service: ComboService
+        private _service: DiscountService
     ) {
     }
 

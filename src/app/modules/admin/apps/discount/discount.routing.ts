@@ -1,7 +1,7 @@
 import {Route} from '@angular/router';
 import {DiscountComponent} from "./discount.component";
 import {DiscountListComponent} from "./list/discount.component";
-import {CategoriesServiceResolver, CombosResolver} from "./discount.resolvers";
+import {DiscountsResolver} from "./discount.resolvers";
 
 export const itemRoutes: Route[] = [
     // {
@@ -18,7 +18,7 @@ export const itemRoutes: Route[] = [
                 component: DiscountListComponent,
                 resolve  : {
                     // category    : CategoriesServiceResolver,
-                    // items: CombosResolver,
+                    items: DiscountsResolver,
                     // category  : CategoryResolver,
                 }
             }

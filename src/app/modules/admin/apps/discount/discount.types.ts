@@ -1,11 +1,14 @@
 export interface Discount {
     id: string;
+    code: string;
     name?: string;
-    discountValueCombo?: number;
-    totalAmount?: number;
-    description?: string;
-    imageUrl: string;
-    status: boolean;
+    discountValueVoucher?: number;
+    minAmount?: number;
+    imageUrl?: string;
+    startTime: string;
+    endTime: string;
+    createBy?: string;
+    updateBy?: string;
 }
 
 export interface DiscountPagination {

@@ -19,6 +19,7 @@ export const RESOURCE = {
     staff: PrefixAPI + '/staff',
     task: PrefixAPI + '/task',
     feedback: PrefixAPI + '/feedback',
+    voucher: PrefixAPI + '/voucher'
 };
 
 export const ENDPOINTS = {
@@ -32,5 +33,6 @@ export const ENDPOINTS = {
     order: RESOURCE.order,
     file: RESOURCE.file,
     feedback: RESOURCE.feedback,
+    voucher: RESOURCE.voucher,
     approveService: RESOURCE.approveService,
 };

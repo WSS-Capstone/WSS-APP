@@ -4,15 +4,15 @@ import {ServiceListComponent} from "./list/service.component";
 import {CategoriesServiceResolver, ServicesResolver} from "./service.resolvers";
 
 export const itemRoutes: Route[] = [
-    {
-        path      : '',
-        pathMatch : 'full',
-        redirectTo: 'service'
-    },
-    {
-        path     : 'service',
-        component: ServiceComponent,
-        children : [
+    // {
+    //     path      : '',
+    //     pathMatch : 'full',
+    //     redirectTo: 'service'
+    // },
+    // {
+    //     path     : 'service',
+    //     component: ServiceComponent,
+    //     children : [
             {
                 path     : '',
                 component: ServiceListComponent,
@@ -22,7 +22,7 @@ export const itemRoutes: Route[] = [
                     // category  : CategoryResolver,
                 }
             }
-        ]
+        // ]
         /*children : [
             {
                 path     : '',
@@ -44,5 +44,5 @@ export const itemRoutes: Route[] = [
                 ]
             }
         ]*/
-    }
+    // }
 ];
