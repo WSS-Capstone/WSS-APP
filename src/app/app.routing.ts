@@ -86,7 +86,13 @@ export const appRoutes: Route[] = [
                     {path: 'feedback', loadChildren: () => import('app/modules/admin/apps/feedback/feedback.module').then(m => m.FeedbackModule)},
                 ]
             },
-
+            {
+                path: 'admin',
+                children: [
+                    // {path: 'role'},
+                    {path: 'user', loadChildren: () => import('app/modules/admin/apps/user/user.module').then(m => m.UserModule)}
+                ]
+            },
 
 
             // Dashboards

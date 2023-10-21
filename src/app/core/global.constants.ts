@@ -34,5 +34,6 @@ export const ENDPOINTS = {
     file: RESOURCE.file,
     feedback: RESOURCE.feedback,
     voucher: RESOURCE.voucher,
+    account: RESOURCE.account,
     approveService: RESOURCE.approveService,
 };

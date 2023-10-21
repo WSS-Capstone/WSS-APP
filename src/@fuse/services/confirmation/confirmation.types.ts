@@ -2,6 +2,7 @@ export interface FuseConfirmationConfig
 {
     title?: string;
     message?: string;
+    input?: string;
     icon?: {
         show?: boolean;
         name?: string;
