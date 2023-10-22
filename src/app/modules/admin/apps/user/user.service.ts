@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
-import {Account, AccountPagination,AccountResponse} from './user.types';
+import {Account, AccountPagination, AccountRequest, AccountResponse} from './user.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse, FileInfo} from "../category/category.types";
 
@@ -134,7 +134,7 @@ export class UserService {
         );
     }
 
-    update(id: string, item: Account): Observable<Account> {
+    update(id: string, item: AccountRequest): Observable<Account> {
         return this.items$.pipe(
             take(1),
             switchMap(itemsArr => this._httpClient.patch<Account>(ENDPOINTS.account, {

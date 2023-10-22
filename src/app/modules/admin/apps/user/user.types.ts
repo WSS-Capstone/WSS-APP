@@ -31,3 +31,18 @@ export interface AccountResponse {
     size: number;
     total: number;
 }
+
+export interface AccountRequest {
+    email: string;
+    password?: string;
+    fullname?: string;
+    phone?: string;
+    address?: string;
+    categoryId?: string;
+    dateOfBirth? : string;
+    gender?: number;
+    imageUrl?: string;
+    roleName?: string;
+    status?: string;
+    reason?: string;
+}

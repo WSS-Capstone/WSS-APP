@@ -53,19 +53,19 @@
                 </ng-container>
 
                 <!-- Input -->
-                <ng-container *ngIf="data.input">
+                <ng-container *ngIf="data.input?.label">
                     <mat-form-field class="w-full pt-4">
-                        <mat-label>{{data.input}}</mat-label>
+                        <mat-label>{{data.input?.label}}</mat-label>
                         <textarea
                             class="resize-none"
                             matInput
+                            [(ngModel)]="data.input.value"
                             [rows]="3"
                             ></textarea>
                     </mat-form-field>
                 </ng-container>
             </div>
         </ng-container>
-
     </div>
 
     <!-- Actions -->
@@ -84,9 +84,17 @@
             <!-- Confirm -->
             <ng-container *ngIf="data.actions.confirm.show">
                 <button
+                    *ngIf="!data.input"
                     mat-flat-button
                     [color]="data.actions.confirm.color"
                     [matDialogClose]="'confirmed'">
+                    {{data.actions.confirm.label}}
+                </button>
+                <button
+                    *ngIf="data.input"
+                    mat-flat-button
+                    [color]="data.actions.confirm.color"
+                    [matDialogClose]="data.input.value">
                     {{data.actions.confirm.label}}
                 </button>
             </ng-container>

@@ -14,7 +14,7 @@ import {MatSort} from '@angular/material/sort';
 import {debounceTime, map, merge, Observable, Subject, switchMap, takeUntil} from 'rxjs';
 import {fuseAnimations} from '@fuse/animations';
 import {FuseConfirmationService} from '@fuse/services/confirmation';
-import {Account, AccountPagination} from "../user.types";
+import {Account, AccountPagination, AccountRequest} from "../user.types";
 import {UserService} from "../user.service";
 import {MatDialog} from "@angular/material/dialog";
 import {UserDetailsComponent} from "../detail/details.component";
@@ -60,8 +60,8 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
     isLoading: boolean = false;
     pagination: AccountPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
-    selectedCategory: Account | null = null;
-    selectedCategoryForm: UntypedFormGroup;
+    selectedAccount: Account | null = null;
+    selectedAccountForm: UntypedFormGroup;
     isNew: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -87,7 +87,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit(): void {
         // Create the selected product form
-        this.selectedCategoryForm = this._formBuilder.group({
+        this.selectedAccountForm = this._formBuilder.group({
             id: [''],
             name: ['', [Validators.required]],
             description: [''],
@@ -181,7 +181,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     toggleDetails(productId: string): void {
         // If the product is already selected...
-        if (this.selectedCategory && this.selectedCategory.id === productId) {
+        if (this.selectedAccount && this.selectedAccount.id === productId) {
             // Close the details
             this.closeDetails();
             return;
@@ -192,10 +192,10 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((item) => {
 
                 // Set the selected item
-                this.selectedCategory = item;
+                this.selectedAccount = item;
 
                 // Fill the form
-                this.selectedCategoryForm.patchValue(item);
+                this.selectedAccountForm.patchValue(item);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -205,7 +205,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
      * Close the details
      */
     closeDetails(): void {
-        this.selectedCategory = null;
+        this.selectedAccount = null;
     }
 
     createItem(): void {
@@ -222,12 +222,12 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
     update(id: string): void {
         this._service.getItem(id)
             .subscribe((item) => {
-                this.selectedCategory = item;
+                this.selectedAccount = item;
 
                 this._matDialog.open(UserDetailsComponent, {
                     autoFocus: false,
                     data: {
-                        data: this.selectedCategory
+                        data: this.selectedAccount
                     },
                     width: '50vw',
                 });
@@ -236,12 +236,15 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
             });
     }
 
-    block(id: string): void {
+    block(id: string, email: string): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             title: 'Khóa tài khoản',
             message: 'Bạn có chắc chắn muốn khóa tài khoản này?!',
-            input: 'Lý do',
+            input: {
+                label: 'Lý do',
+                value: null
+            },
             actions: {
                 confirm: {
                     label: 'Khóa'
@@ -256,19 +259,29 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
         confirmation.afterClosed().subscribe((result) => {
 
             // If the confirm button pressed...
-            if (result === 'confirmed') {
+            // if (result === 'confirmed') {
                 console.log(result);
                 // Delete the product on the server
-                this._service.delete(id).subscribe(() => {
-                    this.openSnackBar('Khóa thành công', 'Đóng');
+                // this._service.delete(id).subscribe(() => {
+                //     this.openSnackBar('Khóa thành công', 'Đóng');
+                //     // Close the details
+                //     this.closeDetails();
+                // });
+                const requestBody: AccountRequest = {
+                    email: email,
+                    reason: result,
+                    status: "InActive"
+                };
+                this._service.update(id, requestBody).subscribe(() => {
+                    this.openSnackBar('Mở khóa thành công', 'Đóng');
                     // Close the details
                     this.closeDetails();
                 });
-            }
+            // }
         });
     }
 
-    unblock(id: string): void {
+    unblock(id: string, email: string): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             title: 'Mở khóa tài khoản',
@@ -294,8 +307,11 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 console.log(result);
-                // Delete the product on the server
-                this._service.delete(id).subscribe(() => {
+                const requestBody: AccountRequest = {
+                    email: email,
+                    status: "Active"
+                };
+                this._service.update(id, requestBody).subscribe(() => {
                     this.openSnackBar('Mở khóa thành công', 'Đóng');
                     // Close the details
                     this.closeDetails();

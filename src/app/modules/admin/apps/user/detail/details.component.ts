@@ -112,22 +112,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    filterStart = (date: Date | null): boolean => {
-        const endDate = this.form.get('endTime').value;
-
-        return (
-          !endDate || date <= endDate
-        );
-    }
-
-    filterEnd = (date: Date | null): boolean => {
-        const startDate = this.form.get('startTime').value;
-
-        return (
-            !startDate || date >= startDate
-        );
-    }
-
     create(): void {
         this._service.create(this.form.value).pipe(
             map(() => {
