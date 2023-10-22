@@ -81,7 +81,6 @@ export class AuthService {
             return throwError('Bạn đã đăng nhập trước đó.');
         }
 
-
         return from(this._authFb.signInWithEmailAndPassword(credentials.email, credentials.password)).pipe(
             switchMap((response: any) => {
                 return from(response.user.getIdToken()).pipe(

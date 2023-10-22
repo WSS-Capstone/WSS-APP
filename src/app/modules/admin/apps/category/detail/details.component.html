@@ -1,27 +1,26 @@
 <div class="flex flex-col flex-auto -m-6 pt-1">
-    <!-- Title -->
-    <div class="text-3xl font-extrabold tracking-tight p-5">Thêm Loại dịch vụ</div>
 
     <ng-container *ngIf="(cate$ | async) as cate" [formGroup]="form">
+        <div
+            class="text-3xl font-extrabold tracking-tight p-5">{{ !cate.id ? 'Thêm Loại dịch vụ' : 'Chỉnh sửa Loại dịch vụ'}}</div>
+
         <!-- Image -->
 
         <div class="flex flex-auto flex-row p-5">
             <!--            image-->
             <div class="flex flex-col items-center">
-                <div class="w-32 h-44 border rounded overflow-hidden">
-                    <ng-container *ngIf="cate.imageUrl; else noImage">
-                        <img class="w-full h-full object-cover" [src]="sanitizeImageUrl(cate.imageUrl)" alt="Lỗi HÌnh Ảnh">
-                    </ng-container>
-                    <ng-template #noImage>
-                        <span class="flex justify-center items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
-                    </ng-template>
+                <div class="max-w-xs h-50 border rounded overflow-hidden">
+                    <img [hidden]="!imgDataOrLink" class="w-full h-full object-cover" [src]="imgDataOrLink"
+                         alt="Lỗi HÌnh Ảnh">
+
+                    <span [hidden]="imgDataOrLink"
+                          class="flex justify-center items-center min-h-20 text-lg font-semibold p-8 pt-12">NO IMAGE</span>
                 </div>
                 <button class="mt-2"
-                mat-flat-button
-                [color]="'primary'"
-                [disabled]="form.invalid"
-                (click)="fileInput.click()">
-                Chọn ảnh
+                        mat-flat-button
+                        [color]="'primary'"
+                        (click)="fileInput.click()">
+                    Chọn ảnh
                 </button>
                 <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
             </div>
@@ -40,19 +39,23 @@
                     </mat-form-field>
 
                     <!-- Category -->
-                    <div class="flex">
+                    <div class="flex items-center">
                         <mat-form-field class="w-full pr-2">
-                            <mat-label>Loại dịch vụ</mat-label>
-                            <mat-select [formControlName]="'categoryId'">
-                                <ng-container *ngIf="parentCategories$ | async as cateParent">
-                                    <ng-container *ngFor="let category of cateParent">
-                                        <mat-option *ngIf="category.id != cate.id" [value]="category.id">
-                                            {{category.name}}
-                                        </mat-option>
-                                    </ng-container>
-                                </ng-container>
-                            </mat-select>
+                            <mat-label>Chiết khấu</mat-label>
+                            <input type="number" min="0" matInput [formControlName]="'commissionValue'">
+                            <mat-error *ngIf="form.get('commissionValue').hasError('required')">
+                                Chiết khấu không được để trống
+                            </mat-error>
                         </mat-form-field>
+
+
+                        <mat-checkbox
+                            class="w-1/2 flex items-center h-10 min-h-10 pl-1 pr-4"
+                            [formControlName]="'isOrderLimit'"
+                            [color]="'primary'">
+                            <mat-label>Giới hạn đặt</mat-label>
+
+                        </mat-checkbox>
                     </div>
 
                     <!-- Stock and Reserved -->

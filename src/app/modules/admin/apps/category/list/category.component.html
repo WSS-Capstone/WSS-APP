@@ -54,10 +54,12 @@
                             matSortDisableClear>
                             <div></div>
                             <div
-                                class="hidden md:block">
+                                class="">
                                 Tên loại dịch vụ
                             </div>
-                            <div>Mô tả</div>
+                            <div>Chiết khấu</div>
+                            <div class="hidden lg:block">Mô tả</div>
+                            <div class="hidden md:block">Giới hạn đặt</div>
                             <div>Trạng thái</div>
 
                             <!--                            <div-->
@@ -80,7 +82,7 @@
                                                 class="w-8"
                                                 *ngIf="cate.imageUrl"
                                                 [alt]="'Product thumbnail image'"
-                                                [src]="sanitizeImageUrl(cate.imageUrl)">
+                                                [src]="mapImageUrl(cate.imageUrl)">
                                             <div
                                                 class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase"
                                                 *ngIf="!cate.imageUrl">
@@ -89,12 +91,30 @@
                                         </div>
                                     </div>
 
-                                    <div class="hidden md:block truncate">
+                                    <div class="truncate">
                                         {{cate.name}}
                                     </div>
 
                                     <div class="truncate">
+                                        {{cate.commission?.commisionValue ?? 0}}%
+                                    </div>
+
+                                    <div class="hidden lg:block truncate">
                                         {{cate.description}}
+                                    </div>
+
+                                    <div class="flex flex-row justify-center content-center truncate hidden lg:block md:block">
+                                        <ng-container *ngIf="cate.isOrderLimit" class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-green-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:check'">
+                                            </mat-icon>
+                                        </ng-container>
+                                        <ng-container *ngIf="!cate.isOrderLimit">
+                                            <mat-icon
+                                                class="text-gray-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                        </ng-container>
                                     </div>
 
                                     <div class="flex flex-row justify-center content-center truncate">

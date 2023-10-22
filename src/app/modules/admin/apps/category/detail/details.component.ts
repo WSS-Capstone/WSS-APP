@@ -16,6 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { fuseAnimations } from '../../../../../../@fuse/animations';
 import { FuseAlertService } from '../../../../../../@fuse/components/alert';
 import { DomSanitizer } from '@angular/platform-browser';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
     selector: 'category-details',
@@ -43,12 +44,13 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
         private sanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) private _data: { category: Category },
         private _categoryService: CategoryService,
-        private _matDialogRef: MatDialogRef<CategoryDetailsComponent>
+        private _matDialogRef: MatDialogRef<CategoryDetailsComponent>,
     ) {
         this._initForm();
         this.cate$ = this.form.valueChanges.pipe(
             map((value) => {
-                const cate = { ...value}
+                const cate = { ...value };
+                this.imgDataOrLink = this.mapImageUrl(cate.imageUrl);
                 return value;
             })
         );
@@ -60,7 +62,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
 
     sanitizeImageUrl(imageUrl: string): any {
         return this.sanitizer.bypassSecurityTrustUrl('http://' + imageUrl);
-      }
+    }
     /**
      * On init
      */
@@ -78,6 +80,8 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
             this.cate$ = this._categoryService.category$;
 
             this.cate$.subscribe((value) => {
+                this.imgDataOrLink = this.mapImageUrl(value.imageUrl);
+                this._changeDetectorRef.detectChanges();
                 this._patchValue(value);
             });
         }
@@ -86,29 +90,18 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
             console.log('Add');
             // Create an empty note
             const category: Category = {
+                isOrderLimit: false,
+                commission: undefined,
                 id: null,
                 name: '',
                 description: '',
                 imageUrl: null,
                 categoryId: null,
-                images: [],
-                status: true,
+                status: true
             };
 
             this.cate$ = of(category);
         }
-
-        // Subscribe to note updates
-        // this.cateChanged
-        //     .pipe(
-        //         takeUntil(this._unsubscribeAll),
-        //         debounceTime(500),
-        //         switchMap(note => this._categoryService.updateNote(note)))
-        //     .subscribe(() => {
-        //
-        //         // Mark for check
-        //         this._changeDetectorRef.markForCheck();
-        //     });
     }
 
     private _initForm(): void {
@@ -116,9 +109,9 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
             id: [null],
             name: [null, [Validators.required, Validators.maxLength(80)]],
             description: [null, [Validators.maxLength(300)]],
+            commissionValue: [null, [Validators.required, Validators.min(0)]],
             imageUrl: [null],
-            categoryId: [null],
-            images: [null],
+            isOrderLimit: [null],
             status: [null],
         });
     }
@@ -129,8 +122,8 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
             name: value.name,
             description: value.description,
             imageUrl: value.imageUrl,
-            categoryId: value.categoryId,
-            images: value.images,
+            commissionValue: value?.commission?.commisionValue,
+            isOrderLimit: value.isOrderLimit,
             status: value.status,
         });
     }
@@ -198,12 +191,18 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
         // send request upload file
 
         this._categoryService.uploadImage(file).subscribe((res) => {
-            this.imgDataOrLink = res;
+            console.log('res', res);
             this.form.patchValue({
-                imageUrl: this.imgDataOrLink,
+                imageUrl: res,
             });
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.imgDataOrLink = this.mapImageUrl(res);
+                this._changeDetectorRef.markForCheck();
+            };
+            // this.imgDataOrLink = this.mapImageUrl(res);
         });
-
 
         // if (file) {
         //     const reader = new FileReader();
@@ -228,6 +227,12 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
         //     // Update the note
         //     this.cateChanged.next(cate);
         // });
+    }
+
+    mapImageUrl(imageUrl: string): any {
+        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+        var apiUrl = environment.wssApi;
+        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
     }
 
     /**

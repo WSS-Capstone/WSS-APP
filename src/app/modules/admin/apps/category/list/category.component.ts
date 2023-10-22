@@ -34,6 +34,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CategoryDetailsComponent } from '../detail/details.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
+import {environment} from "../../../../../../environments/environment";
 
 @Component({
     selector: 'category-list',
@@ -45,15 +46,15 @@ import { DomSanitizer } from '@angular/platform-browser';
                 grid-template-columns: 50px auto 40px;
 
                 @screen sm {
-                    grid-template-columns: 50px auto 165px 72px;
+                    grid-template-columns: 64px auto 71px 140px 100px;
                 }
 
                 @screen md {
-                    grid-template-columns: 50px auto 159px 79px;
+                    grid-template-columns: 50px 159px 304px auto 139px 90px;
                 }
 
                 @screen lg {
-                    grid-template-columns: 50px 141px auto 159px 79px;
+                    grid-template-columns: 50px 163px 114px auto 81px 153px 79px;
                 }
             }
         `,
@@ -272,20 +273,9 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
             data: {
                 category: {},
             },
-            width: '40vw',
+            width: '45vw',
         });
 
-        // this._categoryService.createCategory().subscribe((newProduct) => {
-        //
-        //     // Go to new product
-        //     this.selectedCategory = newProduct;
-        //
-        //     // Fill the form
-        //     this.selectedCategoryForm.patchValue(newProduct);
-        //
-        //     // Mark for check
-        //     this._changeDetectorRef.markForCheck();
-        // });
     }
 
     /**
@@ -301,37 +291,18 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
                 data: {
                     category: this.selectedCategory,
                 },
-                width: '40vw',
+                width: '45vw',
             });
             // Mark for check
             this._changeDetectorRef.markForCheck();
         });
-
-        // const cate = this.selectedCategoryForm.getRawValue();
-        // delete cate.currentImageIndex;
-        // delete cate.images;
-        // // delete cate.id;
-        // console.log(cate);
-        // this._categoryService.updateCategory(cate.id, cate)
-        //     .pipe(
-        //         catchError((error) => {
-        //             // Log the error
-        //             console.error(error);
-        //
-        //             // Show a success message
-        //             this.showFlashMessage('error');
-        //
-        //             // Return
-        //             return [];
-        //         })
-        //     )
-        //     .subscribe(() => {
-        //         // this.selectedCategoryForm.reset();
-        //         // Show a success message
-        //         this.showFlashMessage('success');
-        //     });
     }
 
+    mapImageUrl(imageUrl: string): any {
+        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+        var apiUrl = environment.wssApi;
+        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
+    }
     /**
      * Delete the selected product using the form data
      */
