@@ -66,7 +66,7 @@ export class UserService {
 
     getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<AccountResponse> {
-        return this._httpClient.get<AccountResponse>(ENDPOINTS.account + "?roleNames=Staff&roleNames=Partner&roleNames=Customer&roleNames=Admin", {
+        return this._httpClient.get<AccountResponse>(ENDPOINTS.account + "?roleNames=Staff&roleNames=Partner&roleNames=Customer", {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
