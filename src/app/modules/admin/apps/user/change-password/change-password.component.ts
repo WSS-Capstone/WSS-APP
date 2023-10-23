@@ -12,19 +12,19 @@ import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Account, AccountRequest} from "../user.types";
 import {UserService} from "../user.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import {formatDate} from "@angular/common";
 
 @Component({
-    selector: 'User-details',
-    templateUrl: './details.component.html',
+    selector: 'change-password',
+    templateUrl: './change-password.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations
 })
-export class UserDetailsComponent implements OnInit, OnDestroy {
+export class ChangePasswordComponent implements OnInit, OnDestroy {
     flashMessage: 'success' | 'error' | null = null;
     labels$: Observable<Label[]>;
     itemChanged: Subject<Account> = new Subject<Account>();
@@ -43,7 +43,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         @Inject(MAT_DIALOG_DATA) private _data: { data: Account },
         private _service: UserService,
-        private _matDialogRef: MatDialogRef<UserDetailsComponent>
+        private _matDialogRef: MatDialogRef<ChangePasswordComponent>
     ) {
         this._initForm();
     }
@@ -72,30 +72,16 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
-            imageUrl: [null],
-            fullname: [null],
-            gender: [null],
-            dateOfBirth: [null],
-            phone: [null],
-            address: [null],
             email: [null],
-            status: [null],
-            roleName: [null],
+            password: [null, [Validators.required, Validators.minLength(6)]],
+            confirmPassword: [null, [Validators.required, Validators.minLength(6), matchOtherValidator("password")]],
         });
     }
 
     private _patchValue(value: Account) {
         this.form.patchValue({
             id: value.id,
-            imageUrl: value.user?.imageUrl,
-            fullname: value.user?.fullname,
-            gender: value.user ? value.user?.gender === 'Male' ? 'Nam': 'Nữ' : '',
-            dateOfBirth: value.user?.dateOfBirth ? formatDate(value.user?.dateOfBirth, "dd/MM/yyyy", "en") : '',
-            phone: value.user?.phone,
-            address: value.user?.address,
             email: value.username,
-            status: value.status,
-            roleName: value.roleName,
         });
     }
 
@@ -112,6 +98,18 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+    checkMatchValidator(field1: string, field2: string) {
+        return function (frm) {
+            let field1Value = frm.get(field1).value;
+            let field2Value = frm.get(field2).value;
+
+            if (field1Value !== '' && field1Value !== field2Value) {
+                return { 'match': `value ${field1Value} is not equal to ${field2Value}` }
+            }
+            return null;
+        }
+    }
+
     create(): void {
         this._service.create(this.form.value).pipe(
             map(() => {
@@ -126,24 +124,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     update(): void {
-        this._service.update(this.form.get('id').value ,this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
-
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 1200);
-    }
-
-    updateRole(): void {
         const requestBody:AccountRequest = {
             email: this.form.get('email').value,
-            roleName: this.form.get('roleName').value,
+            password: this.form.get('password').value,
         }
-        this._service.update(this.form.get('id').value , requestBody).pipe(
+        this._service.update(this.form.get('id').value, requestBody).pipe(
             map(() => {
                 // Get the note
                 // this.cate$ = this._categoryService.category$;
@@ -268,5 +253,43 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             // Mark for check
             this._changeDetectorRef.markForCheck();
         }, 1000);
+    }
+}
+
+export function matchOtherValidator (otherControlName: string) {
+
+    let thisControl: FormControl;
+    let otherControl: FormControl;
+
+    return function matchOtherValidate(control: FormControl) {
+
+        if (!control.parent) {
+            return null;
+        }
+
+        // Initializing the validator.
+        if (!thisControl) {
+            thisControl = control;
+            otherControl = control.parent.get(otherControlName) as FormControl;
+            if (!otherControl) {
+                throw new Error('matchOtherValidator(): other control is not found in parent group');
+            }
+            otherControl.valueChanges.subscribe(() => {
+                thisControl.updateValueAndValidity();
+            });
+        }
+
+        if (!otherControl) {
+            return null;
+        }
+
+        if (otherControl.value !== thisControl.value) {
+            return {
+                matchOther: true
+            };
+        }
+
+        return null;
+
     }
 }

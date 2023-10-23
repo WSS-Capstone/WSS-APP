@@ -115,7 +115,7 @@
                                                 [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
                                         </button>
                                         <button *ngIf="item.status === 'Active'"
-                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 "
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                             mat-stroked-button
                                             [color]="'warn'"
                                             (click)="block(item.id, item.username)">
@@ -123,11 +123,19 @@
                                                       [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
                                         </button>
                                         <button *ngIf="item.status !== 'Active'"
-                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 "
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                             mat-stroked-button
                                             (click)="unblock(item.id, item.username)">
                                             <mat-icon class="icon-size-5 text-green-600"
                                                       [svgIcon]="'heroicons_solid:lock-open'"></mat-icon>
+                                        </button>
+                                        <button
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                            mat-stroked-button
+                                            (click)="changePassword(item.id)">
+                                            <mat-icon
+                                                class="icon-size-5"
+                                                [svgIcon]="'heroicons_outline:key'"></mat-icon>
                                         </button>
                                     </div>
                                 </div>

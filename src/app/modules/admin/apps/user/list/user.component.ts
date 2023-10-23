@@ -20,6 +20,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {UserDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
+import {ChangePasswordComponent} from "../change-password/change-password.component";
 
 @Component({
     selector: 'user-list',
@@ -318,6 +319,23 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
             }
         });
+    }
+
+    changePassword(id: string){
+        this._service.getItem(id)
+            .subscribe((item) => {
+                this.selectedAccount = item;
+
+                this._matDialog.open(ChangePasswordComponent, {
+                    autoFocus: false,
+                    data: {
+                        data: this.selectedAccount
+                    },
+                    width: '20vw',
+                });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
     }
 
     /**
