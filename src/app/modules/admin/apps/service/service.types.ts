@@ -11,7 +11,7 @@ export interface Service
     description?: string;
     quantity: string;
     ownerId: string;
-    coverUrl: string;
+    serviceImages: ImageUrl[];
     status: boolean;
 }
 
@@ -25,9 +25,25 @@ export interface ServicePagination
     endIndex: number;
 }
 
+export interface ServiceRequest
+{
+    name?: string;
+    categoryId?: string;
+    category?: Category;
+    price: number;
+    description?: string;
+    quantity: string;
+    imageUrls: string[];
+    unit: string;
+}
+
 export interface ServiceResponse{
     data: Service[];
     page: number;
     size: number;
     total: number;
+}
+
+export interface ImageUrl {
+    imageUrl: string;
 }

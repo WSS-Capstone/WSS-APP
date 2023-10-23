@@ -10,11 +10,13 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Service} from "../service.types";
+import {Service, ServiceRequest} from "../service.types";
 import {ServiceService} from "../service.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
+import {environment} from "../../../../../../environments/environment";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
     selector: 'category-details',
@@ -29,6 +31,8 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
     itemChanged: Subject<Service> = new Subject<Service>();
     item$: Observable<Service>;
     categories$: Observable<Category[]>;
+    imgDataOrLink: any;
+    tempImageUrls: string[] = [];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     form: FormGroup;
@@ -39,6 +43,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
+        private sanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) private _data: { service: Service },
         private _service: ServiceService,
         private _matDialogRef: MatDialogRef<ServiceDetailsComponent>
@@ -77,7 +82,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
                 id: null,
                 name: '',
                 description: '',
-                coverUrl: null,
+                serviceImages: null,
                 categoryId: null,
                 status: true
             };
@@ -91,10 +96,11 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             id: [null],
             name: [null, [Validators.required, Validators.maxLength(80)]],
             categoryId: [null],
-            description: [null],
+            description: [null, Validators.maxLength(300)],
             ownerId: [null],
-            quantity: [null],
-            coverUrl: [null],
+            quantity: [null, Validators.required],
+            price: [null, Validators.required],
+            serviceImages: [[]],
             status: [null],
         });
     }
@@ -107,9 +113,12 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             description: value.description,
             ownerId: value.ownerId,
             quantity: value.quantity,
-            coverUrl: value.coverUrl,
+            price: value.currentPrices?.price,
+            serviceImages: value.serviceImages.map((image) => image.imageUrl),
             status: value.status,
         });
+        this.tempImageUrls = value.serviceImages.map((image) => image.imageUrl);
+        console.log(this.tempImageUrls)
     }
 
     /**
@@ -126,6 +135,9 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     create(): void {
+        // const requestBody: ServiceRequest = {
+        //
+        // }
         this._service.create(this.form.value).pipe(
             map(() => {
                 // Get the note
@@ -157,28 +169,54 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
      * @param cate
      * @param fileList
      */
-    uploadImage(cate: Service, fileList: FileList): void {
+    uploadImage(event: any): void {
         // Return if canceled
-        if (!fileList.length) {
+        if (!event.target.files[0]) {
             return;
         }
 
-        const allowedTypes = ['image/jpeg', 'image/png'];
-        const file = fileList[0];
+        const file = event.target.files[0];
+        // send request upload file
 
-        // Return if the file is not allowed
-        if (!allowedTypes.includes(file.type)) {
-            return;
-        }
-
-        this._readAsDataURL(file).then((data) => {
-
-            // Update the image
-            cate.coverUrl = data;
-
-            // Update the note
-            this.itemChanged.next(cate);
+        this._service.uploadImage(file).subscribe((res) => {
+            console.log('res', res);
+            this.tempImageUrls.push(res);
+            this.form.patchValue({serviceImages: this.tempImageUrls})
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.imgDataOrLink = this.mapImageUrl(res);
+                this._changeDetectorRef.markForCheck();
+            };
+            // this.imgDataOrLink = this.mapImageUrl(res);
         });
+        // Return if canceled
+        // if (!fileList.length) {
+        //     return;
+        // }
+        //
+        // const allowedTypes = ['image/jpeg', 'image/png'];
+        // const file = fileList[0];
+        //
+        // // Return if the file is not allowed
+        // if (!allowedTypes.includes(file.type)) {
+        //     return;
+        // }
+        //
+        // this._readAsDataURL(file).then((data) => {
+        //
+        //     // Update the image
+        //     // cate.coverUrl = data;
+        //
+        //     // Update the note
+        //     this.itemChanged.next(cate);
+        // });
+    }
+
+    mapImageUrl(imageUrl: string): any {
+        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+        var apiUrl = environment.wssApi;
+        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
     }
 
     /**
@@ -186,11 +224,14 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
      *
      * @param note
      */
-    removeImage(cate: Service): void {
-        cate.coverUrl = null;
+    removeImage(index: number): void {
+        this.tempImageUrls.splice(index, 1);
+        this.form.patchValue({serviceImages: this.tempImageUrls})
+    }
 
-        // Update the cate
-        this.itemChanged.next(cate);
+    clearImage(): void {
+        this.tempImageUrls = [];
+        this.form.patchValue({serviceImages: this.tempImageUrls})
     }
 
     /**

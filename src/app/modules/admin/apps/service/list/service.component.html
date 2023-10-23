@@ -77,19 +77,19 @@
 
                                     <!-- Image -->
                                     <div class="flex items-center">
-                                        <div
-                                            class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden border">
-                                            <img
-                                                class="w-8"
-                                                *ngIf="item.coverUrl"
-                                                [alt]="'Product thumbnail image'"
-                                                [src]="item.coverUrl">
-                                            <div
-                                                class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase"
-                                                *ngIf="!item.coverUrl">
-                                                NO THUMB
-                                            </div>
-                                        </div>
+<!--                                        <div-->
+<!--                                            class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden border">-->
+<!--                                            <img-->
+<!--                                                class="w-8"-->
+<!--                                                *ngIf="item.coverUrl"-->
+<!--                                                [alt]="'Product thumbnail image'"-->
+<!--                                                [src]="item.coverUrl">-->
+<!--                                            <div-->
+<!--                                                class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase"-->
+<!--                                                *ngIf="!item.coverUrl">-->
+<!--                                                NO THUMB-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
 
                                     <div class="truncate">
@@ -107,14 +107,14 @@
                                     </div>
 
                                     <div class="flex flex-row justify-center content-center truncate">
-                                        <ng-container *ngIf="item.status === 'ACTIVE'" class="flex flex-col justify-center content-center ">
+                                        <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
                                             <mat-icon
                                                 class="text-green-400 icon-size-5"
                                                 [svgIcon]="'heroicons_solid:check'">
                                             </mat-icon>
                                             <span class="text-green-400">Đang hoạt động</span>
                                         </ng-container>
-                                        <ng-container *ngIf="item.status !== 'ACTIVE'">
+                                        <ng-container *ngIf="item.status !== 'Active'">
                                             <mat-icon
                                                 class="text-gray-400 icon-size-5"
                                                 [svgIcon]="'heroicons_solid:x'"></mat-icon>
