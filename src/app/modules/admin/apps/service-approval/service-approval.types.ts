@@ -1,13 +1,18 @@
-import {Service} from "../service/service.types";
+import {ImageUrl, Service} from "../service/service.types";
+import {Category} from "../category/category.types";
+import {CurrentPrice} from "../current-price/current-price.types";
 
 export interface ApproveService {
     id: string;
     name?: string;
-    discountValueCombo?: number;
-    totalAmount?: number;
+    categoryId?: string;
+    category?: Category;
+    currentPrices?: CurrentPrice;
     description?: string;
-    imageUrl: string;
-    status: boolean;
+    quantity: string;
+    ownerId: string;
+    serviceImages: ImageUrl[];
+    status: string;
 }
 
 export interface ApproveServicePagination {

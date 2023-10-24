@@ -10,7 +10,7 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Service, ServiceRequest} from "../service.types";
+import {Service} from "../service.types";
 import {ServiceService} from "../service.service";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";

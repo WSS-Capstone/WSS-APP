@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
 import {ApproveService, ApproveServicePagination, ApproveServiceResponse} from './service-approval.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
-import {Category, CategoryResponse} from "../category/category.types";
+import {Category, CategoryResponse, FileInfo} from "../category/category.types";
 
 @Injectable({
     providedIn: 'root'
@@ -66,7 +66,7 @@ export class ApproveServiceService {
 
     getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<ApproveServiceResponse> {
-        return this._httpClient.get<ApproveServiceResponse>(ENDPOINTS.combo, {
+        return this._httpClient.get<ApproveServiceResponse>(ENDPOINTS.service + '?status=Pending', {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
@@ -168,6 +168,17 @@ export class ApproveServiceService {
                     return isDeleted;
                 })
             ))
+        );
+    }
+
+    uploadImage(data : File): Observable<string>
+    {
+        let formData = new FormData();
+        formData.append('files', data);
+        return this._httpClient.post<FileInfo[]>(ENDPOINTS.file, formData).pipe(
+            map((res) => {
+                return res[0].link;
+            })
         );
     }
 

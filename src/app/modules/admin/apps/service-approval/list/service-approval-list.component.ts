@@ -28,7 +28,7 @@ import {Category} from "../../category/category.types";
         /* language=SCSS */
         `
             .service-approval-grid {
-                grid-template-columns: 32px 240px 150px 180px 180px 150px auto 80px;
+                grid-template-columns: 240px auto 150px 180px 150px 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -220,23 +220,9 @@ export class ServiceApprovalListComponent implements OnInit, AfterViewInit, OnDe
     }
 
     update(id: string): void {
-        // this._service.getItem(id)
-        //     .subscribe((item) => {
-        //         this.selectedCategory = item;
-
-        //         this._matDialog.open(ServiceApprovalDetailsComponent, {
-        //             autoFocus: false,
-        //             data: {
-        //                 service: this.selectedCategory
-        //             },
-        //             width: '50vw',
-        //         });
-        //         // Mark for check
-        //         this._changeDetectorRef.markForCheck();
-        //     });
-
-        //temp
-        this.selectedCategory = null;
+        this._service.getItem(id)
+            .subscribe((item) => {
+                this.selectedCategory = item;
 
                 this._matDialog.open(ServiceApprovalDetailsComponent, {
                     autoFocus: false,
@@ -247,6 +233,7 @@ export class ServiceApprovalListComponent implements OnInit, AfterViewInit, OnDe
                 });
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
+            });
     }
 
     delete(id: string): void {

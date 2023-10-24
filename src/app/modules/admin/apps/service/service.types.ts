@@ -25,18 +25,6 @@ export interface ServicePagination
     endIndex: number;
 }
 
-export interface ServiceRequest
-{
-    name?: string;
-    categoryId?: string;
-    category?: Category;
-    price: number;
-    description?: string;
-    quantity: string;
-    imageUrls: string[];
-    unit: string;
-}
-
 export interface ServiceResponse{
     data: Service[];
     page: number;

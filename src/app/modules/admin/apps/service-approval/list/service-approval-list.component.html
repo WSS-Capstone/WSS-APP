@@ -35,99 +35,55 @@
 
         <!-- Products list -->
         <div class="flex flex-col flex-auto sm:mb-18 sm:overflow-y-auto">
-            <!-- <ng-container *ngIf="(items$ | async) as items">
-                <ng-container *ngIf="items.length > 0; else noProducts"> -->
+            <ng-container *ngIf="(items$ | async) as items">
+                <ng-container *ngIf="items.length > 0; else noProducts">
                     <div class="grid">
                         <!-- Header -->
                         <div
                             class="service-approval-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                             matSort
                             matSortDisableClear>
-                            <div></div>
                             <div
                                 class="">
-                                Mã số
+                                Mã dịch vụ
                             </div>
                             <div
                                 class="">
-                                Ngày đăng ký
+                                Tên dịch vụ
                             </div>
                             <div
                                 class="">
-                                Tên đối tác
+                                Loại dịch vụ
                             </div>
-                            <div class="">Tên dịch vụ</div>
-                            <div class="">Chiết khấu</div>
+                            <div class="">Giá</div>
                             <div class="">Trạng thái</div>
-                            <div class=""></div>
+                            <div class="">Chi tiết</div>
                         </div>
                         <!-- Rows -->
-
-                        <!-- Fake rows -->
-                        <div class="service-approval-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                            <div></div>
-                            <div
-                                class="">
-                                #32000200
-                            </div>
-                            <div
-                                class="">
-                                22/22/2222
-                            </div>
-                            <div
-                                class="">
-                                Priscilla Warren
-                            </div>
-                            <div class="">Priscilla Warren</div>
-                            <div class="">2.000.000vnd</div>
-                            <div class="">Completed</div>
-
-                            <!-- Details button -->
-                            <div class="flex flex-row">
-                                <button
-                                    class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                    mat-stroked-button
-                                    (click)="createItem()">
-                                    <mat-icon
-                                        class="icon-size-5"
-                                        [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                </button>
-                            </div>
-                        </div>
-
                         <ng-container *ngIf="(items$ | async) as items1">
                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                <div class="category-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                    <div >
-                                    </div>
-
+                                <div class="service-approval-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                                     <div class="truncate">
-                                        {{item.name}}
+                                        {{item.id}}
                                     </div>
                                     <div class="hidden md:block truncate">
                                         {{item.name}}
                                     </div>
                                     <div class="hidden lg:block truncate">
-                                        {{item.discountValueCombo}}
+                                        {{item.category.name}}
                                     </div>
 
                                     <div class="hidden lg:block truncate">
-                                        {{item.description}}
+                                        {{item.currentPrices?.price | number: '1.0-0' }} VNĐ
                                     </div>
 
                                     <div class="flex flex-row truncate">
-                                        <ng-container *ngIf="item.status === 'ACTIVE'" class="flex flex-col justify-center content-center ">
+                                        <ng-container *ngIf="item.status === 'Pending'" class="flex flex-col justify-center content-center ">
                                             <mat-icon
-                                                class="text-green-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'">
+                                                class="text-gray-600 icon-size-5"
+                                                [svgIcon]="'mat_outline:pending_actions'">
                                             </mat-icon>
-                                            <span class="text-green-400">Đồng ý</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.status !== 'ACTIVE'">
-                                            <mat-icon
-                                                class="text-gray-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                            <span class="text-gray-400">Từ chối</span>
+                                            <span class="text-gray-600">Đang chờ duyệt</span>
                                         </ng-container>
                                     </div>
 
@@ -143,17 +99,11 @@
                                         </button>
                                     </div>
                                 </div>
-<!--                                <div class="grid">-->
-<!--                                    <ng-container *ngIf="selectedCategory?.id === cate.id">-->
-<!--                                        <ng-container-->
-<!--                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: cate}"></ng-container>-->
-<!--                                    </ng-container>-->
-<!--                                </div>-->
                             </ng-container>
                         </ng-container>
                     </div>
 
-                    <!-- <mat-paginator
+                    <mat-paginator
                         class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
                         [ngClass]="{'pointer-events-none': isLoading}"
                         [length]="pagination.length"
@@ -161,12 +111,10 @@
                         [pageSize]="pagination.size"
                         [pageSizeOptions]="[5, 10, 25, 100]"
                         [showFirstLastButtons]="true"></mat-paginator>
-
                 </ng-container>
-            </ng-container> -->
+            </ng-container>
             <ng-template #noProducts>
-                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no
-                    items!
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có dịch vụ đang chờ duyệt
                 </div>
             </ng-template>
 
