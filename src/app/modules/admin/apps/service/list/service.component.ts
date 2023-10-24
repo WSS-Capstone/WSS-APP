@@ -28,18 +28,18 @@ import {Category} from "../../category/category.types";
         /* language=SCSS */
         `
             .service-grid {
-                grid-template-columns: 77px auto 218px 134px 156px 145px 113px;
+                grid-template-columns: 250px auto 218px 134px 156px 145px 113px;
 
                 @screen sm {
-                    grid-template-columns: 57px auto 80px;
+                    grid-template-columns: 150px auto 80px;
                 }
 
                 @screen md {
-                    grid-template-columns: 56px 126px auto 80px;
+                    grid-template-columns: 200px 126px auto 80px;
                 }
 
                 @screen lg {
-                    grid-template-columns: 77px auto 218px 134px 156px 145px 113px;
+                    grid-template-columns: 250px auto 218px 134px 156px 145px 113px;
                 }
             }
         `

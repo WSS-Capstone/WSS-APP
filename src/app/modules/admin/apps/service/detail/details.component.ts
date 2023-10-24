@@ -100,7 +100,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             ownerId: [null],
             quantity: [null, Validators.required],
             price: [null, Validators.required],
-            serviceImages: [[]],
+            imageUrls: [[]],
             status: [null],
         });
     }
@@ -114,7 +114,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             ownerId: value.ownerId,
             quantity: value.quantity,
             price: value.currentPrices?.price,
-            serviceImages: value.serviceImages.map((image) => image.imageUrl),
+            imageUrls: value.serviceImages.map((image) => image.imageUrl),
             status: value.status,
         });
         this.tempImageUrls = value.serviceImages.map((image) => image.imageUrl);
@@ -135,13 +135,8 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     create(): void {
-        // const requestBody: ServiceRequest = {
-        //
-        // }
         this._service.create(this.form.value).pipe(
             map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
                 this.showFlashMessage('success');
             })).subscribe();
 
@@ -181,7 +176,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
         this._service.uploadImage(file).subscribe((res) => {
             console.log('res', res);
             this.tempImageUrls.push(res);
-            this.form.patchValue({serviceImages: this.tempImageUrls})
+            this.form.patchValue({imageUrls: this.tempImageUrls})
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
@@ -226,12 +221,12 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
      */
     removeImage(index: number): void {
         this.tempImageUrls.splice(index, 1);
-        this.form.patchValue({serviceImages: this.tempImageUrls})
+        this.form.patchValue({imageUrls: this.tempImageUrls})
     }
 
     clearImage(): void {
         this.tempImageUrls = [];
-        this.form.patchValue({serviceImages: this.tempImageUrls})
+        this.form.patchValue({imageUrls: this.tempImageUrls})
     }
 
     /**
