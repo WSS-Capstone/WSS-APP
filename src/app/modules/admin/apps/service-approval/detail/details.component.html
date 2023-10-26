@@ -123,30 +123,17 @@
                 </ng-container>
             </div>
             <!-- Add Actions -->
-            <ng-container *ngIf="!cate.id">
-                <div class="flex items-center justify-end mt-4">
-                    <!-- Save -->
-                    <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
-                    <button
-                        mat-flat-button
-                        [color]="'primary'"
-                        [disabled]="form.invalid"
-                        (click)="create()">
-                        Thêm mới
-                    </button>
-                </div>
-            </ng-container>
             <!-- Edit Actions -->
             <ng-container *ngIf="cate.id">
                 <div class="flex items-center justify-between mt-4">
                     <!-- Close -->
-                    <button class="mr-4" mat-flat-button matDialogClose>Từ chối</button>
+                    <button class="mr-4" mat-flat-button (click)="reject()">Từ chối</button>
                     <button
                         mat-flat-button
-                        [color]="'primary'">
+                        [color]="'primary'"
+                        (click)="update()">
                         Chấp nhận
                     </button>
-
                 </div>
             </ng-container>
         </div>

@@ -6,7 +6,6 @@ export const RESOURCE = {
 
     auth: PrefixAPI + '/auth',
     account: PrefixAPI + '/account',
-    approveService: PrefixAPI + '/approve-service',
     cart: PrefixAPI + '/cart',
     category: PrefixAPI + '/category',
     combo: PrefixAPI + '/combo',
@@ -35,5 +34,4 @@ export const ENDPOINTS = {
     feedback: RESOURCE.feedback,
     voucher: RESOURCE.voucher,
     account: RESOURCE.account,
-    approveService: RESOURCE.approveService,
 };

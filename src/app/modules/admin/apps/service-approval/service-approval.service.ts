@@ -133,10 +133,10 @@ export class ApproveServiceService {
         );
     }
 
-    update(id: string, item: ApproveService): Observable<ApproveService> {
+    update(id: string, item: any): Observable<ApproveService> {
         return this.items$.pipe(
             take(1),
-            switchMap(itemsArr => this._httpClient.put<ApproveService>(ENDPOINTS.combo + `/${id}`, {
+            switchMap(itemsArr => this._httpClient.put<ApproveService>(ENDPOINTS.service + `/approval/${id}`, {
                 ...item
             }).pipe(
                 map((updatedItem) => {

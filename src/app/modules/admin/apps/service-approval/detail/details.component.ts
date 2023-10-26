@@ -17,6 +17,9 @@ import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import {environment} from "../../../../../../environments/environment";
 import {DomSanitizer} from "@angular/platform-browser";
+import {AccountRequest} from "../../user/user.types";
+import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
     selector: 'approval-details',
@@ -44,6 +47,8 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         private sanitizer: DomSanitizer,
+        private _snackBar: MatSnackBar,
+        private _fuseConfirmationService: FuseConfirmationService,
         @Inject(MAT_DIALOG_DATA) private _data: { service: ApproveService },
         private _service: ApproveServiceService,
         private _matDialogRef: MatDialogRef<ServiceApprovalDetailsComponent>
@@ -73,22 +78,6 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
                 this._patchValue(value);
             });
         }
-        // Add
-        // else {
-        //     console.log("Add");
-        //     // Create an empty note
-        //     const item: ApproveService = {
-        //         ownerId: "", quantity: "",
-        //         id: null,
-        //         name: '',
-        //         description: '',
-        //         serviceImages: null,
-        //         categoryId: null,
-        //         status: true
-        //     };
-        //
-        //     this.item$ = of(item);
-        // }
     }
 
     private _initForm(): void {
@@ -146,7 +135,10 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
     }
 
     update(): void {
-        this._service.update(this.form.get('id').value ,this.form.value).pipe(
+        const requestBody = {
+            status: 'Active'
+        }
+        this._service.update(this.form.get('id').value , requestBody).pipe(
             map(() => {
                 // Get the note
                 // this.cate$ = this._categoryService.category$;
@@ -156,6 +148,55 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
         setTimeout(() => {
             this._matDialogRef.close();
         }, 1200);
+    }
+
+    reject(): void {
+        const id = this.form.get('id').value;
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Từ chối dịch vụ',
+            message: 'Bạn có chắc chắn muốn từ chối dịch vụ này?!',
+            input: {
+                label: 'Lý do',
+                value: null
+            },
+            actions: {
+                confirm: {
+                    label: 'Từ chối'
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            // if (result === 'confirmed') {
+            console.log(result);
+            // Delete the product on the server
+            // this._service.delete(id).subscribe(() => {
+            //     this.openSnackBar('Khóa thành công', 'Đóng');
+            //     // Close the details
+            //     this.closeDetails();
+            // });
+            const requestBody: any = {
+                reason: result,
+                status: "InActive"
+            };
+            this._service.update(id, requestBody).subscribe(() => {
+                this.openSnackBar('Từ chối dịch vụ thành công', 'Đóng');
+                // Close the details
+                // this.closeDetails();
+                this._matDialogRef.close();
+            });
+            // }
+        });
+    }
+
+    openSnackBar(message: string, action: string) {
+        this._snackBar.open(message, action);
     }
 
     /**

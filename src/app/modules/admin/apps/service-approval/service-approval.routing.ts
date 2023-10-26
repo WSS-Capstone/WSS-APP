@@ -17,7 +17,7 @@ export const itemRoutes: Route[] = [
                 path     : '',
                 component: ServiceApprovalListComponent,
                 resolve  : {
-                    // category    : CategoriesServiceResolver,
+                    category    : CategoriesServiceResolver,
                     items: ApproveServicesResolver,
                     // category  : CategoryResolver,
                 }

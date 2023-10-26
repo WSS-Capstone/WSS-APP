@@ -23,6 +23,7 @@ import { tasksRoutes } from 'app/modules/admin/apps/tasks/tasks.routing';
 import { TasksComponent } from 'app/modules/admin/apps/tasks/tasks.component';
 import { TasksDetailsComponent } from 'app/modules/admin/apps/tasks/details/details.component';
 import { TasksListComponent } from 'app/modules/admin/apps/tasks/list/list.component';
+import {MatTab, MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
     declarations: [
@@ -49,6 +50,7 @@ import { TasksListComponent } from 'app/modules/admin/apps/tasks/list/list.compo
         MatSelectModule,
         MatSidenavModule,
         MatTooltipModule,
+        MatTabsModule,
         FuseFindByKeyPipeModule,
         SharedModule
     ],

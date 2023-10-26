@@ -274,7 +274,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                     status: "InActive"
                 };
                 this._service.update(id, requestBody).subscribe(() => {
-                    this.openSnackBar('Mở khóa thành công', 'Đóng');
+                    this.openSnackBar('Khóa thành công', 'Đóng');
                     // Close the details
                     this.closeDetails();
                 });
