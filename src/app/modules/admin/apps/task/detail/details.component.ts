@@ -10,34 +10,27 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {ApproveService} from "../service-approval.types";
-import {ApproveServiceService} from "../service-approval.service";
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Task} from "../task.types";
+import {TaskService} from "../task.service";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
-import {environment} from "../../../../../../environments/environment";
-import {DomSanitizer} from "@angular/platform-browser";
-import {AccountRequest} from "../../user/user.types";
-import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
-import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
-    selector: 'approval-details',
+    selector: 'Task-details',
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations
 })
-export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
+export class TaskDetailsComponent implements OnInit, OnDestroy {
     flashMessage: 'success' | 'error' | null = null;
     labels$: Observable<Label[]>;
-    itemChanged: Subject<ApproveService> = new Subject<ApproveService>();
-    item$: Observable<ApproveService>;
+    itemChanged: Subject<Task> = new Subject<Task>();
+    item$: Observable<Task>;
     categories$: Observable<Category[]>;
-    imgDataOrLink: any;
-    tempImageUrls: string[] = [];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    imgDataOrLink: any;
     form: FormGroup;
 
     /**
@@ -46,12 +39,9 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
-        private sanitizer: DomSanitizer,
-        private _snackBar: MatSnackBar,
-        private _fuseConfirmationService: FuseConfirmationService,
-        @Inject(MAT_DIALOG_DATA) private _data: { service: ApproveService },
-        private _service: ApproveServiceService,
-        private _matDialogRef: MatDialogRef<ServiceApprovalDetailsComponent>
+        @Inject(MAT_DIALOG_DATA) private _data: { service: Task },
+        private _service: TaskService,
+        private _matDialogRef: MatDialogRef<TaskDetailsComponent>
     ) {
         this._initForm();
     }
@@ -78,36 +68,47 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
                 this._patchValue(value);
             });
         }
+        // Add
+        // else {
+        //     console.log("Add");
+        //     // Create an empty note
+        //     const item: Task = {
+        //         id: null,
+        //         name: "",
+        //         code: "",
+        //         endTime: null,
+        //         startTime: null,
+        //         imageUrl: null,
+        //         TaskValueVoucher: null,
+        //     };
+        //
+        //     this.item$ = of(item);
+        // }
     }
 
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
+            code: [null, Validators.required],
             name: [null, [Validators.required, Validators.maxLength(80)]],
-            categoryId: [null],
-            description: [null, Validators.maxLength(300)],
-            ownerId: [null],
-            quantity: [null, Validators.required],
-            price: [null, Validators.required],
-            imageUrls: [[]],
-            status: [null],
+            startTime: [null, [Validators.required]],
+            endTime: [null, [Validators.required]],
+            minAmount: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
+            TaskValueVoucher: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
+            coverUrl: [null],
         });
     }
 
-    private _patchValue(value: ApproveService) {
+    private _patchValue(value: Task) {
         this.form.patchValue({
-            id: value.id,
-            name: value.name,
-            categoryId: value.categoryId,
-            description: value.description,
-            ownerId: value.ownerId,
-            quantity: value.quantity,
-            price: value.currentPrices?.price,
-            imageUrls: value.serviceImages.map((image) => image.imageUrl),
-            status: value.status,
+            // id: value.id,
+            // name: value.name,
+            // code: value.code,
+            // startTime: new Date(value.startTime),
+            // endTime: new Date(value.endTime),
+            // minAmount: value.minAmount,
+            // TaskValueVoucher: value.TaskValueVoucher,
         });
-        this.tempImageUrls = value.serviceImages.map((image) => image.imageUrl);
-        console.log(this.tempImageUrls)
     }
 
     /**
@@ -123,9 +124,27 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+    filterStart = (date: Date | null): boolean => {
+        const endDate = this.form.get('endTime').value;
+
+        return (
+          !endDate || date <= endDate
+        );
+    }
+
+    filterEnd = (date: Date | null): boolean => {
+        const startDate = this.form.get('startTime').value;
+
+        return (
+            !startDate || date >= startDate
+        );
+    }
+
     create(): void {
         this._service.create(this.form.value).pipe(
             map(() => {
+                // Get the note
+                // this.cate$ = this._categoryService.category$;
                 this.showFlashMessage('success');
             })).subscribe();
 
@@ -135,10 +154,7 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
     }
 
     update(): void {
-        const requestBody = {
-            status: 'Active'
-        }
-        this._service.update(this.form.get('id').value , requestBody).pipe(
+        this._service.update(this.form.get('id').value ,this.form.value).pipe(
             map(() => {
                 // Get the note
                 // this.cate$ = this._categoryService.category$;
@@ -150,55 +166,6 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
         }, 1200);
     }
 
-    reject(): void {
-        const id = this.form.get('id').value;
-        const confirmation = this._fuseConfirmationService.open({
-            title: 'Từ chối dịch vụ',
-            message: 'Bạn có chắc chắn muốn từ chối dịch vụ này?!',
-            input: {
-                label: 'Lý do',
-                value: null
-            },
-            actions: {
-                confirm: {
-                    label: 'Từ chối'
-                },
-                cancel: {
-                    label: 'Hủy'
-                }
-            }
-        });
-
-        // Subscribe to the confirmation dialog closed action
-        confirmation.afterClosed().subscribe((result) => {
-
-            // If the confirm button pressed...
-            // if (result === 'confirmed') {
-            console.log(result);
-            // Delete the product on the server
-            // this._service.delete(id).subscribe(() => {
-            //     this.openSnackBar('Khóa thành công', 'Đóng');
-            //     // Close the details
-            //     this.closeDetails();
-            // });
-            const requestBody: any = {
-                reason: result,
-                status: "Reject"
-            };
-            this._service.update(id, requestBody).subscribe(() => {
-                this.openSnackBar('Từ chối dịch vụ thành công', 'Đóng');
-                // Close the details
-                // this.closeDetails();
-                this._matDialogRef.close();
-            });
-            // }
-        });
-    }
-
-    openSnackBar(message: string, action: string) {
-        this._snackBar.open(message, action);
-    }
-
     /**
      * Upload image to given note
      *
@@ -206,7 +173,6 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
      * @param fileList
      */
     uploadImage(event: any): void {
-        // Return if canceled
         if (!event.target.files[0]) {
             return;
         }
@@ -215,17 +181,13 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
         // send request upload file
 
         this._service.uploadImage(file).subscribe((res) => {
-            console.log('res', res);
-            this.tempImageUrls.push(res);
-            this.form.patchValue({imageUrls: this.tempImageUrls})
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                this.imgDataOrLink = this.mapImageUrl(res);
-                this._changeDetectorRef.markForCheck();
-            };
-            // this.imgDataOrLink = this.mapImageUrl(res);
+            this.imgDataOrLink = res;
+            this.form.patchValue({
+                imageUrl: this.imgDataOrLink,
+            });
         });
+
+
         // Return if canceled
         // if (!fileList.length) {
         //     return;
@@ -242,17 +204,11 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
         // this._readAsDataURL(file).then((data) => {
         //
         //     // Update the image
-        //     // cate.coverUrl = data;
+        //     cate.imageUrl = data;
         //
         //     // Update the note
         //     this.itemChanged.next(cate);
         // });
-    }
-
-    mapImageUrl(imageUrl: string): any {
-        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
-        var apiUrl = environment.wssApi;
-        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
     }
 
     /**
@@ -260,15 +216,12 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
      *
      * @param note
      */
-    removeImage(index: number): void {
-        this.tempImageUrls.splice(index, 1);
-        this.form.patchValue({imageUrls: this.tempImageUrls})
-    }
-
-    clearImage(): void {
-        this.tempImageUrls = [];
-        this.form.patchValue({imageUrls: this.tempImageUrls})
-    }
+    // removeImage(cate: Task): void {
+    //     cate.imageUrl = null;
+    //
+    //     // Update the cate
+    //     this.itemChanged.next(cate);
+    // }
 
     /**
      * Track by function for ngFor loops

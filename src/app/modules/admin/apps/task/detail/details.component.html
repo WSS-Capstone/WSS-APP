@@ -1,0 +1,152 @@
+<div class="flex flex-col flex-auto -m-6 pt-1">
+
+    <ng-container *ngIf="(item$ | async) as cate" [formGroup]="form">
+        <!-- Title -->
+        <div class="text-3xl font-extrabold tracking-tight p-5">{{cate.id ? 'Sửa phiếu giảm giá' : 'Thêm phiếu giảm giá'}}</div>
+
+        <!-- Image -->
+        <div class="flex flex-auto flex-row p-5">
+            <!--            image-->
+            <div class="flex flex-col items-center">
+                <div class="w-32 h-44 border rounded overflow-hidden">
+                    <ng-container *ngIf="cate.imageUrl; else noImage">
+                        <img class="w-full h-full object-cover" [src]="cate.imageUrl">
+                    </ng-container>
+                    <ng-template #noImage>
+                        <span class="flex justify-center items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
+                    </ng-template>
+                </div>
+                <button class="mt-2"
+                    mat-flat-button
+                    [color]="'primary'"
+                    [disabled]="form.invalid"
+                    (click)="fileInput.click()">
+                    Chọn ảnh
+                </button>
+                <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
+            </div>
+
+
+            <!-- Name, SKU & etc. -->
+            <div class="flex flex-col w-full sm:pl-8">
+
+                <!-- Name -->
+                <mat-form-field class="w-full">
+                    <mat-label>Tên phiếu giảm giá</mat-label>
+                    <input matInput [formControlName]="'name'">
+                    <mat-error *ngIf="form.get('name').hasError('required')">
+                        Tên phiếu giảm giá không được để trống
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Mã giảm giá</mat-label>
+                    <input matInput [formControlName]="'code'">
+                    <mat-error *ngIf="form.get('code').hasError('required')">
+                        Mã giảm giá không được để trống
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Category -->
+                <div class="flex">
+                    <mat-form-field class="w-full pr-2">
+                        <mat-label>Ngày bắt đầu</mat-label>
+                        <input matInput [matDatepicker]="picker" [formControlName]="'startTime'" [matDatepickerFilter]="filterStart">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="form.get('startTime').hasError('required')">
+                            Ngày bắt đầu áp dụng không được bỏ trống
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-full">
+                        <mat-label>Ngày kết thúc</mat-label>
+                        <input matInput [matDatepicker]="picker2" [formControlName]="'endTime'" [matDatepickerFilter]="filterEnd">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                        <mat-error *ngIf="form.get('endTime').hasError('required')">
+                            Ngày kết thúc không được bỏ trống
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Số tiền tối thiểu để áp dụng</mat-label>
+                    <input matInput [formControlName]="'minAmount'">
+                    <mat-error *ngIf="form.get('minAmount').hasError('required')">
+                        Số tiền tối thiểu để áp dụng không được để trống
+                    </mat-error>
+                    <mat-error *ngIf="form.get('minAmount').hasError('min')">
+                        Số tiền tối thiểu phải lớn hơn hoặc bằng 1,000 VNĐ
+                    </mat-error>
+                    <mat-error *ngIf="form.get('minAmount').hasError('pattern')">
+                        Số tiền tối thiểu chỉ được nhập số
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Số tiền giảm</mat-label>
+                    <input matInput [formControlName]="'discountValueVoucher'">
+                    <mat-error *ngIf="form.get('discountValueVoucher').hasError('required')">
+                        Số tiền giảm không được để trống
+                    </mat-error>
+                    <mat-error *ngIf="form.get('minAmount').hasError('min')">
+                        Số tiền giảm phải lớn hơn hoặc bằng 1,000 VNĐ
+                    </mat-error>
+                    <mat-error *ngIf="form.get('minAmount').hasError('pattern')">
+                        Số tiền giảm chỉ được nhập số
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+
+        </div>
+        <div class="flex justify-end items-center m-4">
+            <div
+                class="flex items-center mr-4 mt-4"
+                *ngIf="flashMessage">
+                <ng-container *ngIf="flashMessage === 'success'">
+                    <mat-icon
+                        class="text-green-500"
+                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                    <span class="ml-2">Thành công</span>
+                </ng-container>
+                <ng-container *ngIf="flashMessage === 'error'">
+                    <mat-icon
+                        class="text-red-500"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                    <span class="ml-2">Có lỗi xảy ra, vui lòng thử lại!</span>
+                </ng-container>
+            </div>
+            <!-- Add Actions -->
+            <ng-container *ngIf="!cate.id">
+                <div class="flex items-center justify-end mt-4">
+                    <!-- Save -->
+                    <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
+                    <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        [disabled]="form.invalid"
+                        (click)="create()">
+                        Thêm mới
+                    </button>
+                </div>
+            </ng-container>
+            <!-- Edit Actions -->
+            <ng-container *ngIf="cate.id">
+                <div class="flex items-center justify-between mt-4">
+                    <!-- Close -->
+                    <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
+                    <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        [disabled]="form.invalid"
+                        (click)="update()">
+                        Cập nhật
+                    </button>
+
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+
+</div>

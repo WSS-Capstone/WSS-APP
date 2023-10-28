@@ -34,4 +34,5 @@ export const ENDPOINTS = {
     feedback: RESOURCE.feedback,
     voucher: RESOURCE.voucher,
     account: RESOURCE.account,
+    task: RESOURCE.task,
 };
