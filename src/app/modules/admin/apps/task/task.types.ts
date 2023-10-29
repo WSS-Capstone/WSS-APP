@@ -12,8 +12,8 @@ export interface Task {
     comments: string[];
     partner?: User;
     staff?: User;
-    service: Service;
-    order: Order;
+    service?: Service;
+    order?: Order;
 }
 
 export interface TaskPagination {
