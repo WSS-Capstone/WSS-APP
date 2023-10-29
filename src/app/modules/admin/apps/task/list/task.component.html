@@ -38,11 +38,13 @@
             </button>
         </div>
     </div>
+    <div class="flex flex-auto">
+        <div class="flex flex-col flex-auto mb-0 overflow-y-auto">
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
         <mat-tab label="Đối tác">
             <!-- Main -->
             <div class="flex flex-auto">
-                <div class="flex flex-col flex-auto mb-0 overflow-y-auto">
+                <div class="flex flex-col vh-70 flex-auto mb-0 overflow-auto h-full">
 
 
                     <!-- <ng-container *ngIf="(items$ | async) as items">
@@ -167,14 +169,14 @@
                         </ng-container>
                     </div>
 
-<!--                    <mat-paginator-->
-<!--                        class="absolute inset-x-0 bottom-0 border-b border-t border-b-0 z-10 bg-gray-50 dark:bg-transparent"-->
-<!--                        [ngClass]="{'pointer-events-none': isLoading}"-->
-<!--                        [length]="pagination.length"-->
-<!--                        [pageIndex]="pagination.page"-->
-<!--                        [pageSize]="pagination.size"-->
-<!--                        [pageSizeOptions]="[5, 10, 25, 100]"-->
-<!--                        [showFirstLastButtons]="true"></mat-paginator>-->
+                    <mat-paginator
+                        class="absolute inset-x-0 bottom-0 border-b border-t border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                        [ngClass]="{'pointer-events-none': isLoading}"
+                        [length]="pagination.length"
+                        [pageIndex]="pagination.page"
+                        [pageSize]="pagination.size"
+                        [pageSizeOptions]="[5, 10, 25, 100]"
+                        [showFirstLastButtons]="true"></mat-paginator>
 
                     <!-- </ng-container>
                 </ng-container> -->
@@ -185,7 +187,7 @@
         </mat-tab>
         <mat-tab label="Nhân viên">
             <div class="flex flex-auto">
-                <div class="flex flex-col flex-auto mb-0 overflow-y-auto">
+                <div class="flex flex-col vh-70 flex-auto mb-0 overflow-y-auto">
 
 
                     <!-- <ng-container *ngIf="(items$ | async) as items">
@@ -233,14 +235,14 @@
                                         {{item.taskName}}
                                     </div>
                                     <div class="">
-                                        {{item.partner.fullname}}
+                                        {{item.staff.fullname}}
                                     </div>
                                     <div class="">
-                                        {{item.service.name}}
+                                        {{item.service?.name}}
                                     </div>
 
                                     <div class="">
-                                        {{item.order.id}}
+                                        {{item.order?.id}}
                                     </div>
 
                                     <div class="">
@@ -260,7 +262,7 @@
                                             </mat-icon>
                                             <span class="text-gray-600">Đang chuẩn bị</span>
                                         </ng-container>
-                                        <ng-container *ngIf="item.status === 'WORKING'"
+                                        <ng-container *ngIf="item.status === 'IN_PROGRESS'"
                                                       class="flex flex-col justify-center content-center ">
                                             <mat-icon
                                                 class="text-gray-600 icon-size-5"
@@ -268,13 +270,21 @@
                                             </mat-icon>
                                             <span class="text-gray-600">Đang thực hiện</span>
                                         </ng-container>
-                                        <ng-container *ngIf="item.status === 'COMPLETED'"
+                                        <ng-container *ngIf="item.status === 'DONE'"
                                                       class="flex flex-col justify-center content-center ">
                                             <mat-icon
                                                 class="text-gray-600 icon-size-5"
                                                 [svgIcon]="'mat_outline:pending_actions'">
                                             </mat-icon>
                                             <span class="text-gray-600">Hoành thành</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="item.status === 'CANCEL'"
+                                                      class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-gray-600 icon-size-5"
+                                                [svgIcon]="'mat_outline:pending_actions'">
+                                            </mat-icon>
+                                            <span class="text-gray-600">Đã hủy</span>
                                         </ng-container>
                                     </div>
 
@@ -302,14 +312,14 @@
                         </ng-container>
                     </div>
 
-                    <!--                    <mat-paginator-->
-                    <!--                        class="absolute inset-x-0 bottom-0 border-b border-t border-b-0 z-10 bg-gray-50 dark:bg-transparent"-->
-                    <!--                        [ngClass]="{'pointer-events-none': isLoading}"-->
-                    <!--                        [length]="pagination.length"-->
-                    <!--                        [pageIndex]="pagination.page"-->
-                    <!--                        [pageSize]="pagination.size"-->
-                    <!--                        [pageSizeOptions]="[5, 10, 25, 100]"-->
-                    <!--                        [showFirstLastButtons]="true"></mat-paginator>-->
+                                        <mat-paginator
+                                            class="absolute inset-x-0 bottom-0 border-b border-t border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                            [ngClass]="{'pointer-events-none': isLoading}"
+                                            [length]="pagination.length"
+                                            [pageIndex]="pagination.page"
+                                            [pageSize]="pagination.size"
+                                            [pageSizeOptions]="[5, 10, 25, 100]"
+                                            [showFirstLastButtons]="true"></mat-paginator>
 
                     <!-- </ng-container>
                 </ng-container> -->
@@ -319,6 +329,8 @@
             </div>
         </mat-tab>
     </mat-tab-group>
+        </div>
+    </div>
     <ng-template #noProducts>
         <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có công việc nào!
         </div>

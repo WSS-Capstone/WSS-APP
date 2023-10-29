@@ -1,4 +1,6 @@
 import { Combo } from "../combo/combo.types";
+import {Service} from "../service/service.types";
+import {Task} from "../task/task.types";
 export interface Order {
     id: string;
     code: string;
@@ -9,6 +11,7 @@ export interface Order {
     address?: string;
     phone?: string;
     voucherId: string;
+    orderDetails: OrderDetail[];
     comboId?: string;
     combo: Combo;
     totalAmount?: number;
@@ -17,6 +20,19 @@ export interface Order {
     createDate?: string;
     statusPayment: string;
     statusOrder: string;
+}
+
+export interface OrderDetail {
+    id: string;
+    address: string;
+    description: string;
+    orderId: string;
+    price: string;
+    service: Service;
+    serviceId: string;
+    startTime: string;
+    status: string;
+    tasks: Task[];
 }
 
 export interface OrderPagination {

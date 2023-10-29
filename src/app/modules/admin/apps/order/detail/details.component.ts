@@ -26,7 +26,7 @@ import {DiscountService} from "../../discount/discount.service";
         /* language=SCSS */
         `
             .order-detail-grid {
-                grid-template-columns: 32px 150px 150px 150px 150px 150px auto 80px;
+                grid-template-columns: 120px auto 150px 150px 150px 150px 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;

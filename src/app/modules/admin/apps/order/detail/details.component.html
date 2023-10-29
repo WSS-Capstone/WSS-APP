@@ -1,4 +1,4 @@
-<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 bg-card dark:bg-transparent">
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 overflow-auto bg-card dark:bg-transparent">
     <ng-container *ngIf="(item$ | async) as item">
     <ng-container *ngIf="(voucher$ | async) as voucher">
     <ng-container *ngIf="(weddingInfo$ | async) as wedding">
@@ -228,6 +228,13 @@
                 </div>
             </div>
 
+            <div class="mt-6">
+                <ng-container>
+                    <button mat-raised-button color="primary">Xác nhận đơn hàng</button>
+                </ng-container>
+
+            </div>
+
             <div class="text-4xl font-extrabold tracking-tight mt-4">Danh sách dịch vụ đặt</div>
         </div>
 
@@ -235,98 +242,103 @@
         <div class="flex flex-auto">
             <!-- Products list -->
             <div class="flex flex-col flex-auto">
-<!--                <ng-container *ngIf="(item.combo.comboServices) as comboServices">-->
-<!--                    <ng-container *ngIf="comboServices.length > 0; else noProducts">-->
+                <ng-container *ngIf="(item.orderDetails) as orderDetails">
+                    <ng-container *ngIf="orderDetails.length > 0; else noProducts">
                         <div class="grid">
                             <!-- Header -->
                             <div
                                 class="order-detail-grid z-10 overflow-auto sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                                 matSort
                                 matSortDisableClear>
-                                <div></div>
                                 <div class="">Ngày thực hiện</div>
                                 <div class="">Tên dịch vụ</div>
                                 <div class="">Số lượng</div>
                                 <div class="">Địa điểm</div>
                                 <div class="">Giá tiền</div>
                                 <div class="">Trạng thái</div>
-                                <div></div>
+                                <div>Chi tiết</div>
                             </div>
 
                             <!-- Rows -->
-<!--                            <ng-container *ngIf="(item.combo.comboServices) as comboServices1">-->
-<!--                                <ng-container *ngFor="let comboService of comboServices1; trackBy: trackByFn">-->
-<!--                                    <div class="order-detail-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">-->
-<!--                                        <div></div>-->
-<!--                                        <div class="truncate">-->
-<!--                                            {{comboService.service.currentPrices.dateOfApply | date: 'dd/MM/yyyy'}}-->
-<!--                                        </div>-->
-<!--                                        <div class="truncate">-->
-<!--                                            {{comboService.service.name}}-->
-<!--                                        </div>-->
-<!--                                        <div class="truncate">-->
-<!--                                            {{comboService.service.quantity}}-->
-<!--                                        </div>-->
+                            <ng-container *ngIf="(item.orderDetails) as orderDetails1">
+                                <ng-container *ngFor="let orderDetail of orderDetails1; trackBy: trackByFn">
+                                    <div class="order-detail-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                        <div class="truncate">
+                                            {{orderDetail.startTime | date: 'dd/MM/yyyy'}}
+                                        </div>
+                                        <div class="truncate">
+                                            {{orderDetail.service.name}}
+                                        </div>
+                                        <div class="truncate">
+                                            {{orderDetail.service.quantity}}
+                                        </div>
 
-<!--                                        <div class="truncate">-->
-<!--                                            No data-->
-<!--                                        </div>-->
+                                        <div class="truncate">
+                                            {{orderDetail.address}}
+                                        </div>
 
-<!--                                        <div class="truncate">-->
-<!--                                            {{comboService.service.currentPrices.price | number: '1.0-0'}}  VNĐ-->
-<!--                                        </div>-->
+                                        <div class="truncate">
+                                            {{orderDetail.price | number: '1.0-0'}}  VNĐ
+                                        </div>
 
-<!--                                        <div class="flex flex-row truncate">-->
-<!--                                            <ng-container *ngIf="item.status === 'ACTIVE'" class="flex flex-col justify-center content-center ">-->
-<!--                                                <mat-icon-->
-<!--                                                    class="text-green-400 icon-size-5"-->
-<!--                                                    [svgIcon]="'heroicons_solid:check'">-->
-<!--                                                </mat-icon>-->
-<!--                                                <span class="text-green-400">Đồng ý</span>-->
-<!--                                            </ng-container>-->
-<!--                                            <ng-container *ngIf="item.status !== 'ACTIVE'">-->
-<!--                                                <mat-icon-->
-<!--                                                    class="text-gray-400 icon-size-5"-->
-<!--                                                    [svgIcon]="'heroicons_solid:x'"></mat-icon>-->
-<!--                                                <span class="text-gray-400">Từ chối</span>-->
-<!--                                            </ng-container>-->
-<!--                                        </div>-->
+                                        <div class="flex flex-row truncate">
+                                            <ng-container *ngIf="orderDetail.status === 'ACTIVE'" class="flex flex-col justify-center content-center ">
+                                                <mat-icon
+                                                    class="text-green-400 icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:check'">
+                                                </mat-icon>
+                                                <span class="text-green-400">Đồng ý</span>
+                                            </ng-container>
+                                            <ng-container *ngIf="orderDetail.status !== 'ACTIVE'">
+                                                <mat-icon
+                                                    class="text-gray-400 icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                <span class="text-gray-400">Từ chối</span>
+                                            </ng-container>
+                                        </div>
 
-<!--                                        <div class="flex flex-row">-->
-<!--                                            <button-->
-<!--                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"-->
-<!--                                                mat-stroked-button-->
-<!--                                                routerLink="{{item.id}}"-->
-<!--                                                >-->
-<!--                                                <mat-icon-->
-<!--                                                    class="icon-size-5"-->
-<!--                                                    [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>-->
-<!--                                            </button>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                        <div class="flex flex-row">
+                                            <button
+                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                                mat-stroked-button
+                                                routerLink="{{item.id}}"
+                                                >
+                                                <mat-icon
+                                                    class="icon-size-5"
+                                                    [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
 <!--                                </ng-container>-->
 <!--                            </ng-container>-->
+<!--                        </div>-->
+
+<!--                        <mat-paginator-->
+<!--                            class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"-->
+<!--                            [ngClass]="{'pointer-events-none': isLoading}"-->
+<!--                            [length]="pagination.length"-->
+<!--                            [pageIndex]="pagination.page"-->
+<!--                            [pageSize]="pagination.size"-->
+<!--                            [pageSizeOptions]="[5, 10, 25, 100]"-->
+<!--                            [showFirstLastButtons]="true">-->
+<!--                        </mat-paginator>-->
+                    </ng-container>
+                </ng-container>
                         </div>
 
-                        <!-- <mat-paginator
-                            class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-                            [ngClass]="{'pointer-events-none': isLoading}"
-                            [length]="pagination.length"
-                            [pageIndex]="pagination.page"
-                            [pageSize]="pagination.size"
-                            [pageSizeOptions]="[5, 10, 25, 100]"
-                            [showFirstLastButtons]="true">
-                        </mat-paginator> -->
-<!--                    </ng-container>-->
-<!--                </ng-container>-->
-                <ng-template #noProducts>
-                    <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
-                        Không có dịch vụ đặt!
-                    </div>
-                </ng-template>
-            </div>
+
+
+    </ng-container>
+    </ng-container>
         </div>
-    </ng-container>
-    </ng-container>
-    </ng-container>
 </div>
+</ng-container>
+</ng-container>
+</ng-container>
+</div>
+
+<ng-template #noProducts>
+    <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+        Không có dịch vụ đặt!
+    </div>
+</ng-template>

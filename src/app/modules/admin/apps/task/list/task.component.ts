@@ -44,6 +44,10 @@ import {filters} from "../../../../../mock-api/apps/mailbox/data";
                 //}
 
             }
+
+            .vh-70 {
+                height: 70vh !important;
+            }
         `
     ],
     encapsulation: ViewEncapsulation.None,

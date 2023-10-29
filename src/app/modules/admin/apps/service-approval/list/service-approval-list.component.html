@@ -67,14 +67,14 @@
                                         {{item.id}}
                                     </div>
                                     <div class="hidden md:block truncate">
-                                        {{item.name}}
+                                        {{item?.name}}
                                     </div>
                                     <div class="hidden lg:block truncate">
-                                        {{item.category.name}}
+                                        {{item?.category?.name}}
                                     </div>
 
                                     <div class="hidden lg:block truncate">
-                                        {{item.currentPrices?.price | number: '1.0-0' }} VNĐ
+                                        {{item?.currentPrices?.price | number: '1.0-0' }} VNĐ
                                     </div>
 
                                     <div class="flex flex-row truncate">
