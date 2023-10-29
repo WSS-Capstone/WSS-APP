@@ -2,31 +2,10 @@
 
     <ng-container *ngIf="(item$ | async) as cate" [formGroup]="form">
         <!-- Title -->
-        <div class="text-3xl font-extrabold tracking-tight p-5">{{cate.id ? 'Sửa phiếu giảm giá' : 'Thêm phiếu giảm giá'}}</div>
+        <div class="text-3xl font-extrabold tracking-tight p-5">{{cate.id ? 'Chi tiết công việc' : 'Thêm phiếu giảm giá'}}</div>
 
         <!-- Image -->
         <div class="flex flex-auto flex-row p-5">
-            <!--            image-->
-            <div class="flex flex-col items-center">
-                <div class="w-32 h-44 border rounded overflow-hidden">
-                    <ng-container *ngIf="cate.imageUrl; else noImage">
-                        <img class="w-full h-full object-cover" [src]="cate.imageUrl">
-                    </ng-container>
-                    <ng-template #noImage>
-                        <span class="flex justify-center items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
-                    </ng-template>
-                </div>
-                <button class="mt-2"
-                    mat-flat-button
-                    [color]="'primary'"
-                    [disabled]="form.invalid"
-                    (click)="fileInput.click()">
-                    Chọn ảnh
-                </button>
-                <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
-            </div>
-
-
             <!-- Name, SKU & etc. -->
             <div class="flex flex-col w-full sm:pl-8">
 

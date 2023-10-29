@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
-import {Order, OrderPagination, OrderResponse} from './order.types';
+import {Order, OrderPagination, OrderResponse, WeddingInformation, WeddingInformationResponse} from './order.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse} from "../category/category.types";
+import {Discount, DiscountResponse} from "../discount/discount.types";
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,10 @@ export class OrderService {
     // Private
     private _item: BehaviorSubject<Order | null> = new BehaviorSubject(null);
     private _items: BehaviorSubject<Order[] | null> = new BehaviorSubject(null);
-    private _itemsCate: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
+    private _itemWedding: BehaviorSubject<WeddingInformation | null> = new BehaviorSubject(null);
+    private _itemsWedding: BehaviorSubject<WeddingInformation[] | null> = new BehaviorSubject(null);
+    private _itemsVoucher: BehaviorSubject<Discount[] | null> = new BehaviorSubject(null);
+    private _itemVoucher: BehaviorSubject<Discount | null> = new BehaviorSubject(null);
     private _pagination: BehaviorSubject<OrderPagination | null> = new BehaviorSubject(null);
 
     constructor(private _httpClient: HttpClient) {
@@ -34,10 +38,21 @@ export class OrderService {
         return this._items.asObservable();
     }
 
-    get categories$(): Observable<Category[]> {
-        return this._itemsCate.asObservable();
+    get weddings$(): Observable<WeddingInformation[]> {
+        return this._itemsWedding.asObservable();
     }
 
+    get wedding$(): Observable<WeddingInformation> {
+        return this._itemWedding.asObservable();
+    }
+
+    get vouchers$(): Observable<Discount[]> {
+        return this._itemsVoucher.asObservable();
+    }
+
+    get voucher$(): Observable<Discount> {
+        return this._itemVoucher.asObservable();
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -46,16 +61,31 @@ export class OrderService {
     /**
      * Get categories
      */
-    getAllCategories(): Observable<Category[]> {
-        return this._httpClient.get<CategoryResponse>(ENDPOINTS.category, {
+    getAllWeddingInformations(): Observable<WeddingInformation[]> {
+        return this._httpClient.get<WeddingInformationResponse>(ENDPOINTS.wedding, {
             params: {
                 'page-size': '' + 250,
-                'status': 'Active'
             }
         }).pipe(
             tap((categories) => {
                 console.log(categories);
-                this._itemsCate.next(categories.data);
+                this._itemsWedding.next(categories.data);
+            }),
+            map((categories) => {
+                return categories.data;
+            })
+        );
+    }
+
+    getAllDiscounts(): Observable<Discount[]> {
+        return this._httpClient.get<DiscountResponse>(ENDPOINTS.voucher, {
+            params: {
+                'page-size': '' + 250,
+            }
+        }).pipe(
+            tap((categories) => {
+                console.log(categories);
+                this._itemsVoucher.next(categories.data);
             }),
             map((categories) => {
                 return categories.data;
@@ -103,6 +133,56 @@ export class OrderService {
 
                 // Update the product
                 this._item.next(product);
+
+                // Return the product
+                return product;
+            }),
+            switchMap((product) => {
+
+                if (!product) {
+                    return throwError('Could not found product with id of ' + id + '!');
+                }
+
+                return of(product);
+            })
+        );
+    }
+
+    getWedding(id: string): Observable<WeddingInformation> {
+        return this._itemsWedding.pipe(
+            take(1),
+            map((products) => {
+
+                // Find the product
+                const product = products.find(item => item.id === id) || null;
+
+                // Update the product
+                this._itemWedding.next(product);
+
+                // Return the product
+                return product;
+            }),
+            switchMap((product) => {
+
+                if (!product) {
+                    return throwError('Could not found product with id of ' + id + '!');
+                }
+
+                return of(product);
+            })
+        );
+    }
+
+    getVoucher(id: string): Observable<Discount> {
+        return this._itemsVoucher.pipe(
+            take(1),
+            map((products) => {
+
+                // Find the product
+                const product = products.find(item => item.id === id) || null;
+
+                // Update the product
+                this._itemVoucher.next(product);
 
                 // Return the product
                 return product;

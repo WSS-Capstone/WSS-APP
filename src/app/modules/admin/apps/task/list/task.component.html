@@ -117,6 +117,22 @@
                                             </mat-icon>
                                             <span class="text-gray-600">Đang chuẩn bị</span>
                                         </ng-container>
+                                        <ng-container *ngIf="item.status === 'WORKING'"
+                                                      class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-gray-600 icon-size-5"
+                                                [svgIcon]="'mat_outline:pending_actions'">
+                                            </mat-icon>
+                                            <span class="text-gray-600">Đang thực hiện</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="item.status === 'COMPLETED'"
+                                                      class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-gray-600 icon-size-5"
+                                                [svgIcon]="'mat_outline:pending_actions'">
+                                            </mat-icon>
+                                            <span class="text-gray-600">Hoành thành</span>
+                                        </ng-container>
                                     </div>
 
                                     <!-- Details button -->
@@ -235,6 +251,22 @@
                                                 [svgIcon]="'mat_outline:pending_actions'">
                                             </mat-icon>
                                             <span class="text-gray-600">Đang chuẩn bị</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="item.status === 'WORKING'"
+                                                      class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-gray-600 icon-size-5"
+                                                [svgIcon]="'mat_outline:pending_actions'">
+                                            </mat-icon>
+                                            <span class="text-gray-600">Đang thực hiện</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="item.status === 'COMPLETED'"
+                                                      class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-gray-600 icon-size-5"
+                                                [svgIcon]="'mat_outline:pending_actions'">
+                                            </mat-icon>
+                                            <span class="text-gray-600">Hoành thành</span>
                                         </ng-container>
                                     </div>
 

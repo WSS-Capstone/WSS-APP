@@ -18,7 +18,8 @@ export const RESOURCE = {
     staff: PrefixAPI + '/staff',
     task: PrefixAPI + '/task',
     feedback: PrefixAPI + '/feedback',
-    voucher: PrefixAPI + '/voucher'
+    voucher: PrefixAPI + '/voucher',
+    wedding: PrefixAPI + '/WeddingInformation',
 };
 
 export const ENDPOINTS = {
@@ -35,4 +36,5 @@ export const ENDPOINTS = {
     voucher: RESOURCE.voucher,
     account: RESOURCE.account,
     task: RESOURCE.task,
+    wedding: RESOURCE.wedding,
 };

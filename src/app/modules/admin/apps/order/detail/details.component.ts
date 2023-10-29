@@ -8,14 +8,16 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {map, Observable, of, Subject} from 'rxjs';
+import {map, Observable, of, Subject, switchMap} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Order} from "../order.types";
+import {Order, WeddingInformation} from "../order.types";
 import {OrderService} from "../order.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import { ActivatedRoute } from '@angular/router';
+import {Discount} from "../../discount/discount.types";
+import {DiscountService} from "../../discount/discount.service";
 
 @Component({
     selector: 'order-details',
@@ -49,7 +51,8 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     labels$: Observable<Label[]>;
     itemChanged: Subject<Order> = new Subject<Order>();
     item$: Observable<Order>;
-    categories$: Observable<Category[]>;
+    weddingInfo$: Observable<WeddingInformation>;
+    voucher$: Observable<Discount>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     isLoading: boolean = false;
     form: FormGroup;
@@ -62,6 +65,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         // @Inject(MAT_DIALOG_DATA) private _data: { service: Order },
         private _service: OrderService,
+        private _discountService: DiscountService,
         // private _matDialogRef: MatDialogRef<OrderDetailsComponent>,
         private acitvatedRoute: ActivatedRoute,
     ) {
@@ -76,7 +80,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this.categories$ = this._service.categories$;
+
         this.acitvatedRoute.paramMap.subscribe(param => {
             this.isLoading = true;
             const id = param.get('id');
@@ -87,10 +91,14 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
 
             // Get the note
             this.item$ = this._service.item$;
-
-            // this.item$.subscribe((value) => {
-            //     this._patchValue(value);
-            // });
+            this.item$.subscribe((data) => {
+                // this._patchValue(value);
+                this.weddingInfo$ = this._service.getWedding(data.weddingInformationId)
+                this.voucher$ = this._discountService.getItem(data.voucherId)
+                // this.voucher$ = this._service.vouchers$.pipe(
+                //     map(value => value.find(x => x.id === data.voucherId))
+                // )
+            });
           })
         // Edit
         // if (this._data.service.id) {

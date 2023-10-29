@@ -2,18 +2,31 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
 import {catchError, Observable, throwError} from 'rxjs';
 import {OrderService} from "./order.service";
-import {Order, OrderResponse} from "./order.types";
+import {Order, OrderResponse, WeddingInformation} from "./order.types";
 import {Category} from "../category/category.types";
+import {Discount, DiscountResponse} from "../discount/discount.types";
 
 @Injectable({
     providedIn: 'root'
 })
-export class CategoriesServiceResolver implements Resolve<any> {
+export class WeddingsServiceResolver implements Resolve<any> {
     constructor(private _service: OrderService) {
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Category[]> {
-        return this._service.getAllCategories();
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<WeddingInformation[]> {
+        return this._service.getAllWeddingInformations();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class VouchersResolver implements Resolve<any> {
+    constructor(private _service: OrderService) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Discount[]> {
+        return this._service.getAllDiscounts();
     }
 }
 

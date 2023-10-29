@@ -10,8 +10,8 @@ export interface Task {
     endDate: string;
     status: string;
     comments: string[];
-    partner: User;
-    staff: User;
+    partner?: User;
+    staff?: User;
     service: Service;
     order: Order;
 }

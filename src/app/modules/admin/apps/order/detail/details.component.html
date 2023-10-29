@@ -1,5 +1,7 @@
 <div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 bg-card dark:bg-transparent">
     <ng-container *ngIf="(item$ | async) as item">
+    <ng-container *ngIf="(voucher$ | async) as voucher">
+    <ng-container *ngIf="(weddingInfo$ | async) as wedding">
         <!-- Header -->
         <div
             class="relative flex flex-col flex-0 py-8 px-6 md:px-8 border-b">
@@ -13,11 +15,11 @@
                     <mat-icon [svgIcon]="'heroicons_solid:arrow-left'"></mat-icon>
                     <div class="text-2xl font-extrabold tracking-tight ml-4">Quay lại</div>
                 </div>
-            
+
 
             <div class="mt-8 grid grid-cols-1 md:grid-cols-2">
                 <div class="">
-                    <div class="text-3xl font-extrabold tracking-tight">Đơn hàng #{{item.id}}</div>
+                    <div class="text-3xl font-extrabold tracking-tight">Đơn hàng #{{item.code}}</div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
                         <div>
                             <div class="flex flex-row h-18">
@@ -31,15 +33,61 @@
                             </div>
                             <div class="flex flex-row h-18">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
-                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                    <mat-icon [svgIcon]="'mat_outline:credit_card'" class="text-white"></mat-icon>
                                 </div>
                                 <div class="ml-3">
-                                    <div class="text-[#8E8EA1] text-sm ">Phiếu giảm giá</div>
-                                    <div class="text-lg font-semibold">{{item.voucherId ?? 'Không áp dụng'}}</div>
+                                    <div class="text-[#8E8EA1] text-sm ">Trạng thái thanh toán</div>
+                                    <ng-container *ngIf="item.statusPayment === 'PENDING'">
+                                        <div class="text-lg font-semibold">Chờ xác nhận</div>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.statusPayment === 'CONFIRM'">
+                                        <div class="text-lg font-semibold">Đã đặt cọc</div>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.statusPayment === 'DOING'">
+                                        <div class="text-lg font-semibold">Chờ thanh toán</div>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.statusPayment === 'DONE'">
+                                        <div class="text-lg font-semibold">Đã thanh toán đủ</div>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.statusPayment === 'CANCEL'">
+                                        <div class="text-lg font-semibold">Đã hủy</div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'mat_outline:receipt_long'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Trạng thái đơn hàng</div>
+                                    <ng-container *ngIf="item.statusOrder === 'PENDING'">
+                                        <div class="text-lg font-semibold">Chờ xác nhận</div>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.statusOrder === 'CONFIRM'">
+                                        <div class="text-lg font-semibold">Xác nhận</div>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.statusOrder === 'DOING'">
+                                        <div class="text-lg font-semibold">Đang thực hiện</div>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.statusOrder === 'DONE'">
+                                        <div class="text-lg font-semibold">Hoàn thành</div>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.statusOrder === 'CANCEL'">
+                                        <div class="text-lg font-semibold">Đã hủy</div>
+                                    </ng-container>
                                 </div>
                             </div>
                         </div>
                         <div>
+                            <div class="flex flex-row h-18">
+                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Phiếu giảm giá</div>
+                                    <div class="text-lg font-semibold">{{voucher.name ?? 'Không áp dụng'}}</div>
+                                </div>
+                            </div>
                             <div class="flex flex-row h-18">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
@@ -60,8 +108,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="">
                     <div class="text-3xl font-extrabold tracking-tight">Thông tin khách hàng</div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
                         <div>
@@ -101,21 +147,100 @@
                         <div>{{item.description}}</div>
                     </div>
                 </div>
+                <div class="">
+                    <div class="text-3xl font-extrabold tracking-tight">Thông tin đám cưới</div>
+                    <div class="mt-4 flex flex-row h-18">
+                        <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                            <mat-icon [svgIcon]="'heroicons_solid:clock'" class="text-white"></mat-icon>
+                        </div>
+                        <div class="ml-3">
+                            <div class="text-[#8E8EA1] text-sm ">Ngày cưới</div>
+                            <div class="text-lg font-semibold">{{wedding.weddingDay | date: 'dd/MM/yyyy'}}</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
+                        <div>
+                            <div class="">
+                                <div class="text-2xl font-bold tracking-tight">Nhà trai</div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Ông</div>
+                                    <div class="text-lg font-semibold">{{wedding.nameBrideFather}}</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Bà</div>
+                                    <div class="text-lg font-semibold">{{wedding.nameBrideMother}}</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Chú rễ</div>
+                                    <div class="text-lg font-semibold">{{wedding.nameBride}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="">
+                                <div class="text-2xl font-bold tracking-tight">Nhà gái</div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Ông</div>
+                                    <div class="text-lg font-semibold">{{wedding.nameGroomFather}}</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Bà</div>
+                                    <div class="text-lg font-semibold">{{wedding.nameGroomMother}}</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row h-18">
+                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-[#8E8EA1] text-sm ">Cô dâu</div>
+                                    <div class="text-lg font-semibold">{{wedding.nameGroom}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="text-4xl font-extrabold tracking-tight">Danh sách dịch vụ đặt</div>
+            <div class="text-4xl font-extrabold tracking-tight mt-4">Danh sách dịch vụ đặt</div>
         </div>
 
         <!-- Main -->
         <div class="flex flex-auto">
             <!-- Products list -->
             <div class="flex flex-col flex-auto">
-                <ng-container *ngIf="(item.combo.comboServices) as comboServices">
-                    <ng-container *ngIf="comboServices.length > 0; else noProducts">
+<!--                <ng-container *ngIf="(item.combo.comboServices) as comboServices">-->
+<!--                    <ng-container *ngIf="comboServices.length > 0; else noProducts">-->
                         <div class="grid">
                             <!-- Header -->
                             <div
-                                class="order-detail-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                                class="order-detail-grid z-10 overflow-auto sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                                 matSort
                                 matSortDisableClear>
                                 <div></div>
@@ -127,62 +252,62 @@
                                 <div class="">Trạng thái</div>
                                 <div></div>
                             </div>
-    
-                            <!-- Rows -->
-                            <ng-container *ngIf="(item.combo.comboServices) as comboServices1">
-                                <ng-container *ngFor="let comboService of comboServices1; trackBy: trackByFn">
-                                    <div class="order-detail-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                        <div></div>
-                                        <div class="truncate">
-                                            {{comboService.service.currentPrices.dateOfApply | date: 'dd/MM/yyyy'}}
-                                        </div>
-                                        <div class="truncate">
-                                            {{comboService.service.name}}
-                                        </div>
-                                        <div class="truncate">
-                                            {{comboService.service.quantity}}
-                                        </div>
-    
-                                        <div class="truncate">
-                                            No data
-                                        </div>
 
-                                        <div class="truncate">
-                                            {{comboService.service.currentPrices.price | number: '1.0-0'}}  VNĐ
-                                        </div>
-    
-                                        <div class="flex flex-row truncate">
-                                            <ng-container *ngIf="item.status === 'ACTIVE'" class="flex flex-col justify-center content-center ">
-                                                <mat-icon
-                                                    class="text-green-400 icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:check'">
-                                                </mat-icon>
-                                                <span class="text-green-400">Đồng ý</span>
-                                            </ng-container>
-                                            <ng-container *ngIf="item.status !== 'ACTIVE'">
-                                                <mat-icon
-                                                    class="text-gray-400 icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                                <span class="text-gray-400">Từ chối</span>
-                                            </ng-container>
-                                        </div>
-    
-                                        <div class="flex flex-row">
-                                            <button
-                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                mat-stroked-button
-                                                routerLink="{{item.id}}"
-                                                >
-                                                <mat-icon
-                                                    class="icon-size-5"
-                                                    [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </ng-container>
-                            </ng-container>
+                            <!-- Rows -->
+<!--                            <ng-container *ngIf="(item.combo.comboServices) as comboServices1">-->
+<!--                                <ng-container *ngFor="let comboService of comboServices1; trackBy: trackByFn">-->
+<!--                                    <div class="order-detail-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">-->
+<!--                                        <div></div>-->
+<!--                                        <div class="truncate">-->
+<!--                                            {{comboService.service.currentPrices.dateOfApply | date: 'dd/MM/yyyy'}}-->
+<!--                                        </div>-->
+<!--                                        <div class="truncate">-->
+<!--                                            {{comboService.service.name}}-->
+<!--                                        </div>-->
+<!--                                        <div class="truncate">-->
+<!--                                            {{comboService.service.quantity}}-->
+<!--                                        </div>-->
+
+<!--                                        <div class="truncate">-->
+<!--                                            No data-->
+<!--                                        </div>-->
+
+<!--                                        <div class="truncate">-->
+<!--                                            {{comboService.service.currentPrices.price | number: '1.0-0'}}  VNĐ-->
+<!--                                        </div>-->
+
+<!--                                        <div class="flex flex-row truncate">-->
+<!--                                            <ng-container *ngIf="item.status === 'ACTIVE'" class="flex flex-col justify-center content-center ">-->
+<!--                                                <mat-icon-->
+<!--                                                    class="text-green-400 icon-size-5"-->
+<!--                                                    [svgIcon]="'heroicons_solid:check'">-->
+<!--                                                </mat-icon>-->
+<!--                                                <span class="text-green-400">Đồng ý</span>-->
+<!--                                            </ng-container>-->
+<!--                                            <ng-container *ngIf="item.status !== 'ACTIVE'">-->
+<!--                                                <mat-icon-->
+<!--                                                    class="text-gray-400 icon-size-5"-->
+<!--                                                    [svgIcon]="'heroicons_solid:x'"></mat-icon>-->
+<!--                                                <span class="text-gray-400">Từ chối</span>-->
+<!--                                            </ng-container>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="flex flex-row">-->
+<!--                                            <button-->
+<!--                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"-->
+<!--                                                mat-stroked-button-->
+<!--                                                routerLink="{{item.id}}"-->
+<!--                                                >-->
+<!--                                                <mat-icon-->
+<!--                                                    class="icon-size-5"-->
+<!--                                                    [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </ng-container>-->
+<!--                            </ng-container>-->
                         </div>
-    
+
                         <!-- <mat-paginator
                             class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
                             [ngClass]="{'pointer-events-none': isLoading}"
@@ -192,8 +317,8 @@
                             [pageSizeOptions]="[5, 10, 25, 100]"
                             [showFirstLastButtons]="true">
                         </mat-paginator> -->
-                    </ng-container>
-                </ng-container>
+<!--                    </ng-container>-->
+<!--                </ng-container>-->
                 <ng-template #noProducts>
                     <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
                         Không có dịch vụ đặt!
@@ -201,5 +326,7 @@
                 </ng-template>
             </div>
         </div>
+    </ng-container>
+    </ng-container>
     </ng-container>
 </div>

@@ -1,28 +1,22 @@
 import { Combo } from "../combo/combo.types";
-
-export enum OrderStatus
-{
-    ACTIVE = 1,
-    INACTIVE = 2,
-    DELETED = 3,
-}
-
 export interface Order {
     id: string;
+    code: string;
     customerId: string;
     ownerId: string;
     weddingInformationId?: string;
     fullname?: string;
     address?: string;
     phone?: string;
-    vouncherId: string;
+    voucherId: string;
     comboId?: string;
     combo: Combo;
     totalAmount?: number;
     totalAmountRequest?: number;
     description?: string;
     createDate?: string;
-    status: OrderStatus;
+    statusPayment: string;
+    statusOrder: string;
 }
 
 export interface OrderPagination {
@@ -36,6 +30,25 @@ export interface OrderPagination {
 
 export interface OrderResponse {
     data: Order[];
+    page: number;
+    size: number;
+    total: number;
+}
+
+export  interface WeddingInformation {
+    id: string;
+    nameGroom: string;
+    nameBride: string;
+    nameBrideFather: string;
+    nameBrideMother: string;
+    nameGroomFather: string;
+    nameGroomMother: string;
+    weddingDay: string;
+    imageUrl: string;
+}
+
+export interface WeddingInformationResponse {
+    data: WeddingInformation[];
     page: number;
     size: number;
     total: number;

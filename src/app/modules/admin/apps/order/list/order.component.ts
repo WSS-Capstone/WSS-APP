@@ -14,7 +14,7 @@ import {MatSort} from '@angular/material/sort';
 import {debounceTime, map, merge, Observable, Subject, switchMap, takeUntil} from 'rxjs';
 import {fuseAnimations} from '@fuse/animations';
 import {FuseConfirmationService} from '@fuse/services/confirmation';
-import {Order, OrderPagination, OrderStatus} from "../order.types";
+import {Order, OrderPagination, WeddingInformation} from "../order.types";
 import {OrderService} from "../order.service";
 import {MatDialog} from "@angular/material/dialog";
 import {OrderDetailsComponent} from "../detail/details.component";
@@ -29,7 +29,7 @@ import { Route, Router } from '@angular/router';
         /* language=SCSS */
         `
             .order-grid {
-                grid-template-columns: 32px 240px 150px 150px 150px 150px auto 80px;
+                grid-template-columns: 80px 120px auto 150px 150px 150px 150px 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -54,9 +54,8 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatSort) private _sort: MatSort;
 
     items$: Observable<Order[]>;
-    categories$: Observable<Category[]>;
+    weddingInfos$: Observable<WeddingInformation[]>;
 
-    orderStatus = OrderStatus;
     parentCategories$: Observable<Order[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
@@ -104,7 +103,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Get the products
         this.items$ = this._service.items$;
-        this.categories$ = this._service.categories$;
+        this.weddingInfos$ = this._service.weddings$;
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
