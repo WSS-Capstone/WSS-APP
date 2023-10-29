@@ -1,4 +1,5 @@
 import {Service} from "../service/service.types";
+import {User} from "../user/user.types";
 
 export interface Feedback {
     id: string;
@@ -9,6 +10,8 @@ export interface Feedback {
     userId: string;
     status: string;
     imageUrl: string;
+    user: User;
+    service: Service;
 }
 
 export interface FeedbackPagination {

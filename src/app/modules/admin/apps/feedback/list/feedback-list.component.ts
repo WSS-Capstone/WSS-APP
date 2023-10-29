@@ -20,6 +20,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {FeedbackDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
+import {AccountRequest} from "../../user/user.types";
 
 @Component({
     selector: 'feedback-list',
@@ -28,7 +29,7 @@ import {Category} from "../../category/category.types";
         /* language=SCSS */
         `
             .feedback-grid {
-                grid-template-columns: 32px 150px 180px 180px 180px auto 80px;
+                grid-template-columns: 120px 240px auto 180px 180px 180px 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -190,6 +191,81 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     closeDetails(): void {
         this.selectedCategory = null;
+    }
+
+    show(id: string): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Hiển thị đánh giá',
+            message: 'Bạn có chắc chắn muốn hiển thị đánh giá này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Hiện',
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(result);
+                // this._service.getItem(id).subscribe(
+                //     value => {
+                //         this._service.update(id, value).subscribe(() => {
+                //             this.openSnackBar('Hiện đánh giá thành công', 'Đóng');
+                //             // Close the details
+                //             this.closeDetails();
+                //         });
+                //     }
+                // )
+            }
+        });
+    }
+
+    hide(id: string): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Ẩn đánh giá',
+            message: 'Bạn có chắc chắn muốn ẩn đánh giá này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Ẩn',
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(result);
+                // this._service.getItem(id).subscribe(
+                //     value => {
+                //         this._service.update(id, value).subscribe(() => {
+                //             this.openSnackBar('Hiện đánh giá thành công', 'Đóng');
+                //             // Close the details
+                //             this.closeDetails();
+                //         });
+                //     }
+                // )
+            }
+        });
     }
 
     update(id: string): void {
