@@ -66,31 +66,11 @@
                                 mat-menu-item
                                 (click)="openContactInfo()">
                                 <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-                                Contact info
-                            </button>
-                            <button mat-menu-item>
-                                <mat-icon [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
-                                Select messages
-                            </button>
-                            <button
-                                mat-menu-item
-                                (click)="toggleMuteNotifications()">
-                                <ng-container *ngIf="!chat.muted">
-                                    <mat-icon [svgIcon]="'heroicons_outline:volume-off'"></mat-icon>
-                                    Mute notifications
-                                </ng-container>
-                                <ng-container *ngIf="chat.muted">
-                                    <mat-icon [svgIcon]="'heroicons_outline:volume-up'"></mat-icon>
-                                    Unmute notifications
-                                </ng-container>
-                            </button>
-                            <button mat-menu-item>
-                                <mat-icon [svgIcon]="'heroicons_outline:backspace'"></mat-icon>
-                                Clear messages
+                                Thông tin khác hàng
                             </button>
                             <button mat-menu-item>
                                 <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                                Delete chat
+                                Xóa tin nhắn
                             </button>
                         </mat-menu>
                     </button>

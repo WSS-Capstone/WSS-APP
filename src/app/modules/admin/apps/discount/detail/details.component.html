@@ -39,14 +39,6 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field class="w-full">
-                    <mat-label>Mã giảm giá</mat-label>
-                    <input matInput [formControlName]="'code'">
-                    <mat-error *ngIf="form.get('code').hasError('required')">
-                        Mã giảm giá không được để trống
-                    </mat-error>
-                </mat-form-field>
-
                 <!-- Category -->
                 <div class="flex">
                     <mat-form-field class="w-full pr-2">

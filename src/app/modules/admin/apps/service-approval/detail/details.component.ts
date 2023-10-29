@@ -146,6 +146,7 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
             })).subscribe();
 
         setTimeout(() => {
+            this._service.getItems();
             this._matDialogRef.close();
         }, 1200);
     }
@@ -186,6 +187,7 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
                 status: "Reject"
             };
             this._service.update(id, requestBody).subscribe(() => {
+                this._service.getItems();
                 this.openSnackBar('Từ chối dịch vụ thành công', 'Đóng');
                 // Close the details
                 // this.closeDetails();

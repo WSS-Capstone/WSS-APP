@@ -89,7 +89,6 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
-            code: [null, Validators.required],
             name: [null, [Validators.required, Validators.maxLength(80)]],
             startTime: [null, [Validators.required]],
             endTime: [null, [Validators.required]],
@@ -103,7 +102,6 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
         this.form.patchValue({
             id: value.id,
             name: value.name,
-            code: value.code,
             startTime: new Date(value.startTime),
             endTime: new Date(value.endTime),
             minAmount: value.minAmount,
