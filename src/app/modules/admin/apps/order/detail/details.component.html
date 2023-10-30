@@ -39,10 +39,10 @@
                                         <div class="text-lg font-semibold">Chờ xác nhận</div>
                                     </ng-container>
                                     <ng-container *ngIf="item.statusPayment === 'CONFIRM'">
-                                        <div class="text-lg font-semibold">Đã đặt cọc</div>
+                                        <div class="text-lg font-semibold">Chờ đặt cọc</div>
                                     </ng-container>
                                     <ng-container *ngIf="item.statusPayment === 'DOING'">
-                                        <div class="text-lg font-semibold">Chờ thanh toán</div>
+                                        <div class="text-lg font-semibold">Đã đặt cọc</div>
                                     </ng-container>
                                     <ng-container *ngIf="item.statusPayment === 'DONE'">
                                         <div class="text-lg font-semibold">Đã thanh toán đủ</div>
