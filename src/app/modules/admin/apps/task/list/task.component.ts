@@ -29,7 +29,7 @@ import {filters} from "../../../../../mock-api/apps/mailbox/data";
         /* language=SCSS */
         `
             .task-grid {
-                grid-template-columns: 56px auto 180px 130px 130px 130px 130px 130px 130px;
+                grid-template-columns: 56px auto 209px 156px 213px 101px 109px 126px 73px;
 
                 //@screen sm {
                 //    grid-template-columns: 150px 150px 150px 150px 180px 180px 150px 150px;

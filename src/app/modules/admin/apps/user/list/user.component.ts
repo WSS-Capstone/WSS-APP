@@ -30,7 +30,7 @@ import {CreateAccountComponent} from "../create-account/create-account.component
         /* language=SCSS */
         `
             .user-grid {
-                grid-template-columns: 300px 150px 150px 80px auto 150px;
+                grid-template-columns: 124px auto 177px 124px 180px 154px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;

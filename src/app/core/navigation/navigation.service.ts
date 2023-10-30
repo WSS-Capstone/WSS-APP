@@ -12,20 +12,20 @@ export class NavigationService
     private menuAdmin : Navigation = {
         "compact": null,
         "default": [
-            {
-                "id": "dashboards.home",
-                "title": "Trang chủ",
-                "type": "basic",
-                "icon": "heroicons_outline:chart-pie",
-                "link": "/dashboards/analytics"
-            },
-            {
-                "id": "admin.role",
-                "title": "Vai trò",
-                "type": "basic",
-                icon: "mat_outline:layers",
-                "link": "/admin/role"
-            },
+            // {
+            //     "id": "dashboards.home",
+            //     "title": "Trang chủ",
+            //     "type": "basic",
+            //     "icon": "heroicons_outline:chart-pie",
+            //     "link": "/dashboards/analytics"
+            // },
+            // {
+            //     "id": "admin.role",
+            //     "title": "Vai trò",
+            //     "type": "basic",
+            //     icon: "mat_outline:layers",
+            //     "link": "/admin/role"
+            // },
             {
                 "id": "admin.user",
                 "title": "Tài khoản",

@@ -28,7 +28,7 @@ import {Category} from "../../category/category.types";
         /* language=SCSS */
         `
             .discount-grid {
-                grid-template-columns: 56px 150px 150px 150px 180px 180px auto 150px;
+                grid-template-columns: 56px 155px auto 150px 180px 180px  150px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;

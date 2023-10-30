@@ -4,6 +4,7 @@ import {CurrentPrice} from "../current-price/current-price.types";
 
 export interface ApproveService {
     id: string;
+    code?: string;
     name?: string;
     categoryId?: string;
     category?: Category;

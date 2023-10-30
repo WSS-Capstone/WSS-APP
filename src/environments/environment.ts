@@ -13,7 +13,7 @@ export const environment = {
     appId: '1:716165936197:web:e40a8a74cbcb8c72521f2c',
     measurementId: 'G-40XM8B81K2',
   },
-  wssApi: 'https://api.loveweddingservice.shop',
+  wssApi: 'https://localhost:5201',
 };
 
 /*

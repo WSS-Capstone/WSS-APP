@@ -29,7 +29,7 @@ import {AccountRequest} from "../../user/user.types";
         /* language=SCSS */
         `
             .feedback-grid {
-                grid-template-columns: 120px 240px auto 180px 180px 180px 80px;
+                grid-template-columns: 151px 166px auto 233px 180px 116px 75px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
