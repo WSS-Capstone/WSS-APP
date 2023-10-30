@@ -22,13 +22,15 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {ChangePasswordComponent} from "./change-password/change-password.component";
+import {CreateAccountComponent} from "./create-account/create-account.component";
 
 @NgModule({
     declarations: [
         UserComponent,
         UserListComponent,
         UserDetailsComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        CreateAccountComponent
     ],
     imports: [
         RouterModule.forChild(itemRoutes),

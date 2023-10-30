@@ -21,6 +21,7 @@ import {UserDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
 import {ChangePasswordComponent} from "../change-password/change-password.component";
+import {CreateAccountComponent} from "../create-account/create-account.component";
 
 @Component({
     selector: 'user-list',
@@ -210,14 +211,13 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     createItem(): void {
-        // Create the product
-        this._matDialog.open(UserDetailsComponent, {
+        this._matDialog.open(CreateAccountComponent, {
             autoFocus: false,
-            data: {
-                service: {}
-            },
-            width: '50vw',
+            data: { },
+            width: '40vw',
         });
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 
     update(id: string): void {

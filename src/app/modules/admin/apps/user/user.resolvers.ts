@@ -3,6 +3,7 @@ import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@ang
 import {catchError, Observable, throwError} from 'rxjs';
 import {UserService} from "./user.service";
 import {Account, AccountResponse} from "./user.types";
+import {Category, CategoryResponse} from "../category/category.types";
 
 @Injectable({
     providedIn: 'root'
@@ -45,5 +46,17 @@ export class UsersResolver implements Resolve<any> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<AccountResponse> {
         return this._service.getItems();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CategoriesResolver implements Resolve<any> {
+    constructor(private _service: UserService) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Category[]> {
+        return this._service.getAllCategories();
     }
 }

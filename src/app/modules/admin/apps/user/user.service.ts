@@ -118,7 +118,8 @@ export class UserService {
         );
     }
 
-    create(item: Account): Observable<Account> {
+    create(item: AccountRequest): Observable<Account> {
+        item.phone = '+84' + item.phone;
         return this.items$.pipe(
             take(1),
             switchMap(items => this._httpClient.post<Account>(ENDPOINTS.account, item).pipe(

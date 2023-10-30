@@ -1,0 +1,197 @@
+<div class="flex flex-col flex-auto -m-6 pt-1">
+
+    <ng-container [formGroup]="form">
+        <!-- Title -->
+        <div class="text-3xl font-extrabold tracking-tight p-5">Tạo tài khoản mới</div>
+
+        <!-- Image -->
+        <div class="flex flex-auto flex-row p-5">
+            <div class="flex flex-col items-center">
+                <div class="max-w-37 h-50 border rounded overflow-hidden">
+                    <img [hidden]="!imgDataOrLink" class="max-w-36 h-full object-cover" [src]="imgDataOrLink"
+                         alt="Lỗi HÌnh Ảnh">
+
+                    <span [hidden]="imgDataOrLink"
+                          class="flex justify-center items-center min-h-20 text-lg font-semibold p-8 pt-12">NO IMAGE</span>
+                </div>
+                <button class="mt-2"
+                        mat-flat-button
+                        [color]="'primary'"
+                        (click)="fileInput.click()">
+                    Chọn ảnh
+                </button>
+                <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
+            </div>
+            <div class="flex flex-auto flex-wrap">
+            <!-- Name, SKU & etc. -->
+            <div class="flex flex-col w-full sm:pl-8">
+
+                <mat-form-field class="w-full">
+                    <mat-label>Nhập e-mail</mat-label>
+                    <input matInput [formControlName]="'email'">
+                    <mat-error *ngIf="form.get('email').hasError('required')">
+                        E-mail không được để trống
+                    </mat-error>
+                    <mat-error *ngIf="form.get('email').hasError('email')">
+                        E-mail sai định dạng
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="flex">
+                    <mat-form-field class="w-full pr-2">
+                        <mat-label>Nhập mật khẩu</mat-label>
+                        <input type="password" matInput [formControlName]="'password'">
+                        <mat-error *ngIf="form.get('password').hasError('required')">
+                            Mật khẩu không được để trống
+                        </mat-error>
+                        <mat-error *ngIf="form.get('password').hasError('minlength')">
+                            Mật khẩu phải ít nhất 6 ký tự
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="w-full">
+                        <mat-label>Nhập lại mật khẩu</mat-label>
+                        <input type="password" matInput [formControlName]="'confirmPassword'">
+                        <mat-error *ngIf="form.get('confirmPassword').hasError('required')">
+                            Xác nhận mật khẩu không được để trống
+                        </mat-error>
+                        <mat-error *ngIf="form.get('confirmPassword').hasError('minlength')">
+                            Xác nhận mật khẩu phải ít nhất 6 ký tự
+                        </mat-error>
+                        <mat-error *ngIf="form.get('confirmPassword').hasError('matchOther')">
+                            Xác nhận mật khẩu không trùng với mật khẩu
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex">
+                    <mat-form-field class="w-full pr-2">
+                        <mat-label>Tên đầy đủ</mat-label>
+                        <input matInput [formControlName]="'fullname'">
+                        <mat-error *ngIf="form.get('fullname').hasError('required')">
+                            Tên đầy đủ không được để trống
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="w-full">
+                        <mat-label>Ngày sinh</mat-label>
+                        <input matInput [matDatepicker]="picker" [formControlName]="'dateOfBirth'">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="form.get('dateOfBirth').hasError('required')">
+                            Ngày sinh không được bỏ trống
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex">
+                    <mat-form-field class="w-full pr-2">
+                        <mat-label>Vai trò</mat-label>
+                        <mat-select [formControlName]="'roleName'">
+                                <ng-container *ngFor="let role of roles">
+                                    <mat-option [value]="role">
+                                        {{role}}
+                                    </mat-option>
+                                </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('roleName').hasError('required')">
+                            Vai trò không được bỏ trống
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="w-full">
+                        <mat-label>Loại dịch vụ</mat-label>
+                        <mat-select [formControlName]="'categoryId'">
+                            <ng-container *ngIf="categories$ | async as cateParent">
+                                <ng-container *ngFor="let category of cateParent">
+                                    <mat-option [value]="category.id">
+                                        {{category.name}}
+                                    </mat-option>
+                                </ng-container>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('categoryId').hasError('required')">
+                            Loại dịch vụ không được bỏ trống
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="flex">
+                    <mat-form-field class="w-full pr-2">
+                        <mat-label>Giới tính</mat-label>
+                        <mat-select [formControlName]="'gender'">
+                            <ng-container>
+                                <mat-option [value]="'Male'">Nam</mat-option>
+                                <mat-option [value]="'Female'">Nữ</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('gender').hasError('required')">
+                            Số điện thoại không được để trống
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-full">
+                        <mat-label>Số điện thoại</mat-label>
+                        <span matPrefix>+84 &nbsp;&nbsp;</span>
+                        <input matInput [formControlName]="'phone'">
+                        <mat-error *ngIf="form.get('phone').hasError('required')">
+                            Số điện thoại không được để trống
+                        </mat-error>
+                        <mat-error *ngIf="form.get('phone').hasError('pattern')">
+                            Số điện thoại sai định dạng
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <mat-form-field class="w-full">
+                    <mat-label>Địa chỉ</mat-label>
+                    <textarea
+                        matInput
+                        [rows]="3"
+                        [formControlName]="'address'"></textarea>
+                    <mat-error *ngIf="form.get('address').hasError('required')">
+                        Địa chỉ không được để trống
+                    </mat-error>
+                    <mat-error *ngIf="form.get('address').hasError('maxlength')">
+                        Địa chỉ không được quá 300 ký tự
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            </div>
+
+
+        </div>
+        <div class="flex justify-end items-center m-4">
+            <div
+                class="flex items-center mr-4 mt-4"
+                *ngIf="flashMessage">
+                <ng-container *ngIf="flashMessage === 'success'">
+                    <mat-icon
+                        class="text-green-500"
+                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                    <span class="ml-2">Thành công</span>
+                </ng-container>
+                <ng-container *ngIf="flashMessage === 'error'">
+                    <mat-icon
+                        class="text-red-500"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                    <span class="ml-2">Có lỗi xảy ra, vui lòng thử lại!</span>
+                </ng-container>
+            </div>
+            <!-- Edit Actions -->
+            <ng-container>
+                <div class="flex items-center justify-between mt-4">
+                    <!-- Close -->
+                    <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
+                    <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        [disabled]="form.invalid"
+                        (click)="create()">
+                        Tạo mới
+                    </button>
+
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+
+</div>
