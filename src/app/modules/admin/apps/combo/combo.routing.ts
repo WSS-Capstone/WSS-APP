@@ -1,18 +1,20 @@
 import {Route} from '@angular/router';
 import {ComboComponent} from "./combo.component";
 import {ComboListComponent} from "./list/combo.component";
-import {CategoriesServiceResolver, CombosResolver} from "./combo.resolvers";
+import {CategoriesServiceResolver, ComboResolver, CombosResolver} from "./combo.resolvers";
+import {ComboDetailsComponent} from "./detail/details.component";
+import {ComboDetailComponent} from "./combo-detail/details.component";
 
 export const itemRoutes: Route[] = [
-    {
-        path      : '',
-        pathMatch : 'full',
-        redirectTo: 'combo'
-    },
-    {
-        path     : 'combo',
-        component: ComboComponent,
-        children : [
+    // {
+    //     path      : '',
+    //     pathMatch : 'full',
+    //     redirectTo: 'combo'
+    // },
+    // {
+        // path     : 'combo',
+        // component: ComboComponent,
+        // children : [
             {
                 path     : '',
                 component: ComboListComponent,
@@ -21,8 +23,16 @@ export const itemRoutes: Route[] = [
                     items: CombosResolver,
                     // category  : CategoryResolver,
                 }
+            },
+            {
+                path     : ':id',
+                component: ComboDetailComponent,
+                resolve  : {
+                    items: CombosResolver,
+                    item: ComboResolver
+                }
             }
-        ]
+        // ]
         /*children : [
             {
                 path     : '',
@@ -44,5 +54,5 @@ export const itemRoutes: Route[] = [
                 ]
             }
         ]*/
-    }
+    // }
 ];

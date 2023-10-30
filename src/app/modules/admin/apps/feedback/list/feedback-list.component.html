@@ -70,13 +70,13 @@
                                     </div>
                                     <div
                                         class="">
-                                        {{item.user.fullname}}
+                                        {{item.user?.fullname}}
                                     </div>
                                     <div
                                         class="">
                                         {{item.content}}
                                     </div>
-                                    <div class="">{{item.service.name}}</div>
+                                    <div class="">{{item.service?.name}}</div>
                                     <div class="flex flex-row">
                                         <span *ngFor="let n of numSequence(MAX_RATING - item.rating)">
                                             <mat-icon

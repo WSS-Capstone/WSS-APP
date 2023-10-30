@@ -6,17 +6,22 @@ export interface Combo {
     id: string;
     name?: string;
     discountValueCombo?: number;
+    disountPrice?: number;
     totalAmount?: number;
     description?: string;
     imageUrl: string;
     status: boolean;
+    rating: number;
     comboServices?: ComboService[]
 }
 
 export interface ComboService {
     id:string;
-    service: Service;
-    combo: Combo;
+    name: string;
+    categoryId: string;
+    currentPrices: CurrentPrice;
+    quantity: number;
+    unit: string;
 }
 
 export interface ComboPagination {

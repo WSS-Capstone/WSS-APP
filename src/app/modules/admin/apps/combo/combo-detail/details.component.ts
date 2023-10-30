@@ -15,21 +15,48 @@ import {ComboService} from "../combo.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
+import {ActivatedRoute} from "@angular/router";
+import {environment} from "../../../../../../environments/environment";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
     selector: 'category-details',
     templateUrl: './details.component.html',
+    styles: [
+        /* language=SCSS */
+        `
+            .combo-detail-grid {
+                grid-template-columns: 120px 150px auto 150px 150px 80px;
+
+                /* @screen sm {
+                    grid-template-columns: 57px auto 80px;
+                }
+
+                @screen md {
+                    grid-template-columns: 56px 126px auto 80px;
+                } */
+
+                /* @screen lg {
+                    grid-template-columns: 56px 200px 200px 200px 200px 200px auto 200px;
+                } */
+            }
+        `
+    ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations
 })
-export class ComboDetailsComponent implements OnInit, OnDestroy {
+export class ComboDetailComponent implements OnInit, OnDestroy {
     flashMessage: 'success' | 'error' | null = null;
     labels$: Observable<Label[]>;
     itemChanged: Subject<Combo> = new Subject<Combo>();
     item$: Observable<Combo>;
     categories$: Observable<Category[]>;
+    tempImageUrl: string = null;
+    isLoading: boolean = false;
+    imgDataOrLink: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    readonly MAX_RATING = 5;
 
     form: FormGroup;
 
@@ -39,9 +66,9 @@ export class ComboDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
-        @Inject(MAT_DIALOG_DATA) private _data: { service: Combo },
         private _service: ComboService,
-        private _matDialogRef: MatDialogRef<ComboDetailsComponent>
+        private acitvatedRoute: ActivatedRoute,
+        private sanitizer: DomSanitizer,
     ) {
         this._initForm();
     }
@@ -54,31 +81,28 @@ export class ComboDetailsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this.categories$ = this._service.categories$;
-        // Edit
-        if (this._data.service.id) {
-            console.log("Edit");
-            // Request the data from the server
-            this._service.getItem(this._data.service.id).subscribe();
-
-            // Get the note
-            this.item$ = this._service.item$;
-
-            this.item$.subscribe((value) => {
-                this._patchValue(value);
+        this.acitvatedRoute.paramMap.subscribe(param => {
+            this.isLoading = true;
+            const id = param.get('id');
+            this._service.getItem(id).subscribe(p => {
+                this.item$ = this._service.item$;
+                this.isLoading = false;
+                this.item$.subscribe(value => this._patchValue(value));
+                this.categories$ = this._service.categories$;
             });
-        }
+        })
     }
 
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
-            name: [null, [Validators.required, Validators.maxLength(80)]],
-            categoryId: [null],
+            name: [null, [Validators.required]],
             description: [null],
-            ownerId: [null],
-            quantity: [null],
-            coverUrl: [null],
+            discountValueCombo: [null],
+            discountPrice: [null],
+            imageUrl: [null],
+            rating: [null],
+            totalAmount: [null, [Validators.required]],
             status: [null],
         });
     }
@@ -87,13 +111,15 @@ export class ComboDetailsComponent implements OnInit, OnDestroy {
         this.form.patchValue({
             id: value.id,
             name: value.name,
-            // categoryId: value.categoryId,
-            // description: value.description,
-            // ownerId: value.ownerId,
-            // quantity: value.quantity,
-            // coverUrl: value.coverUrl,
+            description: value.description,
+            discountValueCombo: value.discountValueCombo,
+            discountPrice: value.disountPrice,
+            imageUrl: value.imageUrl,
+            rating: value.rating,
+            totalAmount: value.totalAmount,
             status: value.status,
         });
+        this.tempImageUrl = value.imageUrl;
     }
 
     /**
@@ -109,30 +135,37 @@ export class ComboDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    create(): void {
-        this._service.create(this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
+    numSequence(n: number): Array<number> {
+        return Array(n);
+    }
 
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 3100);
+    clearImage() {
+
+    }
+    create(): void {
+        // this._service.create(this.form.value).pipe(
+        //     map(() => {
+        //         // Get the note
+        //         // this.cate$ = this._categoryService.category$;
+        //         this.showFlashMessage('success');
+        //     })).subscribe();
+        //
+        // setTimeout(() => {
+        //     this._matDialogRef.close();
+        // }, 3100);
     }
 
     update(): void {
-        this._service.update(this.form.get('id').value ,this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
-
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 1200);
+        // this._service.update(this.form.get('id').value ,this.form.value).pipe(
+        //     map(() => {
+        //         // Get the note
+        //         // this.cate$ = this._categoryService.category$;
+        //         this.showFlashMessage('success');
+        //     })).subscribe();
+        //
+        // setTimeout(() => {
+        //     this._matDialogRef.close();
+        // }, 1200);
     }
 
     /**
@@ -141,28 +174,32 @@ export class ComboDetailsComponent implements OnInit, OnDestroy {
      * @param cate
      * @param fileList
      */
-    uploadImage(cate: Combo, fileList: FileList): void {
-        // Return if canceled
-        if (!fileList.length) {
+    uploadImage(event: any): void {
+        if (!event.target.files[0]) {
             return;
         }
 
-        const allowedTypes = ['image/jpeg', 'image/png'];
-        const file = fileList[0];
+        const file = event.target.files[0];
+        // send request upload file
 
-        // Return if the file is not allowed
-        if (!allowedTypes.includes(file.type)) {
-            return;
-        }
-
-        this._readAsDataURL(file).then((data) => {
-
-            // Update the image
-            cate.imageUrl = data;
-
-            // Update the note
-            this.itemChanged.next(cate);
+        this._service.uploadImage(file).subscribe((res) => {
+            console.log('res', res);
+            this.tempImageUrl = res;
+            this.form.patchValue({imageUrls: this.tempImageUrl})
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.imgDataOrLink = this.mapImageUrl(res);
+                this._changeDetectorRef.markForCheck();
+            };
+            // this.imgDataOrLink = this.mapImageUrl(res);
         });
+    }
+
+    mapImageUrl(imageUrl: string): any {
+        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+        var apiUrl = environment.wssApi;
+        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
     }
 
     /**
@@ -234,4 +271,6 @@ export class ComboDetailsComponent implements OnInit, OnDestroy {
             this._changeDetectorRef.markForCheck();
         }, 1000);
     }
+
+    protected readonly Math = Math;
 }

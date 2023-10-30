@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
 import {Combo, ComboPagination, ComboResponse} from './combo.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
-import {Category, CategoryResponse} from "../category/category.types";
+import {Category, CategoryResponse, FileInfo} from "../category/category.types";
 
 @Injectable({
     providedIn: 'root'
@@ -167,6 +167,17 @@ export class ComboService {
                     return isDeleted;
                 })
             ))
+        );
+    }
+
+    uploadImage(data : File): Observable<string>
+    {
+        let formData = new FormData();
+        formData.append('files', data);
+        return this._httpClient.post<FileInfo[]>(ENDPOINTS.file, formData).pipe(
+            map((res) => {
+                return res[0].link;
+            })
         );
     }
 
