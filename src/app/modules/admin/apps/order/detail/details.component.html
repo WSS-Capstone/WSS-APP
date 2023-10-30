@@ -227,10 +227,15 @@
             </div>
 
             <div class="mt-6">
-                <ng-container>
+                <ng-container *ngIf="item.statusOrder === 'PENDING' && item.statusOrder !== 'CANCEL'">
                     <button mat-raised-button color="primary">Xác nhận đơn hàng</button>
                 </ng-container>
-
+                <ng-container *ngIf="item.statusOrder !== 'PENDING' && item.statusOrder !== 'DONE' && item.statusOrder !== 'CANCEL'">
+                    <button mat-raised-button color="primary" class="mr-4">Hoàn tất đơn hàng</button>
+                </ng-container>
+                <ng-container *ngIf="(item.statusOrder === 'PENDING' || item.statusOrder === 'CONFIRM') && item.statusOrder !== 'DONE' && item.statusOrder !== 'CANCEL'">
+                    <button mat-raised-button color="warn">Hủy đơn hàng</button>
+                </ng-container>
             </div>
 
             <div class="text-4xl font-extrabold tracking-tight mt-4">Danh sách dịch vụ đặt</div>
