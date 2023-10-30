@@ -93,6 +93,15 @@ export class OrderService {
         );
     }
 
+    getOrderById(id: string): Observable<Order> {
+        return this._httpClient.get<Order>(ENDPOINTS.order + `/${id}`).pipe(
+            tap((response) => {
+                console.log(response);
+                this._item.next(response);
+                return response;
+            })
+        )
+    }
 
     getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<OrderResponse> {
@@ -124,18 +133,21 @@ export class OrderService {
      * Get product by id
      */
     getItem(id: string): Observable<Order> {
+        if(this._items.getValue() === null) {
+            return this.getOrderById(id)
+        }
+
         return this._items.pipe(
             take(1),
             map((products) => {
+                if(products && products.length > 0) {
+                    const product = products.find(item => item.id === id) || null;
 
-                // Find the product
-                const product = products.find(item => item.id === id) || null;
-
-                // Update the product
-                this._item.next(product);
-
-                // Return the product
-                return product;
+                    // Update the product
+                    this._item.next(product);
+                    // Return the product
+                    return product;
+                }
             }),
             switchMap((product) => {
 
@@ -158,31 +170,6 @@ export class OrderService {
 
                 // Update the product
                 this._itemWedding.next(product);
-
-                // Return the product
-                return product;
-            }),
-            switchMap((product) => {
-
-                if (!product) {
-                    return throwError('Could not found product with id of ' + id + '!');
-                }
-
-                return of(product);
-            })
-        );
-    }
-
-    getVoucher(id: string): Observable<Discount> {
-        return this._itemsVoucher.pipe(
-            take(1),
-            map((products) => {
-
-                // Find the product
-                const product = products.find(item => item.id === id) || null;
-
-                // Update the product
-                this._itemVoucher.next(product);
 
                 // Return the product
                 return product;

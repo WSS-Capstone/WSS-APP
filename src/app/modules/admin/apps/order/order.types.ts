@@ -1,16 +1,19 @@
 import { Combo } from "../combo/combo.types";
 import {Service} from "../service/service.types";
 import {Task} from "../task/task.types";
+import {Discount} from "../discount/discount.types";
 export interface Order {
     id: string;
     code: string;
     customerId: string;
     ownerId: string;
     weddingInformationId?: string;
+    weddingInformation: WeddingInformation;
     fullname?: string;
     address?: string;
     phone?: string;
     voucherId: string;
+    voucher: Discount;
     orderDetails: OrderDetail[];
     comboId?: string;
     combo: Combo;

@@ -25,9 +25,8 @@ export const itemRoutes: Route[] = [
                 path         : ':id',
                 component    : OrderDetailsComponent,
                 resolve      : {
-                    item     : OrderResolver,
-                    vouchers : DiscountsResolver,
-                    weddings : WeddingsServiceResolver,
+                    items    : OrdersResolver,
+                    item     : OrderResolver
                 },
             }
         // ]

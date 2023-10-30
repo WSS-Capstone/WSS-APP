@@ -1,7 +1,5 @@
 <div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 overflow-auto bg-card dark:bg-transparent">
     <ng-container *ngIf="(item$ | async) as item">
-    <ng-container *ngIf="(voucher$ | async) as voucher">
-    <ng-container *ngIf="(weddingInfo$ | async) as wedding">
         <!-- Header -->
         <div
             class="relative flex flex-col flex-0 py-8 px-6 md:px-8 border-b">
@@ -19,7 +17,7 @@
 
             <div class="mt-8 grid grid-cols-1 md:grid-cols-2">
                 <div class="">
-                    <div class="text-3xl font-extrabold tracking-tight">Đơn hàng #{{item.code}}</div>
+                    <div class="text-3xl font-extrabold tracking-tight">Đơn hàng #{{item.voucher.code}}</div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
                         <div>
                             <div class="flex flex-row h-18">
@@ -85,7 +83,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Phiếu giảm giá</div>
-                                    <div class="text-lg font-semibold">{{voucher.name ?? 'Không áp dụng'}}</div>
+                                    <div class="text-lg font-semibold">{{item.voucher.name ?? 'Không áp dụng'}}</div>
                                 </div>
                             </div>
                             <div class="flex flex-row h-18">
@@ -155,7 +153,7 @@
                         </div>
                         <div class="ml-3">
                             <div class="text-[#8E8EA1] text-sm ">Ngày cưới</div>
-                            <div class="text-lg font-semibold">{{wedding.weddingDay | date: 'dd/MM/yyyy'}}</div>
+                            <div class="text-lg font-semibold">{{item.weddingInformation.weddingDay | date: 'dd/MM/yyyy'}}</div>
                         </div>
                     </div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
@@ -169,7 +167,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Ông</div>
-                                    <div class="text-lg font-semibold">{{wedding.nameBrideFather}}</div>
+                                    <div class="text-lg font-semibold">{{item.weddingInformation.nameBrideFather}}</div>
                                 </div>
                             </div>
                             <div class="flex flex-row h-18">
@@ -178,7 +176,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Bà</div>
-                                    <div class="text-lg font-semibold">{{wedding.nameBrideMother}}</div>
+                                    <div class="text-lg font-semibold">{{item.weddingInformation.nameBrideMother}}</div>
                                 </div>
                             </div>
                             <div class="flex flex-row h-18">
@@ -187,7 +185,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Chú rễ</div>
-                                    <div class="text-lg font-semibold">{{wedding.nameBride}}</div>
+                                    <div class="text-lg font-semibold">{{item.weddingInformation.nameBride}}</div>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +199,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Ông</div>
-                                    <div class="text-lg font-semibold">{{wedding.nameGroomFather}}</div>
+                                    <div class="text-lg font-semibold">{{item.weddingInformation.nameGroomFather}}</div>
                                 </div>
                             </div>
                             <div class="flex flex-row h-18">
@@ -210,7 +208,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Bà</div>
-                                    <div class="text-lg font-semibold">{{wedding.nameGroomMother}}</div>
+                                    <div class="text-lg font-semibold">{{item.weddingInformation.nameGroomMother}}</div>
                                 </div>
                             </div>
                             <div class="flex flex-row h-18">
@@ -219,7 +217,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Cô dâu</div>
-                                    <div class="text-lg font-semibold">{{wedding.nameGroom}}</div>
+                                    <div class="text-lg font-semibold">{{item.weddingInformation.nameGroom}}</div>
                                 </div>
                             </div>
                         </div>
@@ -332,8 +330,6 @@
     </ng-container>
         </div>
 </div>
-</ng-container>
-</ng-container>
 </ng-container>
 </div>
 

@@ -85,20 +85,20 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             this.isLoading = true;
             const id = param.get('id');
             this._service.getItem(id).subscribe(p => {
-                console.log(p)
+                this.item$ = this._service.item$;
                 this.isLoading = false;
             });
 
             // Get the note
-            this.item$ = this._service.item$;
-            this.item$.subscribe((data) => {
-                // this._patchValue(value);
-                this.weddingInfo$ = this._service.getWedding(data.weddingInformationId)
-                this.voucher$ = this._discountService.getItem(data.voucherId)
-                // this.voucher$ = this._service.vouchers$.pipe(
-                //     map(value => value.find(x => x.id === data.voucherId))
-                // )
-            });
+
+            // this.item$.subscribe((data) => {
+            //     // this._patchValue(value);
+            //     this.weddingInfo$ = this._service.getWedding(data.weddingInformationId)
+            //     this.voucher$ = this._discountService.getItem(data.voucherId)
+            //     // this.voucher$ = this._service.vouchers$.pipe(
+            //     //     map(value => value.find(x => x.id === data.voucherId))
+            //     // )
+            // });
           })
         // Edit
         // if (this._data.service.id) {
