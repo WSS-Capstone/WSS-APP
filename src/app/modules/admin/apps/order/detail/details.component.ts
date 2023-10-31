@@ -170,6 +170,10 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+    createTask() {
+
+    }
+
     updateStatus(id: string, status: string, text: string) {
         // const confirmation = this._fuseConfirmationService.open({
         //     title: text.charAt(0).toUpperCase() + ' đơn hàng',

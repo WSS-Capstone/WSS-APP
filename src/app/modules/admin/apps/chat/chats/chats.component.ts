@@ -1,7 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import {map, Subject, takeUntil} from 'rxjs';
 import { Chat, Profile } from 'app/modules/admin/apps/chat/chat.types';
 import { ChatService } from 'app/modules/admin/apps/chat/chat.service';
+import {UserService} from "../../../../../core/user/user.service";
+import {User} from "../../../../../core/user/user.types";
+import {collection, collectionData, Firestore, limit, orderBy, query} from "@angular/fire/firestore";
+import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {FireStoreService} from "../firestore.service";
 
 @Component({
     selector       : 'chat-chats',
@@ -17,6 +22,7 @@ export class ChatsComponent implements OnInit, OnDestroy
     filteredChats: Chat[];
     profile: Profile;
     selectedChat: Chat;
+    user: User;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -24,6 +30,9 @@ export class ChatsComponent implements OnInit, OnDestroy
      */
     constructor(
         private _chatService: ChatService,
+        private _userService: UserService,
+        private _fireservice: FireStoreService,
+        private _firestore: AngularFirestore,
         private _changeDetectorRef: ChangeDetectorRef
     )
     {
@@ -38,6 +47,13 @@ export class ChatsComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this._userService.user$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((user: User) => {
+                console.log("user", user);
+                this.user = user;
+                this.getListChats(user.id);
+            });
         // Chats
         this._chatService.chats$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -82,6 +98,42 @@ export class ChatsComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    getListChats(id: string) {
+        // this._fireservice.getCollectionStream(
+        //     [['chats']]
+        // ).pipe(map(data => console.log(data[0])))
+
+
+        this._firestore
+            .collection('chats')
+            .get()
+            .subscribe((querySnapshot) => {
+                this.chats = [];
+
+                querySnapshot.forEach((doc) => {
+                    // @ts-ignore
+                    const chatRoom = doc.data().chatRoom.filter(c => c.user1 === this.user.id || c.user2 === this.user.id);
+                    const messages = chatRoom.messages;
+                    console.log(doc)
+                    const latestMessage = messages
+                        .sort((a, b) => {
+                            // @ts-ignore
+                            return new Date(b.createdAt) - new Date(a.createdAt);
+                        })[0];
+
+                    if (latestMessage) {
+                        console.log(latestMessage)
+                        this.chats.push({
+                            id: chatRoom.id,
+                            contactId: chatRoom.user1 === this.user.id ? chatRoom.user2 : chatRoom.user1,
+                            lastMessage: latestMessage.content,
+                            lastMessageAt: latestMessage.createdAt
+                        })
+                    }
+                });
+            });
+    }
 
     /**
      * Filter the chats

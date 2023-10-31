@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { Chat, Contact, Profile } from 'app/modules/admin/apps/chat/chat.types';
+import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {data} from "autoprefixer";
+import {Account, AccountResponse, User} from "../user/user.types";
+import {ENDPOINTS} from "../../../../core/global.constants";
 
 @Injectable({
     providedIn: 'root'
@@ -10,14 +14,16 @@ export class ChatService
 {
     private _chat: BehaviorSubject<Chat> = new BehaviorSubject(null);
     private _chats: BehaviorSubject<Chat[]> = new BehaviorSubject(null);
+    private _users: BehaviorSubject<Account[]> = new BehaviorSubject(null);
     private _contact: BehaviorSubject<Contact> = new BehaviorSubject(null);
     private _contacts: BehaviorSubject<Contact[]> = new BehaviorSubject(null);
     private _profile: BehaviorSubject<Profile> = new BehaviorSubject(null);
+    private readonly CHAT_COLLECTION: string = 'chats';
 
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient)
+    constructor(private _httpClient: HttpClient, private firestore: AngularFirestore)
     {
     }
 
@@ -65,15 +71,32 @@ export class ChatService
         return this._profile.asObservable();
     }
 
+    get items$(): Observable<Account[]> {
+        return this._users.asObservable();
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    getUsers(): Observable<any>
+    {
+        return this._httpClient.get<AccountResponse>(ENDPOINTS.account + "?roleNames=Staff&roleNames=Partner&roleNames=Customer&roleNames=Admin&roleNames=Owner").pipe(
+            tap((response) => {
+                console.log(response);
+                this._users.next(response.data);
+            })
+        );
+    }
 
     /**
      * Get chats
      */
     getChats(): Observable<any>
     {
+        // this.firestore.collection(this.CHAT_COLLECTION).get().subscribe(data => {
+
+        // })
         return this._httpClient.get<Chat[]>('api/apps/chat/chats').pipe(
             tap((response: Chat[]) => {
                 this._chats.next(response);

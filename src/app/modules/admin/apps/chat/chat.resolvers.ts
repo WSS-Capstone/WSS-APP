@@ -144,3 +144,34 @@ export class ChatProfileResolver implements Resolve<any>
         return this._chatService.getProfile();
     }
 }
+
+@Injectable({
+    providedIn: 'root'
+})
+export class ChatUsersResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _chatService: ChatService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Profile> | any
+    {
+        return this._chatService.getUsers();
+    }
+}

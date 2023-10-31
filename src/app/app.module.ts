@@ -11,11 +11,13 @@ import {mockApiServices} from 'app/mock-api';
 import {LayoutModule} from 'app/layout/layout.module';
 import {AppComponent} from 'app/app.component';
 import {appRoutes} from 'app/app.routing';
-import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFireModule, FIREBASE_OPTIONS} from "@angular/fire/compat";
 import {environment} from "../environments/environment";
 import {AngularFireAuthModule} from "@angular/fire/compat/auth";
 import {initializeApp, provideFirebaseApp} from "@angular/fire/app";
 import {getAuth, provideAuth} from "@angular/fire/auth";
+import {getFirestore, provideFirestore} from "@angular/fire/firestore";
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -26,10 +28,11 @@ const routerConfig: ExtraOptions = {
 const initFirebase = [
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    AngularFirestoreModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     // provideAnalytics(() => getAnalytics()),
     provideAuth(() => getAuth()),
-    // provideFirestore(() => getFirestore()),
+    provideFirestore(() => getFirestore()),
     // provideFunctions(() => getFunctions()),
 ];
 
@@ -54,6 +57,12 @@ const initFirebase = [
         LayoutModule,
 
         ...initFirebase
+    ],
+    providers: [
+        {
+            provide: FIREBASE_OPTIONS,
+            useValue: environment.firebase,
+        },
     ],
     bootstrap: [
         AppComponent

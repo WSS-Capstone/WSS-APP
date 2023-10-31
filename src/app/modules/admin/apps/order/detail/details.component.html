@@ -259,7 +259,7 @@
                                 <div class="">Địa điểm</div>
                                 <div class="">Giá tiền</div>
                                 <div class="">Trạng thái</div>
-                                <div>Chi tiết</div>
+                                <div>Tạo công việc</div>
                             </div>
 
                             <!-- Rows -->
@@ -304,7 +304,7 @@
                                             <button
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
-                                                routerLink="{{item.id}}"
+                                                (click)="createTask()"
                                                 >
                                                 <mat-icon
                                                     class="icon-size-5"
