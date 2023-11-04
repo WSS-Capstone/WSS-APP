@@ -16,6 +16,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import {formatDate} from "@angular/common";
+import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 @Component({
     selector: 'feedback-details',
@@ -41,6 +42,7 @@ export class FeedbackDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
+        private _fuseConfirmationService: FuseConfirmationService,
         @Inject(MAT_DIALOG_DATA) private _data: { service: Feedback },
         private _service: FeedbackService,
         private _matDialogRef: MatDialogRef<FeedbackDetailsComponent>
@@ -78,18 +80,17 @@ export class FeedbackDetailsComponent implements OnInit, OnDestroy {
             createDate: [null],
             content: [null],
             rating: [null],
-            orderDetailId: [null],
-            userId: [null],
+            fullname: [null],
+            serviceName: [null],
             status: [null],
-            imageUrl: [null],
         });
     }
 
     private _patchValue(value: Feedback) {
         this.form.patchValue({
             id: value.id,
-            userId: value.userId,
-            orderDetailId: value.orderDetailId,
+            fullname: value.user?.fullname,
+            serviceName: value.service?.name,
             createDate: formatDate(value.createDate, 'dd/MM/yyyy hh:mm', 'en'),
             content: value.content,
             rating: value.rating,
@@ -138,6 +139,81 @@ export class FeedbackDetailsComponent implements OnInit, OnDestroy {
         setTimeout(() => {
             this._matDialogRef.close();
         }, 1200);
+    }
+
+    show(id: string): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Hiển thị đánh giá',
+            message: 'Bạn có chắc chắn muốn hiển thị đánh giá này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Hiện',
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(result);
+                // this._service.getItem(id).subscribe(
+                //     value => {
+                //         this._service.update(id, value).subscribe(() => {
+                //             this.openSnackBar('Hiện đánh giá thành công', 'Đóng');
+                //             // Close the details
+                //             this.closeDetails();
+                //         });
+                //     }
+                // )
+            }
+        });
+    }
+
+    hide(id: string): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Ẩn đánh giá',
+            message: 'Bạn có chắc chắn muốn ẩn đánh giá này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Ẩn',
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(result);
+                // this._service.getItem(id).subscribe(
+                //     value => {
+                //         this._service.update(id, value).subscribe(() => {
+                //             this.openSnackBar('Hiện đánh giá thành công', 'Đóng');
+                //             // Close the details
+                //             this.closeDetails();
+                //         });
+                //     }
+                // )
+            }
+        });
     }
 
     /**
