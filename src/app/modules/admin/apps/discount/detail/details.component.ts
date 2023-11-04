@@ -15,6 +15,8 @@ import {DiscountService} from "../discount.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
+import { environment } from 'environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'discount-details',
@@ -39,6 +41,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
+        private sanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) private _data: { service: Discount },
         private _service: DiscountService,
         private _matDialogRef: MatDialogRef<DiscountDetailsComponent>
@@ -172,6 +175,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
      * @param fileList
      */
     uploadImage(event: any): void {
+        // Return if canceled
         if (!event.target.files[0]) {
             return;
         }
@@ -180,34 +184,24 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
         // send request upload file
 
         this._service.uploadImage(file).subscribe((res) => {
-            this.imgDataOrLink = res;
+            console.log('res', res);
             this.form.patchValue({
-                imageUrl: this.imgDataOrLink,
+                imageUrl: res,
             });
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.imgDataOrLink = this.mapImageUrl(res);
+                this._changeDetectorRef.markForCheck();
+            };
+            // this.imgDataOrLink = this.mapImageUrl(res);
         });
+    }
 
-
-        // Return if canceled
-        // if (!fileList.length) {
-        //     return;
-        // }
-        //
-        // const allowedTypes = ['image/jpeg', 'image/png'];
-        // const file = fileList[0];
-        //
-        // // Return if the file is not allowed
-        // if (!allowedTypes.includes(file.type)) {
-        //     return;
-        // }
-        //
-        // this._readAsDataURL(file).then((data) => {
-        //
-        //     // Update the image
-        //     cate.imageUrl = data;
-        //
-        //     // Update the note
-        //     this.itemChanged.next(cate);
-        // });
+    mapImageUrl(imageUrl: string): any {
+        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+        var apiUrl = environment.wssApi;
+        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
     }
 
     /**
