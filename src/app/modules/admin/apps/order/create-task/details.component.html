@@ -1,0 +1,44 @@
+<div class="flex flex-col flex-auto -m-6 pt-1">
+
+    <ng-container *ngIf="(item$ | async) as cate" [formGroup]="form">
+        <!-- Title -->
+        <div class="text-3xl font-extrabold tracking-tight p-5">Tạo công việc</div>
+
+        <!-- Image -->
+        <div class="flex flex-auto flex-row p-5">
+
+
+        </div>
+        <div class="flex justify-end items-center m-4">
+            <div
+                class="flex items-center mr-4 mt-4"
+                *ngIf="flashMessage">
+                <ng-container *ngIf="flashMessage === 'success'">
+                    <mat-icon
+                        class="text-green-500"
+                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                    <span class="ml-2">Thành công</span>
+                </ng-container>
+                <ng-container *ngIf="flashMessage === 'error'">
+                    <mat-icon
+                        class="text-red-500"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                    <span class="ml-2">Có lỗi xảy ra, vui lòng thử lại!</span>
+                </ng-container>
+            </div>
+            <!-- Add Actions -->
+                <div class="flex items-center justify-center">
+                    <!-- Save -->
+                    <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
+                    <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        [disabled]="form.invalid"
+                        (click)="create()">
+                        Thêm mới
+                    </button>
+                </div>
+        </div>
+    </ng-container>
+
+</div>

@@ -34,6 +34,7 @@ export interface OrderDetail {
     service: Service;
     serviceId: string;
     startTime: string;
+    endTime: string;
     status: string;
     tasks: Task[];
 }

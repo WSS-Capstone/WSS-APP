@@ -1,6 +1,6 @@
 import {User} from "../user/user.types";
 import {Service} from "../service/service.types";
-import {Order} from "../order/order.types";
+import {Order, OrderDetail} from "../order/order.types";
 
 export interface Task {
     id: string;
@@ -14,6 +14,8 @@ export interface Task {
     staff?: User;
     service?: Service;
     order?: Order;
+    orderDetail?: OrderDetail;
+    createBy?: User;
 }
 
 export interface TaskPagination {

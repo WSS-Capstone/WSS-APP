@@ -20,12 +20,14 @@ import {itemRoutes} from "./order.routing";
 import {OrderDetailsComponent} from "./detail/details.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
+import { OrderCreateTaskComponent } from './create-task/details.component';
 
 @NgModule({
     declarations: [
         OrderComponent,
         OrderListComponent,
-        OrderDetailsComponent
+        OrderDetailsComponent,
+        OrderCreateTaskComponent,
     ],
     imports: [
         RouterModule.forChild(itemRoutes),

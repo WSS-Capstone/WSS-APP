@@ -228,7 +228,7 @@
 
             <div class="mt-6">
                 <ng-container *ngIf="item.statusOrder === 'PENDING' && item.statusOrder !== 'CANCEL'">
-                    <button mat-raised-button color="primary">Xác nhận đơn hàng</button>
+                    <button mat-raised-button color="primary" class="mr-4">Xác nhận đơn hàng</button>
                 </ng-container>
                 <ng-container *ngIf="item.statusOrder !== 'PENDING' && item.statusOrder !== 'DONE' && item.statusOrder !== 'CANCEL'">
                     <button mat-raised-button color="primary" class="mr-4">Hoàn tất đơn hàng</button>
@@ -304,7 +304,7 @@
                                             <button
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
-                                                (click)="createTask()"
+                                                (click)="createTask(orderDetail.id)"
                                                 >
                                                 <mat-icon
                                                     class="icon-size-5"

@@ -2,82 +2,99 @@
 
     <ng-container *ngIf="(item$ | async) as cate" [formGroup]="form">
         <!-- Title -->
-        <div class="text-3xl font-extrabold tracking-tight p-5">{{cate.id ? 'Chi tiết công việc' : 'Thêm phiếu giảm giá'}}</div>
+        <div class="text-3xl font-extrabold tracking-tight p-5">{{cate.id ? 'Chi tiết công việc' : 'Thêm công việc'}}</div>
 
         <!-- Image -->
         <div class="flex flex-auto flex-row p-5">
-            <!-- Name, SKU & etc. -->
-            <div class="flex flex-col w-full sm:pl-8">
-
-                <!-- Name -->
+            <div class="w-1/2 mr-4">
                 <mat-form-field class="w-full">
-                    <mat-label>Tên phiếu giảm giá</mat-label>
-                    <input matInput [formControlName]="'name'">
-                    <mat-error *ngIf="form.get('name').hasError('required')">
-                        Tên phiếu giảm giá không được để trống
-                    </mat-error>
+                    <mat-label>Mã số</mat-label>
+                    <input matInput readonly [formControlName]="'code'">
                 </mat-form-field>
 
                 <mat-form-field class="w-full">
-                    <mat-label>Mã giảm giá</mat-label>
-                    <input matInput [formControlName]="'code'">
-                    <mat-error *ngIf="form.get('code').hasError('required')">
-                        Mã giảm giá không được để trống
-                    </mat-error>
+                    <mat-label>Tên công việc</mat-label>
+                    <input matInput readonly [formControlName]="'taskName'">
                 </mat-form-field>
 
-                <!-- Category -->
+                <mat-form-field class="w-full" >
+                    <mat-label>Người thực hiện</mat-label>
+                    <input *ngIf="cate.partner !== null" matInput readonly [formControlName]="'partnerName'">
+                    <input *ngIf="cate.staff !== null" matInput readonly [formControlName]="'staffName'">
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Đơn hàng</mat-label>
+                    <input matInput readonly [formControlName]="'orderName'">
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Tên dịch vụ</mat-label>
+                    <input matInput readonly [formControlName]="'serviceName'">
+                </mat-form-field>
+
                 <div class="flex">
                     <mat-form-field class="w-full pr-2">
                         <mat-label>Ngày bắt đầu</mat-label>
-                        <input matInput [matDatepicker]="picker" [formControlName]="'startTime'" [matDatepickerFilter]="filterStart">
+                        <input matInput readonly [matDatepicker]="picker" [formControlName]="'startTime'">
                         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
-                        <mat-error *ngIf="form.get('startTime').hasError('required')">
-                            Ngày bắt đầu áp dụng không được bỏ trống
-                        </mat-error>
+                        <!-- <mat-datepicker #picker></mat-datepicker> -->
                     </mat-form-field>
                     <mat-form-field class="w-full">
                         <mat-label>Ngày kết thúc</mat-label>
-                        <input matInput [matDatepicker]="picker2" [formControlName]="'endTime'" [matDatepickerFilter]="filterEnd">
+                        <input matInput readonly [matDatepicker]="picker2" [formControlName]="'endTime'">
                         <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-                        <mat-datepicker #picker2></mat-datepicker>
-                        <mat-error *ngIf="form.get('endTime').hasError('required')">
-                            Ngày kết thúc không được bỏ trống
-                        </mat-error>
+                        <!-- <mat-datepicker #picker2></mat-datepicker> -->
                     </mat-form-field>
                 </div>
 
-                <mat-form-field class="w-full">
-                    <mat-label>Số tiền tối thiểu để áp dụng</mat-label>
-                    <input matInput [formControlName]="'minAmount'">
-                    <mat-error *ngIf="form.get('minAmount').hasError('required')">
-                        Số tiền tối thiểu để áp dụng không được để trống
-                    </mat-error>
-                    <mat-error *ngIf="form.get('minAmount').hasError('min')">
-                        Số tiền tối thiểu phải lớn hơn hoặc bằng 1,000 VNĐ
-                    </mat-error>
-                    <mat-error *ngIf="form.get('minAmount').hasError('pattern')">
-                        Số tiền tối thiểu chỉ được nhập số
-                    </mat-error>
-                </mat-form-field>
-
-                <mat-form-field class="w-full">
-                    <mat-label>Số tiền giảm</mat-label>
-                    <input matInput [formControlName]="'discountValueVoucher'">
-                    <mat-error *ngIf="form.get('discountValueVoucher').hasError('required')">
-                        Số tiền giảm không được để trống
-                    </mat-error>
-                    <mat-error *ngIf="form.get('minAmount').hasError('min')">
-                        Số tiền giảm phải lớn hơn hoặc bằng 1,000 VNĐ
-                    </mat-error>
-                    <mat-error *ngIf="form.get('minAmount').hasError('pattern')">
-                        Số tiền giảm chỉ được nhập số
-                    </mat-error>
-                </mat-form-field>
+                <div class="flex flex-row truncate">
+                    <div class="mr-4">Trạng thái</div>
+                    <ng-container *ngIf="cate.status === 'EXPECTED'"
+                                  class="flex flex-col justify-center content-center ">
+                        <mat-icon
+                            class="text-gray-600 icon-size-5"
+                            [svgIcon]="'mat_outline:pending_actions'">
+                        </mat-icon>
+                        <span class="text-gray-600">Đang chờ</span>
+                    </ng-container>
+                    <ng-container *ngIf="cate.status === 'TO_DO'"
+                                  class="flex flex-col justify-center content-center ">
+                        <mat-icon
+                            class="text-gray-600 icon-size-5"
+                            [svgIcon]="'mat_outline:pending_actions'">
+                        </mat-icon>
+                        <span class="text-gray-600">Đang chuẩn bị</span>
+                    </ng-container>
+                    <ng-container *ngIf="cate.status === 'IN_PROGRESS'"
+                                  class="flex flex-col justify-center content-center ">
+                        <mat-icon
+                            class="text-gray-600 icon-size-5"
+                            [svgIcon]="'mat_outline:pending_actions'">
+                        </mat-icon>
+                        <span class="text-gray-600">Đang thực hiện</span>
+                    </ng-container>
+                    <ng-container *ngIf="cate.status === 'DONE'"
+                                  class="flex flex-col justify-center content-center ">
+                        <mat-icon
+                            class="text-gray-600 icon-size-5"
+                            [svgIcon]="'mat_outline:pending_actions'">
+                        </mat-icon>
+                        <span class="text-gray-600">Hoành thành</span>
+                    </ng-container>
+                    <ng-container *ngIf="cate.status === 'CANCEL'"
+                                  class="flex flex-col justify-center content-center ">
+                        <mat-icon
+                            class="text-gray-600 icon-size-5"
+                            [svgIcon]="'mat_outline:pending_actions'">
+                        </mat-icon>
+                        <span class="text-gray-600">Đã hủy</span>
+                    </ng-container>
+                </div>
             </div>
-
-
+            <div class="w-1/2">
+                <div class="text-1xl font-semibold tracking-tight">Bình luận</div>
+            </div>
         </div>
         <div class="flex justify-end items-center m-4">
             <div
@@ -97,9 +114,8 @@
                 </ng-container>
             </div>
             <!-- Add Actions -->
-            <ng-container *ngIf="!cate.id">
+            <!-- <ng-container *ngIf="!cate.id">
                 <div class="flex items-center justify-end mt-4">
-                    <!-- Save -->
                     <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
                     <button
                         mat-flat-button
@@ -109,19 +125,19 @@
                         Thêm mới
                     </button>
                 </div>
-            </ng-container>
+            </ng-container> -->
             <!-- Edit Actions -->
             <ng-container *ngIf="cate.id">
                 <div class="flex items-center justify-between mt-4">
                     <!-- Close -->
                     <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
-                    <button
+                    <!-- <button
                         mat-flat-button
                         [color]="'primary'"
                         [disabled]="form.invalid"
                         (click)="update()">
                         Cập nhật
-                    </button>
+                    </button> -->
 
                 </div>
             </ng-container>

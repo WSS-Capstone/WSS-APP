@@ -29,24 +29,11 @@ import {filters} from "../../../../../mock-api/apps/mailbox/data";
         /* language=SCSS */
         `
             .task-grid {
-                grid-template-columns: 56px auto 209px 156px 213px 101px 109px 126px 73px;
-
-                //@screen sm {
-                //    grid-template-columns: 150px 150px 150px 150px 180px 180px 150px 150px;
-                //}
-                //
-                //@screen md {
-                //    grid-template-columns: 150px 150px 150px 150px 180px 180px 150px 150px;
-                //}
-                //
-                //@screen lg {
-                //  grid-template-columns:
-                //}
-
+                grid-template-columns: 56px 150px 209px 156px 213px 101px 109px 126px 73px;
             }
 
             .vh-70 {
-                height: 70vh !important;
+                height: 66vh !important;
             }
         `
     ],
@@ -237,6 +224,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
                         service: this.selectedCategory
                     },
                     width: '50vw',
+                    maxWidth: '99vw'
                 });
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

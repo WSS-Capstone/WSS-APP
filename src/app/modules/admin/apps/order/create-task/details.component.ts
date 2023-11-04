@@ -10,25 +10,26 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Task} from "../task.types";
-import {TaskService} from "../task.service";
+import {Discount} from "../../discount/discount.types";
+import {DiscountService} from "../../discount/discount.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
-import { formatDate } from '@angular/common';
+import { environment } from 'environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-    selector: 'Task-details',
+    selector: 'discount-details',
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations
 })
-export class TaskDetailsComponent implements OnInit, OnDestroy {
+export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     flashMessage: 'success' | 'error' | null = null;
     labels$: Observable<Label[]>;
-    itemChanged: Subject<Task> = new Subject<Task>();
-    item$: Observable<Task>;
+    itemChanged: Subject<Discount> = new Subject<Discount>();
+    item$: Observable<Discount>;
     categories$: Observable<Category[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     imgDataOrLink: any;
@@ -40,9 +41,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
-        @Inject(MAT_DIALOG_DATA) private _data: { service: Task },
-        private _service: TaskService,
-        private _matDialogRef: MatDialogRef<TaskDetailsComponent>
+        private sanitizer: DomSanitizer,
+        @Inject(MAT_DIALOG_DATA) private _data: { orderDetailId: string },
+        private _service: DiscountService,
+        private _matDialogRef: MatDialogRef<OrderCreateTaskComponent>
     ) {
         this._initForm();
     }
@@ -55,79 +57,46 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this.categories$ = this._service.categories$;
+        // this.categories$ = this._service.categories$;
         // Edit
-        if (this._data.service.id) {
-            console.log("Edit");
-            // Request the data from the server
-            this._service.getItem(this._data.service.id).subscribe();
 
-            // Get the note
-            this.item$ = this._service.item$;
+        console.log("Add", this._data);
+        // Create an empty note
+        const item: Discount = {
+            id: null,
+            name: "",
+            code: "",
+            endTime: null,
+            startTime: null,
+            imageUrl: null,
+            discountValueVoucher: null,
+        };
 
-            this.item$.subscribe((value) => {
-                this._patchValue(value);
-            });
-        }
-        // Add
-        // else {
-        //     console.log("Add");
-        //     // Create an empty note
-        //     const item: Task = {
-        //         id: null,
-        //         name: "",
-        //         code: "",
-        //         endTime: null,
-        //         startTime: null,
-        //         imageUrl: null,
-        //         TaskValueVoucher: null,
-        //     };
-        //
-        //     this.item$ = of(item);
-        // }
+        this.item$ = of(item);
+        
     }
 
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
-            code: [null],
-            startTime: [null],
-            endTime: [null],
-            taskName: [null],
-            status: [null],
-            staffName: [null],
-            partnerName: [null],
-            orderName: [null],
-            serviceName: [null],
-            // order: [null],
-            // orderDetail: [null],
-            // comments: [null],
-            // createBy: [null],
-            // partner: [null],
-            // staff: [null],
-            // service: [null],
+            name: [null, [Validators.required, Validators.maxLength(80)]],
+            startTime: [null, [Validators.required]],
+            endTime: [null, [Validators.required]],
+            minAmount: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
+            discountValueVoucher: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
+            coverUrl: [null],
         });
     }
 
-    private _patchValue(value: Task) {
+    private _patchValue(value: Discount) {
         this.form.patchValue({
             id: value.id,
-            code: value.code,
-            startTime: new Date(value.orderDetail?.startTime),
-            endTime: new Date(value.orderDetail?.endTime),
-            taskName: value.taskName,
-            status: value.status,
-            staffName: value.staff?.fullname,
-            partnerName: value.partner?.fullname,
-            orderName: 'Đơn hàng của ' + value.order?.fullname,
-            serviceName: value.service?.name,
-            // order: value.order,
-            // orderDetail: value.orderDetail,
-            // comments: value.comments,
-            // createBy: value.createBy,
-            // partner: value.partner,
-            // staff: value.staff,
-            // service: value.service,
+            name: value.name,
+            startTime: new Date(value.startTime),
+            endTime: new Date(value.endTime),
+            minAmount: value.minAmount,
+            discountValueVoucher: value.discountValueVoucher,
+            coverUrl: value.imageUrl
         });
     }
 
@@ -193,6 +162,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
      * @param fileList
      */
     uploadImage(event: any): void {
+        // Return if canceled
         if (!event.target.files[0]) {
             return;
         }
@@ -201,34 +171,24 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         // send request upload file
 
         this._service.uploadImage(file).subscribe((res) => {
-            this.imgDataOrLink = res;
+            console.log('res', res);
             this.form.patchValue({
-                imageUrl: this.imgDataOrLink,
+                imageUrl: res,
             });
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.imgDataOrLink = this.mapImageUrl(res);
+                this._changeDetectorRef.markForCheck();
+            };
+            // this.imgDataOrLink = this.mapImageUrl(res);
         });
+    }
 
-
-        // Return if canceled
-        // if (!fileList.length) {
-        //     return;
-        // }
-        //
-        // const allowedTypes = ['image/jpeg', 'image/png'];
-        // const file = fileList[0];
-        //
-        // // Return if the file is not allowed
-        // if (!allowedTypes.includes(file.type)) {
-        //     return;
-        // }
-        //
-        // this._readAsDataURL(file).then((data) => {
-        //
-        //     // Update the image
-        //     cate.imageUrl = data;
-        //
-        //     // Update the note
-        //     this.itemChanged.next(cate);
-        // });
+    mapImageUrl(imageUrl: string): any {
+        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+        var apiUrl = environment.wssApi;
+        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
     }
 
     /**
@@ -236,12 +196,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
      *
      * @param note
      */
-    // removeImage(cate: Task): void {
-    //     cate.imageUrl = null;
-    //
-    //     // Update the cate
-    //     this.itemChanged.next(cate);
-    // }
+    removeImage(cate: Discount): void {
+        cate.imageUrl = null;
+
+        // Update the cate
+        this.itemChanged.next(cate);
+    }
 
     /**
      * Track by function for ngFor loops

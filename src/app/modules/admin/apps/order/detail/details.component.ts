@@ -7,7 +7,7 @@ import {
     OnInit,
     ViewEncapsulation
 } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject, switchMap} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Order, WeddingInformation} from "../order.types";
@@ -20,6 +20,7 @@ import {Discount} from "../../discount/discount.types";
 import {DiscountService} from "../../discount/discount.service";
 import {AccountRequest} from "../../user/user.types";
 import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
+import { OrderCreateTaskComponent } from '../create-task/details.component';
 
 @Component({
     selector: 'order-details',
@@ -67,6 +68,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         private _fuseConfirmationService: FuseConfirmationService,
         private _service: OrderService,
+        private _matDialog: MatDialog,
         private acitvatedRoute: ActivatedRoute,
     ) {
         this._initForm();
@@ -170,8 +172,16 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    createTask() {
-
+    createTask(id: string) {
+        this._matDialog.open(OrderCreateTaskComponent, {
+            autoFocus: false,
+            data: {
+                orderDetailId: id
+            },
+            width: '50vw',
+        });
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 
     updateStatus(id: string, status: string, text: string) {

@@ -28,14 +28,14 @@
                     [placeholder]="'Tìm kiếm công việc'">
             </mat-form-field>
             <!-- Add category button -->
-            <button
+            <!-- <button
                 class="ml-4"
                 mat-flat-button
                 [color]="'primary'"
                 (click)="createItem()">
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                 <span class="ml-2 mr-1">Thêm mới</span>
-            </button>
+            </button> -->
         </div>
     </div>
     <div class="flex flex-auto">
@@ -88,7 +88,7 @@
                                     <div class="truncate">
                                         {{item.code}}
                                     </div>
-                                    <div class="">
+                                    <div class="truncate">
                                         {{item.taskName}}
                                     </div>
                                     <div class="">
@@ -103,14 +103,22 @@
                                     </div>
 
                                     <div class="">
-                                        {{item.startDate | date: 'dd/MM/yyyy'}}
+                                        {{item.orderDetail?.startTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="">
-                                        {{item.endDate | date: 'dd/MM/yyyy'}}
+                                        {{item.orderDetail?.endTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="flex flex-row truncate">
+                                        <ng-container *ngIf="item.status === 'EXPECTED'"
+                                                      class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-gray-600 icon-size-5"
+                                                [svgIcon]="'mat_outline:pending_actions'">
+                                            </mat-icon>
+                                            <span class="text-gray-600">Đang chờ</span>
+                                        </ng-container>
                                         <ng-container *ngIf="item.status === 'TO_DO'"
                                                       class="flex flex-col justify-center content-center ">
                                             <mat-icon
@@ -229,7 +237,7 @@
                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
                                 <div class="task-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                                     <div class="truncate">
-                                        {{item.id}}
+                                        {{item.code}}
                                     </div>
                                     <div class="">
                                         {{item.taskName}}
@@ -242,18 +250,26 @@
                                     </div>
 
                                     <div class="">
-                                        {{item.order?.id}}
+                                        {{'Đơn hàng của ' + item.order?.fullname}}
                                     </div>
 
                                     <div class="">
-                                        {{item.startDate | date: 'dd/MM/yyyy'}}
+                                        {{item.orderDetail?.startTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="">
-                                        {{item.endDate | date: 'dd/MM/yyyy'}}
+                                        {{item.orderDetail?.endTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="flex flex-row truncate">
+                                        <ng-container *ngIf="item.status === 'EXPECTED'"
+                                                      class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-gray-600 icon-size-5"
+                                                [svgIcon]="'mat_outline:pending_actions'">
+                                            </mat-icon>
+                                            <span class="text-gray-600">Đang chờ</span>
+                                        </ng-container>
                                         <ng-container *ngIf="item.status === 'TO_DO'"
                                                       class="flex flex-col justify-center content-center ">
                                             <mat-icon
