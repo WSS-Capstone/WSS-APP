@@ -224,7 +224,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
                         service: this.selectedCategory
                     },
                     width: '50vw',
-                    maxWidth: '99vw'
+                    maxHeight: '90%'
                 });
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

@@ -5,7 +5,7 @@
         <div class="text-3xl font-extrabold tracking-tight p-5">{{cate.id ? 'Chi tiết công việc' : 'Thêm công việc'}}</div>
 
         <!-- Image -->
-        <div class="flex flex-auto flex-row p-5">
+        <div class="flex flex-auto flex-row p-5 fix-height">
             <div class="w-1/2 mr-4">
                 <mat-form-field class="w-full">
                     <mat-label>Mã số</mat-label>
@@ -36,14 +36,14 @@
                 <div class="flex">
                     <mat-form-field class="w-full pr-2">
                         <mat-label>Ngày bắt đầu</mat-label>
-                        <input matInput readonly [matDatepicker]="picker" [formControlName]="'startTime'">
-                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <input matInput readonly [matDatepicker]="" [formControlName]="'startTime'">
+                        <mat-datepicker-toggle matIconSuffix [for]=""></mat-datepicker-toggle>
                         <!-- <mat-datepicker #picker></mat-datepicker> -->
                     </mat-form-field>
                     <mat-form-field class="w-full">
                         <mat-label>Ngày kết thúc</mat-label>
-                        <input matInput readonly [matDatepicker]="picker2" [formControlName]="'endTime'">
-                        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <input matInput readonly [matDatepicker]="" [formControlName]="'endTime'">
+                        <mat-datepicker-toggle matIconSuffix [for]=""></mat-datepicker-toggle>
                         <!-- <mat-datepicker #picker2></mat-datepicker> -->
                     </mat-form-field>
                 </div>
@@ -56,7 +56,7 @@
                             class="text-gray-600 icon-size-5"
                             [svgIcon]="'mat_outline:pending_actions'">
                         </mat-icon>
-                        <span class="text-gray-600">Đang chờ</span>
+                        <span class="text-gray-600">Đang chuẩn bị</span>
                     </ng-container>
                     <ng-container *ngIf="cate.status === 'TO_DO'"
                                   class="flex flex-col justify-center content-center ">
@@ -93,7 +93,31 @@
                 </div>
             </div>
             <div class="w-1/2">
-                <div class="text-1xl font-semibold tracking-tight">Bình luận</div>
+                <div class="text-1xl font-semibold tracking-tight mb-1">Bình luận</div>
+                <div class="flex flex-col overflow-auto h-2/3">
+                    <ng-container *ngIf="mockComments?.length > 0; else noComments">
+                        <div *ngFor="let comment of mockComments" class="mt-4 w-full">
+                            <div class="text-[#8E8EA1] text-sm">23:49 11/11/2023</div>
+                            <div class="whitespace-normal">{{comment}}</div>
+                        </div>
+                    </ng-container>
+                    <ng-template #noComments>
+                        <div>Chưa có bình luận nào!</div>
+                    </ng-template>
+                </div>
+                <div class="flex flex-col mt-4">
+                    <mat-form-field class="w-full">
+                        <mat-label>Thêm bình luận</mat-label>
+                        <textarea
+                            class="resize-none"
+                            matInput
+                            [rows]="2"></textarea>
+<!--                        <mat-error *ngIf="form.get('description').hasError('maxlength')">-->
+<!--                            Mô tả không được quá 300 ký tự-->
+<!--                        </mat-error>-->
+                    </mat-form-field>
+                    <button mat-flat-button matDialogClose>Bình luận</button>
+                </div>
             </div>
         </div>
         <div class="flex justify-end items-center m-4">
