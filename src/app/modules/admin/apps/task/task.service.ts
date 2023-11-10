@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError} from 'rxjs';
-import {Task, TaskPagination, TaskResponse} from './task.types';
+import {Comment, Task, TaskPagination, TaskResponse} from './task.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse, FileInfo} from "../category/category.types";
 
@@ -179,6 +179,21 @@ export class TaskService {
             map((res) => {
                 return res[0].link;
             })
+        );
+    }
+
+    addComment(id: string, content: string) {
+        return this.items$.pipe(
+            take(1),
+            switchMap(items => this._httpClient.post<Comment>(ENDPOINTS.comment, {taskId: id, content: content}).pipe(
+                map((comment: Comment) => {
+                    const index = items.findIndex(item => item.id === id);
+                    items[index].comments.push(comment)
+                    this._items.next(items);
+                    this._item.next(items[index]);
+                    // return isCommented;
+                })
+            ))
         );
     }
 

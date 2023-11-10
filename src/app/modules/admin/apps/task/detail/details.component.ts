@@ -10,9 +10,9 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Task} from "../task.types";
+import {Comment, Task} from "../task.types";
 import {TaskService} from "../task.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import { formatDate } from '@angular/common';
@@ -34,26 +34,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     labels$: Observable<Label[]>;
     itemChanged: Subject<Task> = new Subject<Task>();
     item$: Observable<Task>;
+    comments: Comment[];
     categories$: Observable<Category[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     imgDataOrLink: any;
     form: FormGroup;
-    mockComments = [
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd  asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd asdasd",
-        "asdasd"];
+    commentInput = new FormControl('', [Validators.required, Validators.maxLength(300)]);
 
     /**
      * Constructor
@@ -150,6 +136,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             // staff: value.staff,
             // service: value.service,
         });
+
+        this.comments = value.comments.sort((a:Comment, b:Comment) => {return a.createDate > b.createDate ? 1 : -1});
     }
 
     /**
@@ -164,6 +152,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    addComment() {
+        if(this.commentInput.value.length === 0) {
+            return;
+        }
+
+        this._service.addComment(this._data.service.id, this.commentInput.value).pipe(
+            map(() => {
+                this.commentInput.reset();
+            })
+        ).subscribe();
+    }
 
     filterStart = (date: Date | null): boolean => {
         const endDate = this.form.get('endTime').value;

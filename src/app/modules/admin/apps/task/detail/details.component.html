@@ -95,10 +95,10 @@
             <div class="w-1/2">
                 <div class="text-1xl font-semibold tracking-tight mb-1">Bình luận</div>
                 <div class="flex flex-col overflow-auto h-2/3">
-                    <ng-container *ngIf="mockComments?.length > 0; else noComments">
-                        <div *ngFor="let comment of mockComments" class="mt-4 w-full">
-                            <div class="text-[#8E8EA1] text-sm">23:49 11/11/2023</div>
-                            <div class="whitespace-normal">{{comment}}</div>
+                    <ng-container *ngIf="comments.length > 0; else noComments">
+                        <div *ngFor="let comment of comments" class="mt-4 w-full">
+                            <div class="text-[#8E8EA1] text-sm">{{comment.createDate | date: "hh:mm dd/MM/yyyy"}}</div>
+                            <div class="whitespace-normal">{{comment.content}}</div>
                         </div>
                     </ng-container>
                     <ng-template #noComments>
@@ -111,12 +111,16 @@
                         <textarea
                             class="resize-none"
                             matInput
+                            [formControl]="commentInput"
                             [rows]="2"></textarea>
-<!--                        <mat-error *ngIf="form.get('description').hasError('maxlength')">-->
-<!--                            Mô tả không được quá 300 ký tự-->
-<!--                        </mat-error>-->
+                        <mat-error *ngIf="commentInput.hasError('maxlength')">
+                            Bình luận không được quá 300 ký tự.
+                        </mat-error>
+                        <mat-error *ngIf="commentInput.hasError('required')">
+                            Bình luận không được bỏ trống.
+                        </mat-error>
                     </mat-form-field>
-                    <button mat-flat-button matDialogClose>Bình luận</button>
+                    <button mat-flat-button (click)="addComment()">Bình luận</button>
                 </div>
             </div>
         </div>

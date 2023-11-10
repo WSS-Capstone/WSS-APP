@@ -9,7 +9,7 @@ export interface Task {
     startDate: string;
     endDate: string;
     status: string;
-    comments: string[];
+    comments?: Comment[];
     partner?: User;
     staff?: User;
     service?: Service;
@@ -32,4 +32,12 @@ export interface TaskResponse {
     page: number;
     size: number;
     total: number;
+}
+
+export interface Comment {
+    id: string;
+    taskId: string;
+    createBy?: User;
+    createDate: string;
+    content: string;
 }
