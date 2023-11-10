@@ -123,8 +123,14 @@
                 </ng-container>
             </div>
             <!-- Add Actions -->
+            <ng-container *ngIf="cate.status !== 'Pending'">
+                <div class="flex items-center justify-between mt-4">
+                    <!-- Close -->
+                    <button class="mr-4" mat-flat-button [mat-dialog-close]="true">Đóng</button>
+                </div>
+            </ng-container>
             <!-- Edit Actions -->
-            <ng-container *ngIf="cate.id">
+            <ng-container *ngIf="cate.status === 'Pending'">
                 <div class="flex items-center justify-between mt-4">
                     <!-- Close -->
                     <button class="mr-4" mat-flat-button (click)="reject()">Từ chối</button>

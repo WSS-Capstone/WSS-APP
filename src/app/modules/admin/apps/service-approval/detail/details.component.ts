@@ -172,28 +172,20 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
 
         // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed().subscribe((result) => {
-
-            // If the confirm button pressed...
-            // if (result === 'confirmed') {
             console.log(result);
-            // Delete the product on the server
-            // this._service.delete(id).subscribe(() => {
-            //     this.openSnackBar('Khóa thành công', 'Đóng');
-            //     // Close the details
-            //     this.closeDetails();
-            // });
-            const requestBody: any = {
-                reason: result,
-                status: "Reject"
-            };
-            this._service.update(id, requestBody).subscribe(() => {
-                this._service.getItems();
-                this.openSnackBar('Từ chối dịch vụ thành công', 'Đóng');
-                // Close the details
-                // this.closeDetails();
-                this._matDialogRef.close();
-            });
-            // }
+            if(result !== null && result !== 'cancelled') {
+                const requestBody: any = {
+                    reason: result,
+                    status: "Reject"
+                };
+                this._service.update(id, requestBody).subscribe(() => {
+                    this._service.getItems();
+                    this.openSnackBar('Từ chối dịch vụ thành công', 'Đóng');
+                    // Close the details
+                    // this.closeDetails();
+                    this._matDialogRef.close();
+                });
+            }
         });
     }
 

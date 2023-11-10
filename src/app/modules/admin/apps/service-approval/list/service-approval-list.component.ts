@@ -28,7 +28,7 @@ import {Category} from "../../category/category.types";
         /* language=SCSS */
         `
             .service-approval-grid {
-                grid-template-columns: 240px auto 150px 180px 150px 80px;
+                grid-template-columns: 80px auto 150px 180px 150px 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;

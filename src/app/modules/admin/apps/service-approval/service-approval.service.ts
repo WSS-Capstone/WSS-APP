@@ -66,7 +66,7 @@ export class ApproveServiceService {
 
     getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<ApproveServiceResponse> {
-        return this._httpClient.get<ApproveServiceResponse>(ENDPOINTS.service + '?status=Pending', {
+        return this._httpClient.get<ApproveServiceResponse>(ENDPOINTS.service + '?status=Pending&status=Reject', {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
@@ -141,7 +141,12 @@ export class ApproveServiceService {
             }).pipe(
                 map((updatedItem) => {
                     const index = itemsArr.findIndex(item => item.id === id);
-                    itemsArr[index] = updatedItem;
+                    if(item.status === "Reject") {
+                        itemsArr[index].status = "Reject";
+                    }
+                    else {
+                        itemsArr.splice(index, 1);
+                    }
                     this._items.next(itemsArr);
                     return updatedItem;
                 }),

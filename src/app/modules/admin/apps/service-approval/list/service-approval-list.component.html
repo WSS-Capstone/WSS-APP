@@ -85,6 +85,12 @@
                                             </mat-icon>
                                             <span class="text-gray-600">Đang chờ duyệt</span>
                                         </ng-container>
+                                        <ng-container *ngIf="item.status !== 'Pending'" class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-gray-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                            <span class="text-gray-400">Từ chối</span>
+                                        </ng-container>
                                     </div>
 
                                     <!-- Details button -->
