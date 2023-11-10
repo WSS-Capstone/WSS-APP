@@ -4,6 +4,7 @@ import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, thro
 import {Service, ServicePagination, ServiceResponse} from './service.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse, FileInfo} from "../category/category.types";
+import {ApproveService} from "../service-approval/service-approval.types";
 
 @Injectable({
     providedIn: 'root'
@@ -148,6 +149,35 @@ export class ServiceService {
                 map((updatedItem) => {
                     const index = itemsArr.findIndex(item => item.id === id);
                     itemsArr[index] = updatedItem;
+                    this._items.next(itemsArr);
+                    return updatedItem;
+                }),
+                switchMap(updatedItem => this.item$.pipe(
+                    take(1),
+                    filter(item => item && item.id === id),
+                    tap(() => {
+                        this._item.next(updatedItem);
+                        return updatedItem;
+                    })
+                ))
+            ))
+        );
+    }
+
+    approval(id: string, item: any): Observable<ApproveService> {
+        return this.items$.pipe(
+            take(1),
+            switchMap(itemsArr => this._httpClient.put<ApproveService>(ENDPOINTS.service + `/approval/${id}`, {
+                ...item
+            }).pipe(
+                map((updatedItem) => {
+                    const index = itemsArr.findIndex(item => item.id === id);
+                    if(item.status === "Reject") {
+                        itemsArr[index].status = "Reject";
+                    }
+                    else {
+                        itemsArr.splice(index, 1);
+                    }
                     this._items.next(itemsArr);
                     return updatedItem;
                 }),

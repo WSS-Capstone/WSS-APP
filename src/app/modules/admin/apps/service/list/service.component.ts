@@ -20,6 +20,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ServiceDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
+import {ServiceApprovalDetailsComponent} from "../service-approval/details.component";
 
 @Component({
     selector: 'service-list',
@@ -42,6 +43,14 @@ import {Category} from "../../category/category.types";
                     grid-template-columns: 250px auto 218px 134px 156px 145px 113px;
                 }
             }
+
+            .service-approval-grid {
+                grid-template-columns: 80px auto 150px 180px 150px 80px;
+            }
+
+            .vh-70 {
+                height: 66vh !important;
+            }
         `
     ],
     encapsulation: ViewEncapsulation.None,
@@ -52,13 +61,21 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
-    items$: Observable<Service[]>;
+    // items$: Observable<Service[]>;
+    partnerServices$: Observable<Service[]>;
+    staffServices$: Observable<Service[]>;
+    approvalService$: Observable<Service[]>;
+
+    pagination: ServicePagination;
+    partnerServicesPagination: ServicePagination;
+    staffServicesPagination: ServicePagination;
+    approvalServicesPagination: ServicePagination;
+
     categories$: Observable<Category[]>;
 
     parentCategories$: Observable<Service[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
-    pagination: ServicePagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedCategory: Service | null = null;
     selectedCategoryForm: UntypedFormGroup;
@@ -110,7 +127,11 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
             });
 
         // Get the products
-        this.items$ = this._service.items$;
+        // this.items$ = this._service.items$;
+        this.partnerServices$ = this._service.items$;
+        this.staffServices$ = this._service.items$;
+        this.approvalService$ = this._service.items$.pipe(map(service => service.filter(x => x.status === 'Pending' || x.status === 'Reject')));
+
         this.categories$ = this._service.categories$;
 
         // Subscribe to search input field value changes
@@ -299,5 +320,22 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     trackByFn(index: number, item: any): any {
         return item.id || index;
+    }
+
+    approvalService(id: string): void {
+        this._service.getItem(id)
+            .subscribe((item) => {
+                this.selectedCategory = item;
+
+                this._matDialog.open(ServiceApprovalDetailsComponent, {
+                    autoFocus: false,
+                    data: {
+                        service: this.selectedCategory
+                    },
+                    width: '50vw',
+                });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
     }
 }

@@ -21,6 +21,7 @@ import {DiscountService} from "../../discount/discount.service";
 import {AccountRequest} from "../../user/user.types";
 import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
 import { OrderCreateTaskComponent } from '../create-task/details.component';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
     selector: 'order-details',
@@ -70,6 +71,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
         private _service: OrderService,
         private _matDialog: MatDialog,
         private acitvatedRoute: ActivatedRoute,
+        private _snackBar: MatSnackBar,
     ) {
         this._initForm();
     }
@@ -185,41 +187,43 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     }
 
     updateStatus(id: string, status: string, text: string) {
-        // const confirmation = this._fuseConfirmationService.open({
-        //     title: text.charAt(0).toUpperCase() + ' đơn hàng',
-        //     message: `Bạn có chắc chắn muốn ${text} đơn hàng này?!`,
-        //     icon:{
-        //         show: true,
-        //         color: "primary"
-        //     },
-        //     actions: {
-        //         confirm: {
-        //             label: text.charAt(0).toUpperCase(),
-        //             color: 'primary'
-        //         },
-        //         cancel: {
-        //             label: 'Hủy'
-        //         }
-        //     }
-        // });
-        //
-        // // Subscribe to the confirmation dialog closed action
-        // confirmation.afterClosed().subscribe((result) => {
-        //
-        //     // If the confirm button pressed...
-        //     if (result === 'confirmed') {
-        //         console.log(result);
-        //         const requestBody: any = {
-        //             email: email,
-        //             status: "Active"
-        //         };
-        //         this._service.update(id, requestBody).subscribe(() => {
-        //             this.openSnackBar('Mở khóa thành công', 'Đóng');
-        //             // Close the details
-        //             this.closeDetails();
-        //         });
-        //     }
-        // });
+        const confirmation = this._fuseConfirmationService.open({
+            title: text + ' đơn hàng',
+            message: `Bạn có chắc chắn muốn ${text.toLowerCase()} này?!`,
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: text,
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(result);
+                const requestBody: any = {
+                    id: id,
+                    status: status
+                };
+                this._service.update(id, requestBody).subscribe(() => {
+                    this.openSnackBar(`${text} thành công`, 'Đóng');
+                });
+            }
+        });
+    }
+
+    openSnackBar(message: string, action: string) {
+        this._snackBar.open(message, action);
     }
 
     // create(): void {

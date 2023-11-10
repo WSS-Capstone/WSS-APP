@@ -203,7 +203,7 @@ export class OrderService {
     update(id: string, item: Order): Observable<Order> {
         return this.items$.pipe(
             take(1),
-            switchMap(itemsArr => this._httpClient.put<Order>(ENDPOINTS.order + `/${id}`, {
+            switchMap(itemsArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval`, {
                 ...item
             }).pipe(
                 map((updatedItem) => {

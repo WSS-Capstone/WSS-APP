@@ -83,13 +83,13 @@ export class NavigationService
                 "type": "basic",
                 "link": "/owner/task"
             },
-            {
-                "id": "owner.approveService",
-                "title": "Duyệt Dịch Vụ",
-                "icon": "mat_outline:bookmark_added",
-                "type": "basic",
-                "link": "/owner/approve-service"
-            },
+            // {
+            //     "id": "owner.approveService",
+            //     "title": "Duyệt Dịch Vụ",
+            //     "icon": "mat_outline:bookmark_added",
+            //     "type": "basic",
+            //     "link": "/owner/approve-service"
+            // },
             {
                 "id": "owner.discount",
                 "title": "Phiếu Giảm Giá",

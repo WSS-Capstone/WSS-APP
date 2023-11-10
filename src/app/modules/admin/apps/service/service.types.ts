@@ -13,7 +13,7 @@ export interface Service
     quantity: string;
     ownerId: string;
     serviceImages: ImageUrl[];
-    status: boolean;
+    status: string;
 }
 
 export interface ServicePagination

@@ -20,12 +20,15 @@ import {itemRoutes} from "./service.routing";
 import {ServiceDetailsComponent} from "./detail/details.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatTabsModule} from "@angular/material/tabs";
+import {ServiceApprovalDetailsComponent} from "./service-approval/details.component";
 
 @NgModule({
     declarations: [
         ServiceComponent,
         ServiceListComponent,
-        ServiceDetailsComponent
+        ServiceDetailsComponent,
+        ServiceApprovalDetailsComponent
     ],
     imports: [
         RouterModule.forChild(itemRoutes),
@@ -44,7 +47,8 @@ import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/materia
         MatTooltipModule,
         MatDialogModule,
         MatSnackBarModule,
-        SharedModule
+        SharedModule,
+        MatTabsModule
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}

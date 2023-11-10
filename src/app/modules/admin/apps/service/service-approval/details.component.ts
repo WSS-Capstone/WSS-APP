@@ -17,15 +17,18 @@ import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import {environment} from "../../../../../../environments/environment";
 import {DomSanitizer} from "@angular/platform-browser";
+import {AccountRequest} from "../../user/user.types";
+import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
-    selector: 'category-details',
+    selector: 'approval-details',
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations
 })
-export class ServiceDetailsComponent implements OnInit, OnDestroy {
+export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
     flashMessage: 'success' | 'error' | null = null;
     labels$: Observable<Label[]>;
     itemChanged: Subject<Service> = new Subject<Service>();
@@ -44,9 +47,11 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         private sanitizer: DomSanitizer,
+        private _snackBar: MatSnackBar,
+        private _fuseConfirmationService: FuseConfirmationService,
         @Inject(MAT_DIALOG_DATA) private _data: { service: Service },
         private _service: ServiceService,
-        private _matDialogRef: MatDialogRef<ServiceDetailsComponent>
+        private _matDialogRef: MatDialogRef<ServiceApprovalDetailsComponent>
     ) {
         this._initForm();
     }
@@ -72,22 +77,6 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             this.item$.subscribe((value) => {
                 this._patchValue(value);
             });
-        }
-        // Add
-        else {
-            console.log("Add");
-            // Create an empty note
-            const item: Service = {
-                ownerId: "", quantity: "",
-                id: null,
-                name: '',
-                description: '',
-                serviceImages: null,
-                categoryId: null,
-                status: ''
-            };
-
-            this.item$ = of(item);
         }
     }
 
@@ -146,7 +135,10 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
     }
 
     update(): void {
-        this._service.update(this.form.get('id').value ,this.form.value).pipe(
+        const requestBody = {
+            status: 'Active'
+        }
+        this._service.approval(this.form.get('id').value , requestBody).pipe(
             map(() => {
                 // Get the note
                 // this.cate$ = this._categoryService.category$;
@@ -154,8 +146,51 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             })).subscribe();
 
         setTimeout(() => {
+            this._service.getItems();
             this._matDialogRef.close();
         }, 1200);
+    }
+
+    reject(): void {
+        const id = this.form.get('id').value;
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Từ chối dịch vụ',
+            message: 'Bạn có chắc chắn muốn từ chối dịch vụ này?!',
+            input: {
+                label: 'Lý do',
+                value: null
+            },
+            actions: {
+                confirm: {
+                    label: 'Từ chối'
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+            console.log(result);
+            if(result !== null && result !== 'cancelled') {
+                const requestBody: any = {
+                    reason: result,
+                    status: "Reject"
+                };
+                this._service.approval(id, requestBody).subscribe(() => {
+                    this._service.getItems();
+                    this.openSnackBar('Từ chối dịch vụ thành công', 'Đóng');
+                    // Close the details
+                    // this.closeDetails();
+                    this._matDialogRef.close();
+                });
+            }
+        });
+    }
+
+    openSnackBar(message: string, action: string) {
+        this._snackBar.open(message, action);
     }
 
     /**
