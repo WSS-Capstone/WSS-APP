@@ -5,6 +5,7 @@ import {Order, OrderPagination, OrderResponse, WeddingInformation, WeddingInform
 import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse} from "../category/category.types";
 import {Discount, DiscountResponse} from "../discount/discount.types";
+import {Account, AccountResponse} from "../user/user.types";
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,7 @@ export class OrderService {
     private _itemWedding: BehaviorSubject<WeddingInformation | null> = new BehaviorSubject(null);
     private _itemsWedding: BehaviorSubject<WeddingInformation[] | null> = new BehaviorSubject(null);
     private _itemsVoucher: BehaviorSubject<Discount[] | null> = new BehaviorSubject(null);
+    private _itemsUser: BehaviorSubject<Account[] | null> = new BehaviorSubject(null);
     private _itemVoucher: BehaviorSubject<Discount | null> = new BehaviorSubject(null);
     private _pagination: BehaviorSubject<OrderPagination | null> = new BehaviorSubject(null);
 
@@ -46,6 +48,10 @@ export class OrderService {
         return this._itemWedding.asObservable();
     }
 
+    get users$(): Observable<Account[]> {
+        return this._itemsUser.asObservable();
+    }
+
     get vouchers$(): Observable<Discount[]> {
         return this._itemsVoucher.asObservable();
     }
@@ -57,6 +63,22 @@ export class OrderService {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    getUsers(): Observable<Account[]> {
+        return this._httpClient.get<AccountResponse>(ENDPOINTS.account+ "?roleNames=Staff&roleNames=Partner", {
+            params: {
+                'page-size': '' + 250,
+            }
+        }).pipe(
+            tap((categories) => {
+                console.log(categories);
+                this._itemsUser.next(categories.data);
+            }),
+            map((categories) => {
+                return categories.data;
+            })
+        );
+    }
 
     /**
      * Get categories
@@ -206,6 +228,28 @@ export class OrderService {
             switchMap(itemsArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval`, {
                 ...item
             }).pipe(
+                map((updatedItem) => {
+                    const index = itemsArr.findIndex(item => item.id === id);
+                    itemsArr[index] = updatedItem;
+                    this._items.next(itemsArr);
+                    return updatedItem;
+                }),
+                switchMap(updatedItem => this.item$.pipe(
+                    take(1),
+                    filter(item => item && item.id === id),
+                    tap(() => {
+                        this._item.next(updatedItem);
+                        return updatedItem;
+                    })
+                ))
+            ))
+        );
+    }
+
+    approval(id: string, status: string): Observable<Order> {
+        return this.items$.pipe(
+            take(1),
+            switchMap(itemsArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval?id=${id}&request=${status}`, {}).pipe(
                 map((updatedItem) => {
                     const index = itemsArr.findIndex(item => item.id === id);
                     itemsArr[index] = updatedItem;

@@ -37,6 +37,7 @@ export interface OrderDetail {
     endTime: string;
     status: string;
     tasks: Task[];
+    order: Order;
 }
 
 export interface OrderPagination {

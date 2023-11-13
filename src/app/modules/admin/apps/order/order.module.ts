@@ -8,7 +8,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import {MatRippleModule} from '@angular/material/core';
+import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
 import {MatSortModule} from '@angular/material/sort';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -21,6 +21,7 @@ import {OrderDetailsComponent} from "./detail/details.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 import { OrderCreateTaskComponent } from './create-task/details.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 @NgModule({
     declarations: [
@@ -46,7 +47,9 @@ import { OrderCreateTaskComponent } from './create-task/details.component';
         MatTooltipModule,
         MatDialogModule,
         MatSnackBarModule,
-        SharedModule
+        SharedModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}

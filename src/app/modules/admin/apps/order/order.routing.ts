@@ -1,6 +1,6 @@
 import {Route} from '@angular/router';
 import {OrderListComponent} from "./list/order.component";
-import {WeddingsServiceResolver, OrderResolver, OrdersResolver} from "./order.resolvers";
+import {WeddingsServiceResolver, OrderResolver, OrdersResolver, OrderUsersResolver} from "./order.resolvers";
 import { OrderDetailsComponent } from './detail/details.component';
 import {DiscountsResolver} from "../discount/discount.resolvers";
 
@@ -26,7 +26,8 @@ export const itemRoutes: Route[] = [
                 component    : OrderDetailsComponent,
                 resolve      : {
                     items    : OrdersResolver,
-                    item     : OrderResolver
+                    item     : OrderResolver,
+                    users    : OrderUsersResolver
                 },
             }
         // ]

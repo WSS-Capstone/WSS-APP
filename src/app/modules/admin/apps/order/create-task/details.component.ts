@@ -10,13 +10,14 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Discount} from "../../discount/discount.types";
-import {DiscountService} from "../../discount/discount.service";
+import {TaskService} from "../../task/task.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
-import {Category} from "../../category/category.types";
 import { environment } from 'environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
+import {Task} from "../../task/task.types";
+import {OrderService} from "../order.service";
+import {Account} from "../../user/user.types";
 
 @Component({
     selector: 'discount-details',
@@ -28,9 +29,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     flashMessage: 'success' | 'error' | null = null;
     labels$: Observable<Label[]>;
-    itemChanged: Subject<Discount> = new Subject<Discount>();
-    item$: Observable<Discount>;
-    categories$: Observable<Category[]>;
+    // itemChanged: Subject<Task> = new Subject<Task>();
+    // item$: Observable<Task>;
+    // categories$: Observable<Category[]>;
+    users$: Observable<Account[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     imgDataOrLink: any;
     form: FormGroup;
@@ -43,7 +45,8 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         private sanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) private _data: { orderDetailId: string },
-        private _service: DiscountService,
+        private _taskService: TaskService,
+        private _orderService: OrderService,
         private _matDialogRef: MatDialogRef<OrderCreateTaskComponent>
     ) {
         this._initForm();
@@ -57,48 +60,33 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // this.categories$ = this._service.categories$;
-        // Edit
+        this.users$ = this._orderService.users$;
 
-        console.log("Add", this._data);
-        // Create an empty note
-        const item: Discount = {
-            id: null,
-            name: "",
-            code: "",
-            endTime: null,
-            startTime: null,
-            imageUrl: null,
-            discountValueVoucher: null,
-        };
-
-        this.item$ = of(item);
-        
+        this.form.patchValue({
+            orderDetailId: this._data.orderDetailId
+        })
     }
 
     private _initForm(): void {
         this.form = this._fb.group({
-            id: [null],
-            name: [null, [Validators.required, Validators.maxLength(80)]],
-            startTime: [null, [Validators.required]],
-            endTime: [null, [Validators.required]],
-            minAmount: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
-            discountValueVoucher: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
-            coverUrl: [null],
+            taskName: [null, [Validators.required, Validators.maxLength(100)]],
+            startDate: [null, [Validators.required]],
+            endDate: [null, [Validators.required]],
+            userId: [null, [Validators.required]],
+            orderDetailId: [null, [Validators.required]],
         });
     }
 
-    private _patchValue(value: Discount) {
-        this.form.patchValue({
-            id: value.id,
-            name: value.name,
-            startTime: new Date(value.startTime),
-            endTime: new Date(value.endTime),
-            minAmount: value.minAmount,
-            discountValueVoucher: value.discountValueVoucher,
-            coverUrl: value.imageUrl
-        });
-    }
+    // private _patchValue(value: Task) {
+    //     this.form.patchValue({
+    //         name: value.name,
+    //         startTime: new Date(value.startTime),
+    //         endTime: new Date(value.endTime),
+    //         minAmount: value.minAmount,
+    //         discountValueVoucher: value.discountValueVoucher,
+    //         coverUrl: value.imageUrl
+    //     });
+    // }
 
     /**
      * On destroy
@@ -114,7 +102,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     filterStart = (date: Date | null): boolean => {
-        const endDate = this.form.get('endTime').value;
+        const endDate = this.form.get('endDate').value;
 
         return (
           !endDate || date <= endDate
@@ -122,7 +110,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     }
 
     filterEnd = (date: Date | null): boolean => {
-        const startDate = this.form.get('startTime').value;
+        const startDate = this.form.get('startDate').value;
 
         return (
             !startDate || date >= startDate
@@ -130,20 +118,21 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     }
 
     create(): void {
-        this._service.create(this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
-
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 3100);
+        console.log(this.form.value)
+        // this._taskService.create(this.form.value).pipe(
+        //     map(() => {
+        //         // Get the note
+        //         // this.cate$ = this._categoryService.category$;
+        //         this.showFlashMessage('success');
+        //     })).subscribe();
+        //
+        // setTimeout(() => {
+        //     this._matDialogRef.close();
+        // }, 3100);
     }
 
     update(): void {
-        this._service.update(this.form.get('id').value ,this.form.value).pipe(
+        this._taskService.update(this.form.get('id').value ,this.form.value).pipe(
             map(() => {
                 // Get the note
                 // this.cate$ = this._categoryService.category$;
@@ -161,47 +150,47 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
      * @param cate
      * @param fileList
      */
-    uploadImage(event: any): void {
-        // Return if canceled
-        if (!event.target.files[0]) {
-            return;
-        }
+    // uploadImage(event: any): void {
+    //     // Return if canceled
+    //     if (!event.target.files[0]) {
+    //         return;
+    //     }
+    //
+    //     const file = event.target.files[0];
+    //     // send request upload file
+    //
+    //     this._taskService.uploadImage(file).subscribe((res) => {
+    //         console.log('res', res);
+    //         this.form.patchValue({
+    //             imageUrl: res,
+    //         });
+    //         const reader = new FileReader();
+    //         reader.readAsDataURL(file);
+    //         reader.onload = () => {
+    //             this.imgDataOrLink = this.mapImageUrl(res);
+    //             this._changeDetectorRef.markForCheck();
+    //         };
+    //         // this.imgDataOrLink = this.mapImageUrl(res);
+    //     });
+    // }
 
-        const file = event.target.files[0];
-        // send request upload file
-
-        this._service.uploadImage(file).subscribe((res) => {
-            console.log('res', res);
-            this.form.patchValue({
-                imageUrl: res,
-            });
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                this.imgDataOrLink = this.mapImageUrl(res);
-                this._changeDetectorRef.markForCheck();
-            };
-            // this.imgDataOrLink = this.mapImageUrl(res);
-        });
-    }
-
-    mapImageUrl(imageUrl: string): any {
-        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
-        var apiUrl = environment.wssApi;
-        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
-    }
+    // mapImageUrl(imageUrl: string): any {
+    //     var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+    //     var apiUrl = environment.wssApi;
+    //     return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
+    // }
 
     /**
      * Remove the image on the given note
      *
      * @param note
      */
-    removeImage(cate: Discount): void {
-        cate.imageUrl = null;
-
-        // Update the cate
-        this.itemChanged.next(cate);
-    }
+    // removeImage(cate: Task): void {
+    //     cate.imageUrl = null;
+    //
+    //     // Update the cate
+    //     this.itemChanged.next(cate);
+    // }
 
     /**
      * Track by function for ngFor loops

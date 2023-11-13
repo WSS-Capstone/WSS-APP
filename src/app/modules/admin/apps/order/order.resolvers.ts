@@ -5,6 +5,7 @@ import {OrderService} from "./order.service";
 import {Order, OrderResponse, WeddingInformation} from "./order.types";
 import {Category} from "../category/category.types";
 import {Discount, DiscountResponse} from "../discount/discount.types";
+import {Account} from "../user/user.types";
 
 @Injectable({
     providedIn: 'root'
@@ -27,6 +28,18 @@ export class VouchersResolver implements Resolve<any> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Discount[]> {
         return this._service.getAllDiscounts();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class OrderUsersResolver implements Resolve<any> {
+    constructor(private _service: OrderService) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Account[]> {
+        return this._service.getUsers();
     }
 }
 

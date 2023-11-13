@@ -91,23 +91,23 @@
                                     <div class="truncate">
                                         {{item.taskName}}
                                     </div>
-                                    <div class="">
+                                    <div class="truncate">
                                         {{item.partner.fullname}}
                                     </div>
-                                    <div class="">
-                                        {{item.service?.name}}
+                                    <div class="truncate">
+                                        {{item.orderDetails[0]?.service?.name}}
                                     </div>
 
-                                    <div class="">
-                                        {{'Đơn hàng của ' + item.order?.fullname}}
+                                    <div class="truncate">
+                                        {{'Đơn hàng của ' + item.orderDetails[0]?.order?.fullname}}
                                     </div>
 
-                                    <div class="">
-                                        {{item.orderDetail?.startTime | date: 'dd/MM/yyyy'}}
+                                    <div class="truncate">
+                                        {{item.orderDetails[0]?.startTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
-                                    <div class="">
-                                        {{item.orderDetail?.endTime | date: 'dd/MM/yyyy'}}
+                                    <div class="truncate">
+                                        {{item.orderDetails[0]?.endTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="flex flex-row truncate">

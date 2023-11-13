@@ -211,11 +211,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 console.log(result);
-                const requestBody: any = {
-                    id: id,
-                    status: status
-                };
-                this._service.update(id, requestBody).subscribe(() => {
+                this._service.approval(id, status).subscribe(() => {
                     this.openSnackBar(`${text} thành công`, 'Đóng');
                 });
             }

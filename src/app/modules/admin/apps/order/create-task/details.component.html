@@ -1,12 +1,58 @@
 <div class="flex flex-col flex-auto -m-6 pt-1">
 
-    <ng-container *ngIf="(item$ | async) as cate" [formGroup]="form">
+    <ng-container [formGroup]="form">
         <!-- Title -->
         <div class="text-3xl font-extrabold tracking-tight p-5">Tạo công việc</div>
 
         <!-- Image -->
-        <div class="flex flex-auto flex-row p-5">
+        <div class="flex flex-auto flex-col p-5">
+            <mat-form-field class="w-full">
+                <mat-label>Tên công việc</mat-label>
+                <input matInput [formControlName]="'taskName'">
+                <mat-error *ngIf="form.get('taskName').hasError('required')">
+                    Tên công việc không được để trống.
+                </mat-error>
+                <mat-error *ngIf="form.get('taskName').hasError('maxLength')">
+                    Tên công việc không được quá 100 ký tự.
+                </mat-error>
+            </mat-form-field>
 
+            <mat-form-field class="w-full" >
+                <mat-label>Người thực hiện</mat-label>
+                <mat-select [formControlName]="'userId'">
+                    <ng-container *ngIf="users$ | async as users">
+                        <ng-container *ngFor="let user of users">
+                            <mat-option [value]="user.id">
+                                {{user.user?.fullname}}
+                            </mat-option>
+                        </ng-container>
+                    </ng-container>
+                </mat-select>
+                <mat-error *ngIf="form.get('userId').hasError('required')">
+                    Người thực hiệ không được để trống.
+                </mat-error>
+            </mat-form-field>
+
+            <div class="flex">
+                <mat-form-field class="w-full pr-2">
+                    <mat-label>Ngày bắt đầu</mat-label>
+                    <input matInput [matDatepicker]="picker" [formControlName]="'startDate'" [matDatepickerFilter]="filterStart">
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="form.get('startDate').hasError('required')">
+                        Ngày bắt đầu áp dụng không được bỏ trống
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full">
+                    <mat-label>Ngày kết thúc</mat-label>
+                    <input matInput [matDatepicker]="picker2" [formControlName]="'endDate'" [matDatepickerFilter]="filterEnd">
+                    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                     <mat-datepicker #picker2></mat-datepicker>
+                    <mat-error *ngIf="form.get('endDate').hasError('required')">
+                        Ngày kết thúc không được bỏ trống
+                    </mat-error>
+                </mat-form-field>
+            </div>
 
         </div>
         <div class="flex justify-end items-center m-4">
@@ -35,7 +81,7 @@
                         [color]="'primary'"
                         [disabled]="form.invalid"
                         (click)="create()">
-                        Thêm mới
+                        Lưu
                     </button>
                 </div>
         </div>
