@@ -1,9 +1,5 @@
 import { Route } from '@angular/router';
 import {
-    ChatChatResolver,
-    ChatChatsResolver,
-    ChatContactsResolver,
-    ChatProfileResolver,
     ChatUsersResolver
 } from 'app/modules/admin/apps/chat/chat.resolvers';
 import { ChatComponent } from 'app/modules/admin/apps/chat/chat.component';
@@ -16,9 +12,9 @@ export const chatRoutes: Route[] = [
         path     : '',
         component: ChatComponent,
         resolve  : {
-            chats   : ChatChatsResolver,
-            contacts: ChatContactsResolver,
-            profile : ChatProfileResolver,
+            // chats   : ChatChatsResolver,
+            // contacts: ChatContactsResolver,
+            // profile : ChatProfileResolver,
             users: ChatUsersResolver
         },
         children : [
@@ -35,7 +31,7 @@ export const chatRoutes: Route[] = [
                         path     : ':id',
                         component: ConversationComponent,
                         resolve  : {
-                            conversation: ChatChatResolver
+                            // conversation: ChatChatResolver
                         }
                     }
                 ]

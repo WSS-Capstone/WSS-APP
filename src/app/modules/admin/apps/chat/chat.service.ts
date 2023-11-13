@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { Chat, Contact, Profile } from 'app/modules/admin/apps/chat/chat.types';
 import {AngularFirestore} from "@angular/fire/compat/firestore";
-import {data} from "autoprefixer";
-import {Account, AccountResponse, User} from "../user/user.types";
+import {Account, AccountResponse} from "../user/user.types";
 import {ENDPOINTS} from "../../../../core/global.constants";
 
 @Injectable({
@@ -19,6 +18,7 @@ export class ChatService
     private _contacts: BehaviorSubject<Contact[]> = new BehaviorSubject(null);
     private _profile: BehaviorSubject<Profile> = new BehaviorSubject(null);
     private readonly CHAT_COLLECTION: string = 'chats';
+    _selectUser: string;
 
     /**
      * Constructor

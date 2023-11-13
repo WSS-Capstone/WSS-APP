@@ -1,8 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import {BehaviorSubject, map, Observable, of, Subject, switchMap, take, throwError} from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Chat } from 'app/modules/admin/apps/chat/chat.types';
 import { ChatService } from 'app/modules/admin/apps/chat/chat.service';
+import {ActivatedRoute} from "@angular/router";
+import {Message} from "../chats/chats.component";
+import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {Account} from "../../user/user.types";
+import {FormControl} from "@angular/forms";
+import {DateTime} from "luxon";
 
 @Component({
     selector       : 'chat-conversation',
@@ -14,9 +20,14 @@ export class ConversationComponent implements OnInit, OnDestroy
 {
     @ViewChild('messageInput') messageInput: ElementRef;
     chat: Chat;
+    messages$: BehaviorSubject<Message[]> = new BehaviorSubject([]);
+    messagesObs$ = this.messages$.asObservable();
+    account$: Observable<Account>;
     drawerMode: 'over' | 'side' = 'side';
     drawerOpened: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    messageTextInput = new FormControl('');
+    chatId: string;
 
     /**
      * Constructor
@@ -25,7 +36,9 @@ export class ConversationComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _chatService: ChatService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _ngZone: NgZone
+        private _ngZone: NgZone,
+        private _firestore: AngularFirestore,
+        private _route: ActivatedRoute
     )
     {
     }
@@ -72,34 +85,76 @@ export class ConversationComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Chat
-        this._chatService.chat$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((chat: Chat) => {
-                this.chat = chat;
+        this._route.paramMap.subscribe(param => {
+            // const id = param.get("id");
+            this.chatId = param.get("id");
+            this.account$ = this._chatService.items$
+                .pipe(
+                    take(1),
+                    map(accs => {
+                        return accs.find(item => item.id === this._chatService._selectUser)
+                    }),
+                    switchMap((acc) => {
+                        if (!acc) {
+                            return throwError('Could not found account with id of ' + this.chatId + '!');
+                        }
+                        return of(acc);
+                    })
+                );
 
+            console.log('conversation', this.chatId, this._chatService._selectUser)
+
+            const mess = this._firestore.collection<any>(`chats/${this.chatId}/messages`,
+                ref => ref.orderBy('createdAt', "asc")).valueChanges({ idField: 'uid' })
+
+            mess.subscribe(data =>
+            {
+                const messages: Message[] = [];
+                data.map(x => {
+                    // if(messages.findIndex(xx => xx.uid === x.uid) < 0) {
+                        messages.push({
+                            uid: x.uid,
+                            content: x?.content,
+                            contactId: x?.contactId,
+                            createdAt: x?.createdAt
+                        })
+                    // }
+                })
+
+                this.messages$.next(messages);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            });
+            })
+        })
+
+        // Chat
+        // this._chatService.chat$
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //     .subscribe((chat: Chat) => {
+        //         this.chat = chat;
+        //
+        //         // Mark for check
+        //         this._changeDetectorRef.markForCheck();
+        //     });
 
         // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) => {
-
-                // Set the drawerMode if the given breakpoint is active
-                if ( matchingAliases.includes('lg') )
-                {
-                    this.drawerMode = 'side';
-                }
-                else
-                {
-                    this.drawerMode = 'over';
-                }
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        // this._fuseMediaWatcherService.onMediaChange$
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //     .subscribe(({matchingAliases}) => {
+        //
+        //         // Set the drawerMode if the given breakpoint is active
+        //         if ( matchingAliases.includes('lg') )
+        //         {
+        //             this.drawerMode = 'side';
+        //         }
+        //         else
+        //         {
+        //             this.drawerMode = 'over';
+        //         }
+        //
+        //         // Mark for check
+        //         this._changeDetectorRef.markForCheck();
+        //     });
     }
 
     /**
@@ -115,6 +170,22 @@ export class ConversationComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    sendMessage(toUserId: string) {
+        if(this.messageTextInput.value.length > 0) {
+            const m = {
+                contactId: 'owner',
+                content: this.messageTextInput.value,
+                createdAt: DateTime.now().toString()
+            }
+
+            this._firestore.collection<any>(`chats/${this.chatId}/messages`).add(m).then(
+                () => {
+                 this.messageTextInput.reset();
+                }
+            )
+        }
+    }
 
     /**
      * Open the contact info
