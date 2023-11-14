@@ -18,7 +18,7 @@ export interface Chatt {
 
 export interface Message {
     uid: string;
-    contactId: string;
+    senderId: string;
     content: string;
     createdAt: string;
 }
@@ -145,7 +145,7 @@ export class ChatsComponent implements OnInit, OnDestroy
             const obsevables = ccc.map(c => {
                 return this._firestore.collection<any>(`chats/${c.uid}/messages`,
                     ref => ref.orderBy('createdAt', "desc").limit(1)).valueChanges({ idField: 'uid' })
-                    .pipe(map(value => value.map(x => ({...x, uid: c.uid, uerId: c.user1 === 'owner' ? c.user2 : c.user1}))));
+                    .pipe(map(value => value.map(x => ({...x, uid: c.uid, userId: c.user1 === 'owner' ? c.user2 : c.user1}))));
             })
 
             combineLatest(obsevables).subscribe(value => {
@@ -153,10 +153,10 @@ export class ChatsComponent implements OnInit, OnDestroy
                 // console.log(value)
 
                 value.flatMap(x => {
-                    const index= account.findIndex(xx => xx.id == x[0]?.uerId);
+                    const index= account.findIndex(xx => xx.id == x[0]?.userId);
                     latestMessages.push({
                         id: x[0].uid,
-                        userId: x[0]?.uerId,
+                        userId: x[0]?.userId,
                         fullname: account[index]?.user?.fullname,
                         createdAt: x[0]?.createdAt,
                         lastMessage: x[0]?.content

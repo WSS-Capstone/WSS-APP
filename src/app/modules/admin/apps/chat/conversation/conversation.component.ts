@@ -115,7 +115,7 @@ export class ConversationComponent implements OnInit, OnDestroy
                         messages.push({
                             uid: x.uid,
                             content: x?.content,
-                            contactId: x?.contactId,
+                            senderId: x?.senderId,
                             createdAt: x?.createdAt
                         })
                     // }
@@ -174,7 +174,7 @@ export class ConversationComponent implements OnInit, OnDestroy
     sendMessage(toUserId: string) {
         if(this.messageTextInput.value.length > 0) {
             const m = {
-                contactId: 'owner',
+                senderId: 'owner',
                 content: this.messageTextInput.value,
                 createdAt: DateTime.now().toString()
             }

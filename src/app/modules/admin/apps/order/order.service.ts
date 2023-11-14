@@ -252,9 +252,9 @@ export class OrderService {
             switchMap(itemsArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval?id=${id}&request=${status}`, {}).pipe(
                 map((updatedItem) => {
                     const index = itemsArr.findIndex(item => item.id === id);
-                    itemsArr[index] = updatedItem;
+                    itemsArr[index].statusOrder = status;
                     this._items.next(itemsArr);
-                    return updatedItem;
+                    return itemsArr[index];
                 }),
                 switchMap(updatedItem => this.item$.pipe(
                     take(1),
