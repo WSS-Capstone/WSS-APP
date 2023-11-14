@@ -1,0 +1,59 @@
+<div class="flex flex-col flex-auto -m-6 pt-1">
+        <div class="text-3xl font-extrabold tracking-tight p-5">Thêm dịch vụ</div>
+            <div class="flex flex-col w-full px-5">
+                <div class="flex flex-row w-full pb-2">
+                    <div class="w-1/2 max-w-1/2 text-xl font-bold">Tên dịch vụ</div>
+                    <div class="w-1/4 max-w-1/4 text-xl font-bold">Giá cho thuê</div>
+                    <div class="w-1/4 max-w-1/4"></div>
+                </div>
+                <div class="overflow-auto" [style.max-height]="'50vh'" >
+                    <div class="flex flex-row w-full pb-2" *ngFor="let service of services">
+                        <div class="w-1/2 max-w-1/2 truncate">{{service.name}}</div>
+                        <div class="w-1/4 max-w-1/4">{{service.currentPrices?.price | number: '1.0-0'}} VNĐ</div>
+                        <div class="flex w-1/4 max-w-1/4 justify-end pr-2">
+                            <button
+                                *ngIf="!newServices.includes(service.id)"
+                                mat-flat-button
+                                [color]="'primary'"
+                                (click)="add(service.id)">
+                                Thêm
+                            </button>
+                            <button
+                                *ngIf="newServices.includes(service.id)"
+                                mat-flat-button
+                                [color]="'accent'"
+                                (click)="remove(service.id)">
+                                Xóa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="flex justify-end items-center m-4">
+            <div
+                class="flex items-center mr-4 mt-4"
+                *ngIf="flashMessage">
+                <ng-container *ngIf="flashMessage === 'success'">
+                    <mat-icon
+                        class="text-green-500"
+                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                    <span class="ml-2">Thành công</span>
+                </ng-container>
+                <ng-container *ngIf="flashMessage === 'error'">
+                    <mat-icon
+                        class="text-red-500"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                    <span class="ml-2">Có lỗi xảy ra, vui lòng thử lại!</span>
+                </ng-container>
+            </div>
+                <div class="flex items-center justify-end mt-4">
+                    <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
+                    <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        (click)="create()">
+                        Xác nhận
+                    </button>
+                </div>
+        </div>
+</div>

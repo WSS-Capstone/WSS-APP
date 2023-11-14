@@ -22,6 +22,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 import {ComboDetailComponent} from "./combo-detail/details.component";
 import { ComboServiceDetailsComponent } from './comnbo-service-detail/details.component';
+import {AddServiceComponent} from "./add-service/details.component";
 
 @NgModule({
     declarations: [
@@ -29,7 +30,8 @@ import { ComboServiceDetailsComponent } from './comnbo-service-detail/details.co
         ComboListComponent,
         ComboDetailsComponent,
         ComboDetailComponent,
-        ComboServiceDetailsComponent
+        ComboServiceDetailsComponent,
+        AddServiceComponent
     ],
     imports: [
         RouterModule.forChild(itemRoutes),

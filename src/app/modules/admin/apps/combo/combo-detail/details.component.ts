@@ -21,6 +21,7 @@ import { ServiceService } from '../../service/service.service';
 import { ServiceDetailsComponent } from '../../service/detail/details.component';
 import { ComboServiceDetailsComponent } from '../comnbo-service-detail/details.component';
 import { Service } from '../../service/service.types';
+import {AddServiceComponent} from "../add-service/details.component";
 
 @Component({
     selector: 'category-details',
@@ -149,11 +150,21 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         if(comboServices) {
             services = comboServices.map(x => x.id);
         }
-
         console.log(services)
+
+        this._matDialog.open(AddServiceComponent, {
+            autoFocus: false,
+            data: {
+                addedService: services
+            },
+            width: '50vw',
+            maxHeight: '90vh'
+        });
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 
-    viewDetailService(service: Service) {
+    viewDetailService(service: any) {
                 this._matDialog.open(ComboServiceDetailsComponent, {
                     autoFocus: false,
                     data: {

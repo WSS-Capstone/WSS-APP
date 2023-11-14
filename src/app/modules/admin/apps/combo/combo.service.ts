@@ -70,6 +70,7 @@ export class ComboService {
     getAllServices(): Observable<Service[]> {
         return this._httpClient.get<ServiceResponse>(ENDPOINTS.service, {
             params: {
+                'status': 'Active',
                 'page-size': '' + 250,
             }
         }).pipe(
