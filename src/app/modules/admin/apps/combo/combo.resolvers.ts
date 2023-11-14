@@ -4,6 +4,7 @@ import {catchError, Observable, throwError} from 'rxjs';
 import {ComboService} from "./combo.service";
 import {Combo, ComboResponse} from "./combo.types";
 import {Category} from "../category/category.types";
+import { Service } from '../service/service.types';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +15,18 @@ export class CategoriesServiceResolver implements Resolve<any> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Category[]> {
         return this._service.getAllCategories();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class ServicesServiceResolver implements Resolve<any> {
+    constructor(private _service: ComboService) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Service[]> {
+        return this._service.getAllServices();
     }
 }
 

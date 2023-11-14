@@ -1,9 +1,10 @@
 import {Route} from '@angular/router';
 import {ComboComponent} from "./combo.component";
 import {ComboListComponent} from "./list/combo.component";
-import {CategoriesServiceResolver, ComboResolver, CombosResolver} from "./combo.resolvers";
+import {CategoriesServiceResolver, ComboResolver, CombosResolver, ServicesServiceResolver} from "./combo.resolvers";
 import {ComboDetailsComponent} from "./detail/details.component";
 import {ComboDetailComponent} from "./combo-detail/details.component";
+import { CategoriesResolver, CategoryResolver } from '../category/category.resolvers';
 
 export const itemRoutes: Route[] = [
     // {
@@ -21,7 +22,7 @@ export const itemRoutes: Route[] = [
                 resolve  : {
                     category    : CategoriesServiceResolver,
                     items: CombosResolver,
-                    // category  : CategoryResolver,
+                    
                 }
             },
             {
@@ -29,7 +30,8 @@ export const itemRoutes: Route[] = [
                 component: ComboDetailComponent,
                 resolve  : {
                     items: CombosResolver,
-                    item: ComboResolver
+                    item: ComboResolver,
+                    services: ServicesServiceResolver,
                 }
             }
         // ]

@@ -21,13 +21,15 @@ import {ComboDetailsComponent} from "./detail/details.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 import {ComboDetailComponent} from "./combo-detail/details.component";
+import { ComboServiceDetailsComponent } from './comnbo-service-detail/details.component';
 
 @NgModule({
     declarations: [
         ComboComponent,
         ComboListComponent,
         ComboDetailsComponent,
-        ComboDetailComponent
+        ComboDetailComponent,
+        ComboServiceDetailsComponent
     ],
     imports: [
         RouterModule.forChild(itemRoutes),
@@ -46,7 +48,7 @@ import {ComboDetailComponent} from "./combo-detail/details.component";
         MatTooltipModule,
         MatDialogModule,
         MatSnackBarModule,
-        SharedModule
+        SharedModule,
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}

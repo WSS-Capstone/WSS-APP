@@ -4,6 +4,7 @@ import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, thro
 import {Combo, ComboPagination, ComboResponse} from './combo.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse, FileInfo} from "../category/category.types";
+import { Service, ServiceResponse } from '../service/service.types';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,7 @@ export class ComboService {
     private _item: BehaviorSubject<Combo | null> = new BehaviorSubject(null);
     private _items: BehaviorSubject<Combo[] | null> = new BehaviorSubject(null);
     private _itemsCate: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
+    private _itemsService: BehaviorSubject<Service[] | null> = new BehaviorSubject(null);
     private _pagination: BehaviorSubject<ComboPagination | null> = new BehaviorSubject(null);
 
     constructor(private _httpClient: HttpClient) {
@@ -38,6 +40,9 @@ export class ComboService {
         return this._itemsCate.asObservable();
     }
 
+    get services$(): Observable<Service[]> {
+        return this._itemsService.asObservable();
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -58,6 +63,22 @@ export class ComboService {
             }),
             map((categories) => {
                 return categories.data;
+            })
+        );
+    }
+
+    getAllServices(): Observable<Service[]> {
+        return this._httpClient.get<ServiceResponse>(ENDPOINTS.service, {
+            params: {
+                'page-size': '' + 250,
+            }
+        }).pipe(
+            tap((services) => {
+                console.log(services);
+                this._itemsService.next(services.data);
+            }),
+            map((services) => {
+                return services.data;
             })
         );
     }

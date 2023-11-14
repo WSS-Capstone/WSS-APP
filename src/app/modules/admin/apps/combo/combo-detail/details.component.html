@@ -3,7 +3,7 @@
         <ng-container *ngIf="(categories$ | async) as cate">
             <!-- Header -->
             <div
-                class="relative flex flex-col flex-0 py-8 px-6 md:px-8 border-b">
+                class="relative flex flex-col flex-0 pt-8 pb-2 px-6 md:px-8 border-b">
                 <!-- Loader -->
                 <div
                     class="absolute inset-x-0 bottom-0"
@@ -135,7 +135,19 @@
                     </div>
                 </div>
 
-                <div class="text-4xl font-extrabold tracking-tight mt-4">Danh sách dịch vụ</div>
+                <div class="flex flex-row justify-between mt-4">
+                    <div class="text-4xl font-extrabold tracking-tight">Danh sách dịch vụ</div>
+                    <div class="flex shrink-0 items-center">
+                        <button
+                            class="ml-4"
+                            mat-flat-button
+                            [color]="'primary'"
+                            (click)="addService(item.comboServices)">
+                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            <span class="ml-2 mr-1">Thêm dịch vụ</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Main -->
@@ -184,6 +196,7 @@
                                                 <button
                                                     class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                     mat-stroked-button
+                                                    (click)="viewDetailService(comboService)"
                                                 >
                                                     <mat-icon
                                                         class="icon-size-5"

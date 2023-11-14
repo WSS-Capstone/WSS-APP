@@ -12,10 +12,10 @@ export interface Combo {
     imageUrl: string;
     status: boolean;
     rating: number;
-    comboServices?: ComboService[]
+    comboServices?: ComboServiceType[]
 }
 
-export interface ComboService {
+export interface ComboServiceType {
     id:string;
     name: string;
     categoryId: string;
