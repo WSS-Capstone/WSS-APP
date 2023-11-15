@@ -56,6 +56,7 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
     itemChanged: Subject<Combo> = new Subject<Combo>();
     item$: Observable<Combo>;
     categories$: Observable<Category[]>;
+    services: Service[];
     tempImageUrl: string = null;
     isLoading: boolean = false;
     imgDataOrLink: any;
@@ -71,7 +72,6 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         private _service: ComboService,
-        private _serviceService: ServiceService,
         private acitvatedRoute: ActivatedRoute,
         private _matDialog: MatDialog,
         private sanitizer: DomSanitizer,
@@ -96,6 +96,9 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
                 this.item$.subscribe(value => this._patchValue(value));
                 this.categories$ = this._service.categories$;
             });
+            this._service.services$.subscribe(data => {
+                this.services = data;
+            })
         })
     }
 
@@ -109,6 +112,7 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             imageUrl: [null],
             rating: [null],
             totalAmount: [null, [Validators.required]],
+            comboServicesId: [null],
             status: [null],
         });
     }
@@ -123,6 +127,7 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             imageUrl: value.imageUrl,
             rating: value.rating,
             totalAmount: value.totalAmount,
+            comboServicesId: value.comboServices.map(x => x.id),
             status: value.status,
         });
         this.tempImageUrl = value.imageUrl;
@@ -141,15 +146,15 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+    getService(id: string): Service {
+        return this.services.find(x => x.id === id);
+    }
+
     numSequence(n: number): Array<number> {
         return Array(n);
     }
 
-    addService(comboServices?: ComboServiceType[]) {
-        let services: string[] = [];
-        if(comboServices) {
-            services = comboServices.map(x => x.id);
-        }
+    addService(services?: string[]) {
         console.log(services)
 
         this._matDialog.open(AddServiceComponent, {
@@ -159,9 +164,23 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             },
             width: '50vw',
             maxHeight: '90vh'
+        }).afterClosed().subscribe(result => {
+            if(result && result.length > 0) {
+                this.form.patchValue({
+                    comboServicesId: [...this.form.get('comboServicesId').value, ...result],
+                })
+                console.log(this.form.get('comboServicesId').value)
+                 // Mark for check
+                this._changeDetectorRef.markForCheck();
+            }
         });
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
+    }
+
+    removeService(comboServiceId: string) {
+        const index = this.form.get('comboServicesId').value.findIndex(x => x === comboServiceId);
+        this.form.get('comboServicesId').value.splice(index, 1);
+         // Mark for check
+         this._changeDetectorRef.markForCheck();
     }
 
     viewDetailService(service: any) {
@@ -192,17 +211,18 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         // }, 3100);
     }
 
-    update(): void {
-        // this._service.update(this.form.get('id').value ,this.form.value).pipe(
-        //     map(() => {
-        //         // Get the note
-        //         // this.cate$ = this._categoryService.category$;
-        //         this.showFlashMessage('success');
-        //     })).subscribe();
-        //
-        // setTimeout(() => {
-        //     this._matDialogRef.close();
-        // }, 1200);
+    update(id: string): void {
+        const requestBody = {
+            name: this.form.get('name').value,
+            discountValueCombo: this.form.get('discountValueCombo').value,
+            description: this.form.get('description').value,
+            comboServicesId: this.form.get('comboServicesId').value
+        }
+
+        this._service.update(id, requestBody).pipe(
+            map(() => {
+                this.showFlashMessage('success');
+            })).subscribe();
     }
 
     /**

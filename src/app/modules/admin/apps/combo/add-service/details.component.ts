@@ -65,7 +65,7 @@ export class AddServiceComponent implements OnInit, OnDestroy {
         this.newServices = [];
         this.categories$ = this._comboService.categories$;
         this._comboService.services$.subscribe(data => {
-            this.services = this._data.addedService.length > 0 ? data.filter(x => !this._data.addedService.includes(x.id)) : data;
+            this.services = this._data.addedService.length > 0 ? data.filter(x => !this._data.addedService.includes(x.id) && x.status === 'Active') : data.filter(x => x.status === 'Active');
         });
     }
 
@@ -117,19 +117,12 @@ export class AddServiceComponent implements OnInit, OnDestroy {
     }
 
     remove(id: string) {
-        this.newServices.slice(this.newServices.findIndex(x => x === id), 1);
+        const index = this.newServices.findIndex(x => x === id);
+        this.newServices.splice(index, 1);
     }
 
     create(): void {
-        console.log(this.newServices)
-        // this._service.create(this.form.value).pipe(
-        //     map(() => {
-        //         this.showFlashMessage('success');
-        //     })).subscribe();
-        //
-        // setTimeout(() => {
-        //     this._matDialogRef.close();
-        // }, 3100);
+        this._matDialogRef.close(this.newServices);
     }
 
     update(): void {

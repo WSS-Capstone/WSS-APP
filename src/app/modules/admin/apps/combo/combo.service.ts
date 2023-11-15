@@ -70,7 +70,7 @@ export class ComboService {
     getAllServices(): Observable<Service[]> {
         return this._httpClient.get<ServiceResponse>(ENDPOINTS.service, {
             params: {
-                'status': 'Active',
+                // 'status': 'Active',
                 'page-size': '' + 250,
             }
         }).pipe(
@@ -154,7 +154,7 @@ export class ComboService {
         );
     }
 
-    update(id: string, item: Combo): Observable<Combo> {
+    update(id: string, item: any): Observable<Combo> {
         return this.items$.pipe(
             take(1),
             switchMap(itemsArr => this._httpClient.put<Combo>(ENDPOINTS.combo + `/${id}`, {

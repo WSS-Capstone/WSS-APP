@@ -1,29 +1,49 @@
-<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 overflow-auto bg-card dark:bg-transparent">
-    <ng-container *ngIf="(item$ | async) as item" [formGroup]="form">
-        <ng-container *ngIf="(categories$ | async) as cate">
+<div
+    class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 overflow-auto bg-card dark:bg-transparent"
+>
+    <ng-container *ngIf="item$ | async as item" [formGroup]="form">
+        <ng-container *ngIf="categories$ | async as cate">
             <!-- Header -->
             <div
-                class="relative flex flex-col flex-0 pt-8 pb-2 px-6 md:px-8 border-b">
+                class="relative flex flex-col flex-0 pt-8 pb-2 px-6 md:px-8 border-b"
+            >
                 <!-- Loader -->
+                <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+                    <mat-progress-bar
+                        [mode]="'indeterminate'"
+                    ></mat-progress-bar>
+                </div>
                 <div
-                    class="absolute inset-x-0 bottom-0"
-                    *ngIf="isLoading">
-                    <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+                    class="flex flex-row cursor-pointer w-fit"
+                    routerLink="../"
+                >
+                    <mat-icon
+                        [svgIcon]="'heroicons_solid:arrow-left'"
+                    ></mat-icon>
+                    <div class="text-2xl font-extrabold tracking-tight ml-4">
+                        Quay lại
+                    </div>
                 </div>
-                <div class="flex flex-row cursor-pointer w-fit" routerLink="../">
-                    <mat-icon [svgIcon]="'heroicons_solid:arrow-left'"></mat-icon>
-                    <div class="text-2xl font-extrabold tracking-tight ml-4">Quay lại</div>
+                <div class="mt-8 text-3xl font-extrabold tracking-tight">
+                    Gói dịch vụ #{{ item.id }}
                 </div>
-                <div class="mt-8 text-3xl font-extrabold tracking-tight">Gói dịch vụ #{{item.id}}</div>
 
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2">
                     <div class="flex flex-col items-center">
-                        <div class="w-2/3 h-80 max-w-2/3 max-h-80 border rounded overflow-hidden">
+                        <div
+                            class="w-2/3 h-80 max-w-2/3 max-h-80 border rounded overflow-hidden"
+                        >
                             <ng-container *ngIf="item.imageUrl; else noImage">
-                                <img class="w-full h-full object-cover" [src]="item.imageUrl">
+                                <img
+                                    class="w-full h-full object-cover"
+                                    [src]="item.imageUrl"
+                                />
                             </ng-container>
                             <ng-template #noImage>
-                                <span class="flex justify-center items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
+                                <span
+                                    class="flex justify-center items-center min-h-20 text-lg font-semibold"
+                                    >NO IMAGE</span
+                                >
                             </ng-template>
                         </div>
                         <div class="flex w-full justify-center pt-4">
@@ -31,24 +51,34 @@
                                 *ngIf="tempImageUrl !== null"
                                 mat-flat-button
                                 [color]="'primary'"
-                                (click)="clearImage()">
+                                (click)="clearImage()"
+                            >
                                 Clear
                             </button>
                             <button
                                 *ngIf="tempImageUrl === null"
                                 mat-flat-button
                                 [color]="'primary'"
-                                (click)="fileInput.click()">
+                                (click)="fileInput.click()"
+                            >
                                 Upload
                             </button>
                         </div>
-                        <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
+                        <input
+                            type="file"
+                            #fileInput
+                            style="display: none"
+                            (change)="uploadImage($event)"
+                            accept="image/*"
+                        />
                     </div>
                     <div class="flex flex-col">
                         <mat-form-field class="w-full">
                             <mat-label>Tên gói dịch vụ</mat-label>
-                            <input matInput [formControlName]="'name'">
-                            <mat-error *ngIf="form.get('name').hasError('required')">
+                            <input matInput [formControlName]="'name'" />
+                            <mat-error
+                                *ngIf="form.get('name').hasError('required')"
+                            >
                                 Tên gói dịch vụ không được để trống
                             </mat-error>
                         </mat-form-field>
@@ -56,24 +86,51 @@
                         <div class="flex flex-row">
                             <mat-form-field class="w-full pr-2">
                                 <mat-label>Tổng giá</mat-label>
-                                <input matInput [formControlName]="'totalAmount'">
-                                <mat-error *ngIf="form.get('totalAmount').hasError('required')">
+                                <input
+                                    matInput
+                                    [formControlName]="'totalAmount'"
+                                />
+                                <mat-error
+                                    *ngIf="
+                                        form
+                                            .get('totalAmount')
+                                            .hasError('required')
+                                    "
+                                >
                                     Tổng giá không được để trống
                                 </mat-error>
                             </mat-form-field>
 
                             <mat-form-field class="w-full pr-2">
                                 <mat-label>% giảm</mat-label>
-                                <input matInput [formControlName]="'discountValueCombo'">
-                                <mat-error *ngIf="form.get('discountValueCombo').hasError('required')">
+                                <input
+                                    matInput
+                                    [formControlName]="'discountValueCombo'"
+                                />
+                                <mat-error
+                                    *ngIf="
+                                        form
+                                            .get('discountValueCombo')
+                                            .hasError('required')
+                                    "
+                                >
                                     % giảm không được để trống
                                 </mat-error>
                             </mat-form-field>
 
                             <mat-form-field class="w-full">
                                 <mat-label>Giá giảm</mat-label>
-                                <input matInput [formControlName]="'discountPrice'">
-                                <mat-error *ngIf="form.get('discountPrice').hasError('required')">
+                                <input
+                                    matInput
+                                    [formControlName]="'discountPrice'"
+                                />
+                                <mat-error
+                                    *ngIf="
+                                        form
+                                            .get('discountPrice')
+                                            .hasError('required')
+                                    "
+                                >
                                     Giá giảm không được để trống
                                 </mat-error>
                             </mat-form-field>
@@ -84,8 +141,15 @@
                             <textarea
                                 matInput
                                 [rows]="3"
-                                [formControlName]="'description'"></textarea>
-                            <mat-error *ngIf="form.get('description').hasError('maxlength')">
+                                [formControlName]="'description'"
+                            ></textarea>
+                            <mat-error
+                                *ngIf="
+                                    form
+                                        .get('description')
+                                        .hasError('maxlength')
+                                "
+                            >
                                 Mô tả không được quá 300 ký tự
                             </mat-error>
                         </mat-form-field>
@@ -94,18 +158,33 @@
                             <div class="flex flex-row mb-4 font-medium">
                                 <div>Đánh giá</div>
                                 <div class="flex flex-row ml-4">
-                                    <span *ngFor="let n of numSequence(MAX_RATING - Math.round(item.rating))">
+                                    <span
+                                        *ngFor="
+                                            let n of numSequence(
+                                                MAX_RATING -
+                                                    Math.round(item.rating)
+                                            )
+                                        "
+                                    >
                                         <mat-icon
                                             class="icon-size-5 text-[#E8E8E8]"
                                             matPrefix
-                                            [svgIcon]="'heroicons_solid:star'">
+                                            [svgIcon]="'heroicons_solid:star'"
+                                        >
                                         </mat-icon>
                                     </span>
-                                            <span *ngFor="let n of numSequence(Math.round(item.rating))">
+                                    <span
+                                        *ngFor="
+                                            let n of numSequence(
+                                                Math.round(item.rating)
+                                            )
+                                        "
+                                    >
                                         <mat-icon
                                             class="icon-size-5 text-[#FABF35]"
                                             matPrefix
-                                            [svgIcon]="'heroicons_solid:star'">
+                                            [svgIcon]="'heroicons_solid:star'"
+                                        >
                                         </mat-icon>
                                     </span>
                                 </div>
@@ -113,37 +192,79 @@
 
                             <div class="flex flex-row truncate">
                                 <div class="font-medium mr-4">Trạng thái</div>
-                                <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
+                                <ng-container
+                                    *ngIf="item.status === 'Active'"
+                                    class="flex flex-col justify-center content-center"
+                                >
                                     <mat-icon
                                         class="text-green-400 icon-size-5"
-                                        [svgIcon]="'heroicons_solid:check'">
+                                        [svgIcon]="'heroicons_solid:check'"
+                                    >
                                     </mat-icon>
-                                    <span class="text-green-400">Đang hoạt động</span>
+                                    <span class="text-green-400"
+                                        >Đang hoạt động</span
+                                    >
                                 </ng-container>
                                 <ng-container *ngIf="item.status !== 'Active'">
                                     <mat-icon
                                         class="text-gray-400 icon-size-5"
-                                        [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                    <span class="text-gray-400">Ngưng hoạt động</span>
+                                        [svgIcon]="'heroicons_solid:x'"
+                                    ></mat-icon>
+                                    <span class="text-gray-400"
+                                        >Ngưng hoạt động</span
+                                    >
                                 </ng-container>
                             </div>
                         </div>
-
+                        <div
+                            class="flex items-center mr-4 mt-4 justify-center pb-2"
+                            *ngIf="flashMessage"
+                        >
+                            <ng-container *ngIf="flashMessage === 'success'">
+                                <mat-icon
+                                    class="text-green-500"
+                                    [svgIcon]="'heroicons_outline:check'"
+                                ></mat-icon>
+                                <span class="ml-2">Thành công</span>
+                            </ng-container>
+                            <ng-container *ngIf="flashMessage === 'error'">
+                                <mat-icon
+                                    class="text-red-500"
+                                    [svgIcon]="'heroicons_outline:x'"
+                                ></mat-icon>
+                                <span class="ml-2"
+                                    >Có lỗi xảy ra, vui lòng thử lại!</span
+                                >
+                            </ng-container>
+                        </div>
                         <div class="flex justify-center">
-                            <button mat-raised-button color="primary">Cập nhật</button>
+                            <button
+                                mat-raised-button
+                                color="primary"
+                                (click)="update(item.id)"
+                            >
+                                Cập nhật
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex flex-row justify-between mt-4">
-                    <div class="text-4xl font-extrabold tracking-tight">Danh sách dịch vụ</div>
+                    <div class="text-4xl font-extrabold tracking-tight">
+                        Danh sách dịch vụ
+                    </div>
                     <div class="flex shrink-0 items-center">
                         <button
                             class="ml-4"
                             mat-flat-button
                             [color]="'primary'"
-                            (click)="addService(item.comboServices)">
-                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            (click)="
+                                addService(form.get('comboServicesId').value)
+                            "
+                        >
+                            <mat-icon
+                                [svgIcon]="'heroicons_outline:plus'"
+                            ></mat-icon>
                             <span class="ml-2 mr-1">Thêm dịch vụ</span>
                         </button>
                     </div>
@@ -154,14 +275,17 @@
             <div class="flex flex-auto">
                 <!-- Products list -->
                 <div class="flex flex-col flex-auto">
-                    <ng-container *ngIf="(item.comboServices) as comboServices">
-                        <ng-container *ngIf="comboServices.length > 0; else noProducts">
+                    <ng-container *ngIf="item.comboServices as comboServices">
+                        <ng-container
+                            *ngIf="comboServices.length > 0; else noProducts"
+                        >
                             <div class="grid">
                                 <!-- Header -->
                                 <div
                                     class="combo-detail-grid z-10 overflow-auto sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                                     matSort
-                                    matSortDisableClear>
+                                    matSortDisableClear
+                                >
                                     <div class="">Mã dịch vụ</div>
                                     <div class="">Loại dịch vụ</div>
                                     <div class="">Tên dịch vụ</div>
@@ -171,58 +295,108 @@
                                 </div>
 
                                 <!-- Rows -->
-                                <ng-container *ngIf="(item.comboServices) as comboServices1">
-                                    <ng-container *ngFor="let comboService of comboServices1; trackBy: trackByFn">
-                                        <div class="combo-detail-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                            <div class="truncate">
-                                                {{comboService.id}}
-                                            </div>
-                                            <div class="truncate">
-                                                {{comboService.categoryId}}
-                                            </div>
-                                            <div class="truncate">
-                                                {{comboService.name}}
-                                            </div>
+                                <ng-container
+                                    *ngIf="
+                                        form.get('comboServicesId')
+                                            .value as comboServices1
+                                    "
+                                >
+                                    <ng-container
+                                        *ngFor="
+                                            let comboServiceId of form.get(
+                                                'comboServicesId'
+                                            ).value;
+                                            trackBy: trackByFn
+                                        "
+                                    >
+                                        <ng-container
+                                            *ngIf="
+                                                getService(
+                                                    comboServiceId
+                                                ) as services1
+                                            "
+                                        >
+                                            <div
+                                                class="combo-detail-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b"
+                                            >
+                                                <div class="truncate">
+                                                    {{ services1.code }}
+                                                </div>
+                                                <div class="truncate">
+                                                    {{
+                                                        services1.category?.name
+                                                    }}
+                                                </div>
+                                                <div class="truncate">
+                                                    {{ services1.name }}
+                                                </div>
 
-                                            <div class="truncate">
-                                                {{comboService.quantity}}
-                                            </div>
+                                                <div class="truncate">
+                                                    {{ services1.quantity }}
+                                                </div>
 
-                                            <div class="truncate">
-                                                {{comboService.currentPrices.price | number: '1.0-0'}}  VNĐ
-                                            </div>
+                                                <div class="truncate">
+                                                    {{
+                                                        services1.currentPrices
+                                                            ?.price
+                                                            | number : "1.0-0"
+                                                    }}
+                                                    VNĐ
+                                                </div>
 
-                                            <div class="flex flex-row">
-                                                <button
-                                                    class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                    mat-stroked-button
-                                                    (click)="viewDetailService(comboService)"
-                                                >
-                                                    <mat-icon
-                                                        class="icon-size-5"
-                                                        [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                                </button>
+                                                <div class="flex flex-row">
+                                                    <button
+                                                        class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                                        mat-stroked-button
+                                                        (click)="
+                                                            viewDetailService(
+                                                                services1
+                                                            )
+                                                        "
+                                                    >
+                                                        <mat-icon
+                                                            class="icon-size-5"
+                                                            [svgIcon]="
+                                                                'heroicons_outline:pencil-alt'
+                                                            "
+                                                        ></mat-icon>
+                                                    </button>
+                                                    <button
+                                                        class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                        mat-stroked-button
+                                                        [color]="'warn'"
+                                                        (click)="
+                                                            removeService(
+                                                                comboServiceId
+                                                            )
+                                                        "
+                                                    >
+                                                        <mat-icon
+                                                            class="icon-size-5"
+                                                            [svgIcon]="
+                                                                'heroicons_solid:trash'
+                                                            "
+                                                        ></mat-icon>
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <!--                                </ng-container>-->
-                                        <!--                            </ng-container>-->
-                                        <!--                        </div>-->
+                                            <!--                                </ng-container>-->
+                                            <!--                            </ng-container>-->
+                                            <!--                        </div>-->
 
-                                        <!--                        <mat-paginator-->
-                                        <!--                            class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"-->
-                                        <!--                            [ngClass]="{'pointer-events-none': isLoading}"-->
-                                        <!--                            [length]="pagination.length"-->
-                                        <!--                            [pageIndex]="pagination.page"-->
-                                        <!--                            [pageSize]="pagination.size"-->
-                                        <!--                            [pageSizeOptions]="[5, 10, 25, 100]"-->
-                                        <!--                            [showFirstLastButtons]="true">-->
-                                        <!--                        </mat-paginator>-->
+                                            <!--                        <mat-paginator-->
+                                            <!--                            class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"-->
+                                            <!--                            [ngClass]="{'pointer-events-none': isLoading}"-->
+                                            <!--                            [length]="pagination.length"-->
+                                            <!--                            [pageIndex]="pagination.page"-->
+                                            <!--                            [pageSize]="pagination.size"-->
+                                            <!--                            [pageSizeOptions]="[5, 10, 25, 100]"-->
+                                            <!--                            [showFirstLastButtons]="true">-->
+                                            <!--                        </mat-paginator>-->
+                                        </ng-container>
                                     </ng-container>
                                 </ng-container>
                             </div>
-
-
-
                         </ng-container>
                     </ng-container>
                 </div>
@@ -232,7 +406,9 @@
 </div>
 
 <ng-template #noProducts>
-    <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+    <div
+        class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center"
+    >
         Không có dịch vụ đặt!
     </div>
 </ng-template>
