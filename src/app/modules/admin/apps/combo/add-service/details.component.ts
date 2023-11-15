@@ -65,7 +65,7 @@ export class AddServiceComponent implements OnInit, OnDestroy {
         this.newServices = [];
         this.categories$ = this._comboService.categories$;
         this._comboService.services$.subscribe(data => {
-            this.services = this._data.addedService.length > 0 ? data.filter(x => !this._data.addedService.includes(x.id) && x.status === 'Active') : data.filter(x => x.status === 'Active');
+            this.services = this._data.addedService && this._data.addedService.length > 0 ? data.filter(x => !this._data.addedService.includes(x.id) && x.status === 'Active') : data.filter(x => x.status === 'Active');
         });
     }
 

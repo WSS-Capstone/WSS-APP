@@ -14,7 +14,7 @@ import {ComboService} from "../combo.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Route, Router} from "@angular/router";
 import {environment} from "../../../../../../environments/environment";
 import {DomSanitizer} from "@angular/platform-browser";
 import { ServiceService } from '../../service/service.service';
@@ -72,8 +72,9 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         private _service: ComboService,
-        private acitvatedRoute: ActivatedRoute,
         private _matDialog: MatDialog,
+        private acitvatedRoute: ActivatedRoute,
+        private route: Router,
         private sanitizer: DomSanitizer,
     ) {
         this._initForm();
@@ -90,16 +91,34 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         this.acitvatedRoute.paramMap.subscribe(param => {
             this.isLoading = true;
             const id = param.get('id');
-            this._service.getItem(id).subscribe(p => {
-                this.item$ = this._service.item$;
-                this.isLoading = false;
-                this.item$.subscribe(value => this._patchValue(value));
-                this.categories$ = this._service.categories$;
-            });
-            this._service.services$.subscribe(data => {
-                this.services = data;
-            })
+            if(id) {
+                this._service.getItem(id).subscribe(p => {
+                    this.item$ = this._service.item$;
+                    this.item$.subscribe(value => this._patchValue(value));
+                });
+            }
+            else {
+                const item: Combo = {
+                    id: null,
+                    name: null,
+                    description: null,
+                    discountValueCombo: null,
+                    disountPrice: null,
+                    imageUrl: null,
+                    rating: null,
+                    totalAmount: null,
+                    status: null
+                }
+                this.item$ = of(item);
+            }
+            this.isLoading = false;
         })
+
+        this._service.services$.subscribe(data => {
+            this.services = data;
+        })
+
+        this.categories$ = this._service.categories$;
     }
 
     private _initForm(): void {
@@ -107,7 +126,7 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             id: [null],
             name: [null, [Validators.required]],
             description: [null],
-            discountValueCombo: [null],
+            discountValueCombo: [null, Validators.max(100)],
             discountPrice: [null],
             imageUrl: [null],
             rating: [null],
@@ -167,7 +186,7 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         }).afterClosed().subscribe(result => {
             if(result && result.length > 0) {
                 this.form.patchValue({
-                    comboServicesId: [...this.form.get('comboServicesId').value, ...result],
+                    comboServicesId: this.form.get('comboServicesId').value ? [...this.form.get('comboServicesId').value, ...result] : [...result],
                 })
                 console.log(this.form.get('comboServicesId').value)
                  // Mark for check
@@ -196,19 +215,33 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
     }
 
     clearImage() {
-
+        this.tempImageUrl = null;
+        this.form.patchValue({
+            imageUrl: this.tempImageUrl
+        });
     }
     create(): void {
-        // this._service.create(this.form.value).pipe(
-        //     map(() => {
-        //         // Get the note
-        //         // this.cate$ = this._categoryService.category$;
-        //         this.showFlashMessage('success');
-        //     })).subscribe();
-        //
-        // setTimeout(() => {
-        //     this._matDialogRef.close();
-        // }, 3100);
+        console.log(this.form.value)
+        const requestBody = {
+            name: this.form.get('name').value,
+            discountValueCombo: this.form.get('discountValueCombo').value,
+            description: this.form.get('description').value,
+            comboServicesId: this.form.get('comboServicesId').value,
+            imageUrl: this.tempImageUrl
+        }
+        this._service.create(requestBody).pipe(
+            map((data) => {
+                // Get the note
+                // this.cate$ = this._categoryService.category$;
+                this.showFlashMessage('success');
+                return data
+            })).subscribe(data => {
+            setTimeout(() => {
+                // const url = window.location.href.substring(0, window.location.href.lastIndexOf('/') - 1) + data.id
+                const url = 'owner/combo/'+ data.id
+                this.route.navigateByUrl(url);
+            }, 1000);
+        });
     }
 
     update(id: string): void {
@@ -216,7 +249,8 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             name: this.form.get('name').value,
             discountValueCombo: this.form.get('discountValueCombo').value,
             description: this.form.get('description').value,
-            comboServicesId: this.form.get('comboServicesId').value
+            comboServicesId: this.form.get('comboServicesId').value,
+            imageUrl: this.tempImageUrl
         }
 
         this._service.update(id, requestBody).pipe(
@@ -250,6 +284,7 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             };
             // this.imgDataOrLink = this.mapImageUrl(res);
+            this._changeDetectorRef.markForCheck();
         });
     }
 

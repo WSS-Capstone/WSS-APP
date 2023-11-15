@@ -209,14 +209,7 @@ export class ComboListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     createItem(): void {
-        // Create the product
-        this._matDialog.open(ComboDetailsComponent, {
-            autoFocus: false,
-            data: {
-                service: {}
-            },
-            width: '50vw',
-        });
+
     }
 
     update(id: string): void {

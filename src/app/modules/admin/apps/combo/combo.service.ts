@@ -139,15 +139,17 @@ export class ComboService {
         );
     }
 
-    create(item: Combo): Observable<Combo> {
+    create(item: any): Observable<Combo> {
         return this.items$.pipe(
             take(1),
             switchMap(items => this._httpClient.post<Combo>(ENDPOINTS.combo, item).pipe(
                 map((newItem) => {
-
-
-                    this._items.next([newItem, ...items]);
-
+                    if(items) {
+                        this._items.next([newItem, ...items]);
+                    }
+                    else {
+                        this._items.next([newItem]);
+                    }
                     return newItem;
                 })
             ))

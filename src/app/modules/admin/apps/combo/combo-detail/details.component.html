@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="mt-8 text-3xl font-extrabold tracking-tight">
-                    Gói dịch vụ #{{ item.id }}
+                    {{item.id ? 'Gói dịch vụ #' + item.id : 'Tạo gói dịch vụ'}}
                 </div>
 
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2">
@@ -33,10 +33,10 @@
                         <div
                             class="w-2/3 h-80 max-w-2/3 max-h-80 border rounded overflow-hidden"
                         >
-                            <ng-container *ngIf="item.imageUrl; else noImage">
+                            <ng-container *ngIf="tempImageUrl; else noImage">
                                 <img
                                     class="w-full h-full object-cover"
-                                    [src]="item.imageUrl"
+                                    [src]="tempImageUrl"
                                 />
                             </ng-container>
                             <ng-template #noImage>
@@ -88,6 +88,7 @@
                                 <mat-label>Tổng giá</mat-label>
                                 <input
                                     matInput
+                                    type="number"
                                     [formControlName]="'totalAmount'"
                                 />
                                 <mat-error
@@ -105,16 +106,17 @@
                                 <mat-label>% giảm</mat-label>
                                 <input
                                     matInput
+                                    type="number"
                                     [formControlName]="'discountValueCombo'"
                                 />
                                 <mat-error
                                     *ngIf="
                                         form
                                             .get('discountValueCombo')
-                                            .hasError('required')
+                                            .hasError('max')
                                     "
                                 >
-                                    % giảm không được để trống
+                                    % giảm không được quá 100%
                                 </mat-error>
                             </mat-form-field>
 
@@ -122,17 +124,10 @@
                                 <mat-label>Giá giảm</mat-label>
                                 <input
                                     matInput
+                                    readonly
                                     [formControlName]="'discountPrice'"
+                                    [value]="form.get('totalAmount').value - (form.get('totalAmount').value * form.get('discountValueCombo').value / 100) + ''"
                                 />
-                                <mat-error
-                                    *ngIf="
-                                        form
-                                            .get('discountPrice')
-                                            .hasError('required')
-                                    "
-                                >
-                                    Giá giảm không được để trống
-                                </mat-error>
                             </mat-form-field>
                         </div>
 
@@ -154,7 +149,7 @@
                             </mat-error>
                         </mat-form-field>
 
-                        <div class="flex flex-row justify-between">
+                        <div class="flex flex-row justify-between" *ngIf="item.id">
                             <div class="flex flex-row mb-4 font-medium">
                                 <div>Đánh giá</div>
                                 <div class="flex flex-row ml-4">
@@ -239,11 +234,20 @@
                         </div>
                         <div class="flex justify-center">
                             <button
+                                *ngIf="item.id"
                                 mat-raised-button
                                 color="primary"
                                 (click)="update(item.id)"
                             >
                                 Cập nhật
+                            </button>
+                            <button
+                                *ngIf="!item.id"
+                                mat-raised-button
+                                color="primary"
+                                (click)="create()"
+                            >
+                               Lưu
                             </button>
                         </div>
                     </div>
@@ -275,10 +279,8 @@
             <div class="flex flex-auto">
                 <!-- Products list -->
                 <div class="flex flex-col flex-auto">
-                    <ng-container *ngIf="item.comboServices as comboServices">
-                        <ng-container
-                            *ngIf="comboServices.length > 0; else noProducts"
-                        >
+                    <ng-container>
+                        <ng-container>
                             <div class="grid">
                                 <!-- Header -->
                                 <div

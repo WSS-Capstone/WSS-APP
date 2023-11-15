@@ -22,7 +22,16 @@ export const itemRoutes: Route[] = [
                 resolve  : {
                     category    : CategoriesServiceResolver,
                     items: CombosResolver,
-                    
+
+                }
+            },
+            {
+                path     : 'create',
+                component: ComboDetailComponent,
+                pathMatch: 'full',
+                resolve  : {
+                    services: ServicesServiceResolver,
+                    category    : CategoriesServiceResolver,
                 }
             },
             {
@@ -33,7 +42,8 @@ export const itemRoutes: Route[] = [
                     item: ComboResolver,
                     services: ServicesServiceResolver,
                 }
-            }
+            },
+
         // ]
         /*children : [
             {
