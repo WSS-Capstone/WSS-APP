@@ -20,12 +20,10 @@
             <mat-form-field class="w-full" >
                 <mat-label>Người thực hiện</mat-label>
                 <mat-select [formControlName]="'userId'">
-                    <ng-container *ngIf="users$ | async as users">
-                        <ng-container *ngFor="let user of users">
-                            <mat-option [value]="user.id">
-                                {{user.user?.fullname}}
-                            </mat-option>
-                        </ng-container>
+                    <ng-container *ngFor="let user of users">
+                        <mat-option [value]="user.id">
+                            {{user.user?.fullname}}
+                        </mat-option>
                     </ng-container>
                 </mat-select>
                 <mat-error *ngIf="form.get('userId').hasError('required')">

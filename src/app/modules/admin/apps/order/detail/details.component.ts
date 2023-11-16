@@ -174,11 +174,12 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    createTask(id: string) {
+    createTask(id: string, isOwnerService: boolean) {
         this._matDialog.open(OrderCreateTaskComponent, {
             autoFocus: false,
             data: {
-                orderDetailId: id
+                orderDetailId: id,
+                isOwnerService: isOwnerService
             },
             width: '50vw',
         });

@@ -2,6 +2,7 @@ import {Route} from '@angular/router';
 import {TaskComponent} from "./task.component";
 import {TaskListComponent} from "./list/task.component";
 import {TasksResolver} from "./task.resolvers";
+import { OrderUsersResolver } from '../order/order.resolvers';
 
 export const itemRoutes: Route[] = [
     // {
@@ -19,6 +20,7 @@ export const itemRoutes: Route[] = [
                 resolve  : {
                     // category    : CategoriesServiceResolver,
                     items: TasksResolver,
+                    users    : OrderUsersResolver
                     // category  : CategoryResolver,
                 }
             }

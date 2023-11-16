@@ -13,6 +13,7 @@ export interface Service
     quantity: string;
     ownerId: string;
     serviceImages: ImageUrl[];
+    isOwnerService: boolean;
     status: string;
 }
 

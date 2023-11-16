@@ -118,15 +118,16 @@ export class TaskService {
         );
     }
 
-    create(item: Task): Observable<Task> {
+    create(item: any): Observable<Task> {
         return this.items$.pipe(
             take(1),
             switchMap(items => this._httpClient.post<Task>(ENDPOINTS.task, item).pipe(
                 map((newItem) => {
-
-
-                    this._items.next([newItem, ...items]);
-
+                    if(items) {
+                        this._items.next([newItem, ...items]);
+                    }else {
+                        this._items.next([newItem]);
+                    }
                     return newItem;
                 })
             ))

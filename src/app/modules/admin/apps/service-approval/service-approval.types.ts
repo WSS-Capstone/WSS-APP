@@ -13,6 +13,7 @@ export interface ApproveService {
     quantity: string;
     ownerId: string;
     serviceImages: ImageUrl[];
+    isOwnerService: boolean;
     status: string;
 }
 

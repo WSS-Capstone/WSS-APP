@@ -32,7 +32,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     // itemChanged: Subject<Task> = new Subject<Task>();
     // item$: Observable<Task>;
     // categories$: Observable<Category[]>;
-    users$: Observable<Account[]>;
+    users: Account[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     imgDataOrLink: any;
     form: FormGroup;
@@ -44,7 +44,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         private sanitizer: DomSanitizer,
-        @Inject(MAT_DIALOG_DATA) private _data: { orderDetailId: string },
+        @Inject(MAT_DIALOG_DATA) private _data: { orderDetailId: string, isOwnerService: boolean },
         private _taskService: TaskService,
         private _orderService: OrderService,
         private _matDialogRef: MatDialogRef<OrderCreateTaskComponent>
@@ -60,7 +60,10 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this.users$ = this._orderService.users$;
+        console.log(this._data)
+        this._orderService.users$.subscribe(userss => {
+            this.users = userss.filter(x => this._data.isOwnerService ? x.roleName === 'Staff' : x.roleName === 'Partner');
+        });
 
         this.form.patchValue({
             orderDetailId: this._data.orderDetailId
@@ -119,16 +122,24 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
 
     create(): void {
         console.log(this.form.value)
-        // this._taskService.create(this.form.value).pipe(
-        //     map(() => {
-        //         // Get the note
-        //         // this.cate$ = this._categoryService.category$;
-        //         this.showFlashMessage('success');
-        //     })).subscribe();
-        //
-        // setTimeout(() => {
-        //     this._matDialogRef.close();
-        // }, 3100);
+        const requestBody = {
+            staffId: this._data.isOwnerService ? this.form.get('userId').value : null,
+            partnerId: !this._data.isOwnerService ? this.form.get('userId').value : null,
+            orderDetailId: this.form.get('orderDetailId').value,
+            taskName: this.form.get('taskName').value,
+            startDate: this.form.get('startDate').value,
+            endDate: this.form.get('endDate').value,
+            imageEvidence: null
+        }
+
+        this._taskService.create(requestBody).pipe(
+            map(() => {
+                this.showFlashMessage('success');
+            })).subscribe();
+        
+        setTimeout(() => {
+            this._matDialogRef.close();
+        }, 3100);
     }
 
     update(): void {

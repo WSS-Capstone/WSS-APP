@@ -16,6 +16,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import { formatDate } from '@angular/common';
+import { OrderService } from '../../order/order.service';
+import { Account } from '../../user/user.types';
 
 @Component({
     selector: 'Task-details',
@@ -35,6 +37,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     itemChanged: Subject<Task> = new Subject<Task>();
     item$: Observable<Task>;
     comments: Comment[];
+    users: Account[];
     categories$: Observable<Category[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     imgDataOrLink: any;
@@ -49,6 +52,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         @Inject(MAT_DIALOG_DATA) private _data: { service: Task },
         private _service: TaskService,
+        private _orderService: OrderService,
         private _matDialogRef: MatDialogRef<TaskDetailsComponent>
     ) {
         this._initForm();
@@ -63,6 +67,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         this.categories$ = this._service.categories$;
+
         // Edit
         if (this._data.service.id) {
             console.log("Edit");
@@ -74,6 +79,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
             this.item$.subscribe((value) => {
                 this._patchValue(value);
+                this._orderService.users$.subscribe(userss => {
+                    this.users = userss.filter(x => value.staff ? x.roleName === 'Staff' : x.roleName === 'Partner');
+                    this._changeDetectorRef.markForCheck();
+                });
             });
         }
         // Add
@@ -102,8 +111,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             endTime: [null],
             taskName: [null],
             status: [null],
+            staffId: [null],
             staffName: [null],
             partnerName: [null],
+            partnerIde: [null],
             orderName: [null],
             serviceName: [null],
             // order: [null],
@@ -124,7 +135,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             endTime: new Date(value.orderDetails[0]?.endTime),
             taskName: value.taskName,
             status: value.status,
+            staffId: null,
             staffName: value.staff?.fullname,
+            partnerId: null,
             partnerName: value.partner?.fullname,
             orderName: 'Đơn hàng của ' + value.orderDetails[0]?.order?.fullname,
             serviceName: value.orderDetails[0]?.service?.name,

@@ -285,26 +285,36 @@
                                         </div>
 
                                         <div class="flex flex-row truncate">
-                                            <ng-container *ngIf="orderDetail.status === 'ACTIVE'" class="flex flex-col justify-center content-center ">
+                                            <ng-container *ngIf="orderDetail.status === 'DONE'" class="flex flex-col justify-center content-center ">
                                                 <mat-icon
                                                     class="text-green-400 icon-size-5"
                                                     [svgIcon]="'heroicons_solid:check'">
                                                 </mat-icon>
-                                                <span class="text-green-400">Đồng ý</span>
+                                                <span class="text-green-400">Hoàn tất</span>
                                             </ng-container>
-                                            <ng-container *ngIf="orderDetail.status !== 'ACTIVE'">
+                                            <ng-container *ngIf="orderDetail.status === 'PENDING'"
+                                                      class="flex flex-col justify-center content-center ">
                                                 <mat-icon
-                                                    class="text-gray-400 icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                                <span class="text-gray-400">Từ chối</span>
+                                                    class="text-gray-600 icon-size-5"
+                                                    [svgIcon]="'mat_outline:pending_actions'">
+                                                </mat-icon>
+                                                <span class="text-gray-600">Đang chuẩn bị</span>
                                             </ng-container>
+                                            <ng-container *ngIf="orderDetail.status === 'INPROCESS'"
+                                                      class="flex flex-col justify-center content-center ">
+                                                <mat-icon
+                                                    class="text-gray-600 icon-size-5"
+                                                    [svgIcon]="'mat_outline:pending_actions'">
+                                                </mat-icon>
+                                                <span class="text-gray-600">Đang thực hiện</span>
+                                        </ng-container>
                                         </div>
 
                                         <div class="flex flex-row">
                                             <button
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
-                                                (click)="createTask(orderDetail.id)"
+                                                (click)="createTask(orderDetail.id, orderDetail.service?.isOwnerService)"
                                                 >
                                                 <mat-icon
                                                     class="icon-size-5"

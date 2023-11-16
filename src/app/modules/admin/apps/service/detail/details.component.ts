@@ -84,6 +84,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
                 description: '',
                 serviceImages: null,
                 categoryId: null,
+                isOwnerService: true,
                 status: ''
             };
 
