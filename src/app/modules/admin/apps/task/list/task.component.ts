@@ -21,6 +21,7 @@ import {TaskDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
 import {filters} from "../../../../../mock-api/apps/mailbox/data";
+import {MatTabChangeEvent} from "@angular/material/tabs";
 
 @Component({
     selector: 'task-list',
@@ -42,22 +43,25 @@ import {filters} from "../../../../../mock-api/apps/mailbox/data";
     animations: fuseAnimations
 })
 export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild(MatPaginator) private _paginator: MatPaginator;
+    @ViewChild('ownerPaginator') private _ownerPaginator: MatPaginator;
+    @ViewChild('partnerPaginator') private _partnerPaginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
     partnerItems$: Observable<Task[]>;
-    staffItems$: Observable<Task[]>;
+    ownerItems$: Observable<Task[]>;
     categories$: Observable<Category[]>;
 
     parentCategories$: Observable<Task[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
-    pagination: TaskPagination;
+    ownerPagination: TaskPagination;
+    partnerPagination: TaskPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedCategory: Task | null = null;
     selectedCategoryForm: UntypedFormGroup;
     isNew: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    selectedTab = 0;
 
     /**
      * Constructor
@@ -80,32 +84,32 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // Create the selected product form
-        // this.selectedCategoryForm = this._formBuilder.group({
-        //     id: [''],
-        //     name: ['', [Validators.required]],
-        //     description: [''],
-        //     imageUrl: [''],
-        //     categoryId: [''],
-        //     images: [[]],
-        //     currentImageIndex: [0], // Image index that is currently being viewed
-        // });
-
         // Get the pagination
-        this._service.pagination$
+        this._service.partnerPagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: TaskPagination) => {
 
                 // Update the pagination
-                this.pagination = pagination;
+                this.partnerPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.ownerPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.ownerPagination = pagination;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
         // Get the products
-        this.partnerItems$ = this._service.items$.pipe(map(value => value.filter(x => x.partner)));
-        this.staffItems$ = this._service.items$.pipe(map(value => value.filter(x => x.staff)));
+        this.partnerItems$ = this._service.partnerItems$;
+        this.ownerItems$ = this._service.ownerItems$;
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
@@ -115,7 +119,12 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
                 switchMap((query) => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getItems(0, 10, 'name', 'asc', query);
+                    switch (this.selectedTab) {
+                        case 0:
+                            return this._service.getPartnerItems(0, 10, 'status', 'asc', query);
+                        case 1:
+                            return this._service.getOwnerItems(0, 10, 'status', 'asc', query);
+                    }
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -128,10 +137,10 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
      * After view init
      */
     ngAfterViewInit(): void {
-        if (this._sort && this._paginator) {
+        if (this._sort && this._partnerPaginator) {
             // Set the initial sort
             this._sort.sort({
-                id: 'name',
+                id: 'taskName',
                 start: 'asc',
                 disableClear: true
             });
@@ -144,18 +153,53 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
                 .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(() => {
                     // Reset back to the first page
-                    this._paginator.pageIndex = 1;
+                    this._partnerPaginator.pageIndex = 0;
 
                     // Close the details
                     this.closeDetails();
                 });
 
             // Get products if sort or page changes
-            merge(this._sort.sortChange, this._paginator.page).pipe(
+            merge(this._sort.sortChange, this._partnerPaginator.page).pipe(
                 switchMap(() => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getItems(this._paginator.pageIndex, this._paginator.pageSize, this._sort.active, this._sort.direction);
+                    return this._service.getPartnerItems(this._partnerPaginator.pageIndex, this._partnerPaginator.pageSize, this._sort.active, this._sort.direction);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        if (this._sort && this._ownerPaginator) {
+            // Set the initial sort
+            this._sort.sort({
+                id: 'taskName',
+                start: 'asc',
+                disableClear: true
+            });
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+
+            // If the user changes the sort order...
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    // Reset back to the first page
+                    this._ownerPaginator.pageIndex = 1;
+
+                    // Close the details
+                    this.closeDetails();
+                });
+
+            // Get products if sort or page changes
+            merge(this._sort.sortChange, this._ownerPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getOwnerItems(this._ownerPaginator.pageIndex, this._ownerPaginator.pageSize, this._sort.active, this._sort.direction);
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -173,27 +217,31 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    toggleDetails(productId: string): void {
-        // If the product is already selected...
-        if (this.selectedCategory && this.selectedCategory.id === productId) {
-            // Close the details
-            this.closeDetails();
-            return;
-        }
-
-        // Get the product by id
-        this._service.getItem(productId)
-            .subscribe((item) => {
-
-                // Set the selected item
-                this.selectedCategory = item;
-
-                // Fill the form
-                this.selectedCategoryForm.patchValue(item);
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+    onTabChange(event: MatTabChangeEvent): void {
+        this.selectedTab = event.index
     }
+
+    // toggleDetails(productId: string): void {
+    //     // If the product is already selected...
+    //     if (this.selectedCategory && this.selectedCategory.id === productId) {
+    //         // Close the details
+    //         this.closeDetails();
+    //         return;
+    //     }
+    //
+    //     // Get the product by id
+    //     this._service.getItem(productId)
+    //         .subscribe((item) => {
+    //
+    //             // Set the selected item
+    //             this.selectedCategory = item;
+    //
+    //             // Fill the form
+    //             this.selectedCategoryForm.patchValue(item);
+    //             // Mark for check
+    //             this._changeDetectorRef.markForCheck();
+    //         });
+    // }
 
     /**
      * Close the details
@@ -213,29 +261,49 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    update(id: string): void {
-        this._service.getItem(id)
-            .subscribe((item) => {
-                this.selectedCategory = item;
+    update(id: string, type: string): void {
+        if(type === 'owner') {
+            this._service.getOwnerItem(id)
+                .subscribe((item) => {
+                    this.selectedCategory = item;
 
-                this._matDialog.open(TaskDetailsComponent, {
-                    autoFocus: false,
-                    data: {
-                        service: this.selectedCategory
-                    },
-                    width: '50vw',
-                    maxHeight: '90%'
+                    this._matDialog.open(TaskDetailsComponent, {
+                        autoFocus: false,
+                        data: {
+                            service: this.selectedCategory,
+                            type: type
+                        },
+                        width: '50vw',
+                        maxHeight: '90%'
+                    });
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 });
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        } else if(type === 'partner') {
+            this._service.getPartnerItem(id)
+                .subscribe((item) => {
+                    this.selectedCategory = item;
+
+                    this._matDialog.open(TaskDetailsComponent, {
+                        autoFocus: false,
+                        data: {
+                            service: this.selectedCategory,
+                            type: type
+                        },
+                        width: '50vw',
+                        maxHeight: '90%'
+                    });
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
+        }
     }
 
-    delete(id: string): void {
+    delete(id: string, type: string): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             title: 'Xóa loại dịch vụ',
-            message: 'Bạn có chắc chắn muốn xóa loại dịch vụ này?!',
+            message: 'Bạn có chắc chắn muốn xóa công việc này?!',
             actions: {
                 confirm: {
                     label: 'Xóa'
@@ -252,12 +320,22 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 console.log(id);
-                // Delete the product on the server
-                this._service.delete(id).subscribe(() => {
-                    this.openSnackBar('Xóa thành công', 'Đóng');
-                    // Close the details
-                    this.closeDetails();
-                });
+
+                if(type === 'owner') {
+                    // Delete the product on the server
+                    this._service.delete(id, type).subscribe(() => {
+                        this.openSnackBar('Xóa thành công', 'Đóng');
+                        // Close the details
+                        this.closeDetails();
+                    });
+                } else if(type === 'partner') {
+                    // Delete the product on the server
+                    this._service.delete(id, type).subscribe(() => {
+                        this.openSnackBar('Xóa thành công', 'Đóng');
+                        // Close the details
+                        this.closeDetails();
+                    });
+                }
             }
         });
     }

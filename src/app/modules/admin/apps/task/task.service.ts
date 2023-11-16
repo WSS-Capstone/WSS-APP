@@ -10,10 +10,13 @@ import {Category, CategoryResponse, FileInfo} from "../category/category.types";
 })
 export class TaskService {
     // Private
-    private _item: BehaviorSubject<Task | null> = new BehaviorSubject(null);
-    private _items: BehaviorSubject<Task[] | null> = new BehaviorSubject(null);
+    private _ownerItem: BehaviorSubject<Task | null> = new BehaviorSubject(null);
+    private _partnerItem: BehaviorSubject<Task | null> = new BehaviorSubject(null);
+    private _ownerItems: BehaviorSubject<Task[] | null> = new BehaviorSubject(null);
+    private _partnerItems: BehaviorSubject<Task[] | null> = new BehaviorSubject(null);
     private _itemsCate: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
-    private _pagination: BehaviorSubject<TaskPagination | null> = new BehaviorSubject(null);
+    private _ownerPagination: BehaviorSubject<TaskPagination | null> = new BehaviorSubject(null);
+    private _partnerPagination: BehaviorSubject<TaskPagination | null> = new BehaviorSubject(null);
 
     constructor(private _httpClient: HttpClient) {
     }
@@ -22,16 +25,27 @@ export class TaskService {
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
-    get pagination$(): Observable<TaskPagination> {
-        return this._pagination.asObservable();
+    get ownerPagination$(): Observable<TaskPagination> {
+        return this._ownerPagination.asObservable();
+    }
+    get partnerPagination$(): Observable<TaskPagination> {
+        return this._partnerPagination.asObservable();
     }
 
-    get item$(): Observable<Task> {
-        return this._item.asObservable();
+    get ownerItem$(): Observable<Task> {
+        return this._ownerItem.asObservable();
     }
 
-    get items$(): Observable<Task[]> {
-        return this._items.asObservable();
+    get partnerItem$(): Observable<Task> {
+        return this._partnerItem.asObservable();
+    }
+
+    get ownerItems$(): Observable<Task[]> {
+        return this._ownerItems.asObservable();
+    }
+
+    get partnerItems$(): Observable<Task[]> {
+        return this._partnerItems.asObservable();
     }
 
     get categories$(): Observable<Category[]> {
@@ -64,20 +78,20 @@ export class TaskService {
     }
 
 
-    getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+    getOwnerItems(page: number = 0, size: number = 10, sort: string = 'taskName', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<TaskResponse> {
-        return this._httpClient.get<TaskResponse>(ENDPOINTS.task, {
+        return this._httpClient.get<TaskResponse>(ENDPOINTS.task + '?ofPartner=false', {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
-                'sort-key': 'StartDate',
-                'sort-order': 'ASC',
+                'sort-key': sort,
+                'sort-order': order,
                 name: search
             }
         }).pipe(
             tap((response) => {
                 console.log(response);
-                this._pagination.next({
+                this._ownerPagination.next({
                     length: response.total,
                     size: response.size,
                     page: response.page,
@@ -85,7 +99,33 @@ export class TaskService {
                     startIndex: 1,
                     endIndex: 5
                 });
-                this._items.next(response.data);
+                this._ownerItems.next(response.data);
+            })
+        );
+    }
+
+    getPartnerItems(page: number = 0, size: number = 10, sort: string = 'taskName', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+        Observable<TaskResponse> {
+        return this._httpClient.get<TaskResponse>(ENDPOINTS.task + '?ofPartner=true', {
+            params: {
+                page: '' + (page),
+                'page-size': '' + size,
+                'sort-key': sort,
+                'sort-order': order,
+                name: search
+            }
+        }).pipe(
+            tap((response) => {
+                console.log(response);
+                this._partnerPagination.next({
+                    length: response.total,
+                    size: response.size,
+                    page: response.page,
+                    lastPage: response.total % response.size === 0 ? response.total / response.size : Math.floor(response.total / response.size) + 1,
+                    startIndex: 1,
+                    endIndex: 5
+                });
+                this._partnerItems.next(response.data);
             })
         );
     }
@@ -93,8 +133,8 @@ export class TaskService {
     /**
      * Get product by id
      */
-    getItem(id: string): Observable<Task> {
-        return this._items.pipe(
+    getOwnerItem(id: string): Observable<Task> {
+        return this._ownerItems.pipe(
             take(1),
             map((products) => {
 
@@ -102,7 +142,7 @@ export class TaskService {
                 const product = products.find(item => item.id === id) || null;
 
                 // Update the product
-                this._item.next(product);
+                this._ownerItem.next(product);
 
                 // Return the product
                 return product;
@@ -118,58 +158,185 @@ export class TaskService {
         );
     }
 
-    create(item: any): Observable<Task> {
-        return this.items$.pipe(
+    getPartnerItem(id: string): Observable<Task> {
+        return this._partnerItems.pipe(
             take(1),
-            switchMap(items => this._httpClient.post<Task>(ENDPOINTS.task, item).pipe(
-                map((newItem) => {
-                    if(items) {
-                        this._items.next([newItem, ...items]);
-                    }else {
-                        this._items.next([newItem]);
-                    }
-                    return newItem;
-                })
-            ))
+            map((products) => {
+
+                // Find the product
+                const product = products.find(item => item.id === id) || null;
+
+                // Update the product
+                this._partnerItem.next(product);
+
+                // Return the product
+                return product;
+            }),
+            switchMap((product) => {
+
+                if (!product) {
+                    return throwError('Could not found product with id of ' + id + '!');
+                }
+
+                return of(product);
+            })
         );
     }
 
-    update(id: string, item: Task): Observable<Task> {
-        return this.items$.pipe(
-            take(1),
-            switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}`, {
-                ...item
-            }).pipe(
-                map((updatedItem) => {
-                    const index = itemsArr.findIndex(item => item.id === id);
-                    itemsArr[index] = updatedItem;
-                    this._items.next(itemsArr);
-                    return updatedItem;
-                }),
-                switchMap(updatedItem => this.item$.pipe(
-                    take(1),
-                    filter(item => item && item.id === id),
-                    tap(() => {
-                        this._item.next(updatedItem);
-                        return updatedItem;
+    create(item: any, type: string): Observable<Task> {
+        if(type === 'owner') {
+            return this.ownerItems$.pipe(
+                take(1),
+                switchMap(items => this._httpClient.post<Task>(ENDPOINTS.task, item).pipe(
+                    map((newItem) => {
+                        if(items) {
+                            this._ownerItems.next([newItem, ...items]);
+                        }else {
+                            this._ownerItems.next([newItem]);
+                        }
+                        return newItem;
                     })
                 ))
-            ))
-        );
+            );
+        } else if(type === 'partner') {
+            return this.partnerItems$.pipe(
+                take(1),
+                switchMap(items => this._httpClient.post<Task>(ENDPOINTS.task, item).pipe(
+                    map((newItem) => {
+                        if(items) {
+                            this._partnerItems.next([newItem, ...items]);
+                        }else {
+                            this._partnerItems.next([newItem]);
+                        }
+                        return newItem;
+                    })
+                ))
+            );
+        }
     }
 
-    delete(id: string): Observable<boolean> {
-        return this.items$.pipe(
-            take(1),
-            switchMap(items => this._httpClient.delete(ENDPOINTS.task + `/${id}`, {params: {id}}).pipe(
-                map((isDeleted: boolean) => {
-                    const index = items.findIndex(item => item.id === id);
-                    items.splice(index, 1);
-                    this._items.next(items);
-                    return isDeleted;
-                })
-            ))
-        );
+    update(id: string, item: Task, type: string): Observable<Task> {
+        if(type === 'owner') {
+            return this.ownerItems$.pipe(
+                take(1),
+                switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}`, {
+                    ...item
+                }).pipe(
+                    map((updatedItem) => {
+                        const index = itemsArr.findIndex(item => item.id === id);
+                        itemsArr[index] = updatedItem;
+                        this._ownerItems.next(itemsArr);
+                        return updatedItem;
+                    }),
+                    switchMap(updatedItem => this.ownerItem$.pipe(
+                        take(1),
+                        filter(item => item && item.id === id),
+                        tap(() => {
+                            this._ownerItem.next(updatedItem);
+                            return updatedItem;
+                        })
+                    ))
+                ))
+            );
+        } else if(type === 'partner') {
+            return this.partnerItems$.pipe(
+                take(1),
+                switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}`, {
+                    ...item
+                }).pipe(
+                    map((updatedItem) => {
+                        const index = itemsArr.findIndex(item => item.id === id);
+                        itemsArr[index] = updatedItem;
+                        this._partnerItems.next(itemsArr);
+                        return updatedItem;
+                    }),
+                    switchMap(updatedItem => this.partnerItem$.pipe(
+                        take(1),
+                        filter(item => item && item.id === id),
+                        tap(() => {
+                            this._partnerItem.next(updatedItem);
+                            return updatedItem;
+                        })
+                    ))
+                ))
+            );
+        }
+    }
+
+    updateStatus(id: string, item: any, type: string): Observable<Task> {
+        if(type === 'owner') {
+            return this.ownerItems$.pipe(
+                take(1),
+                switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}/status`, {
+                    ...item
+                }).pipe(
+                    map((updatedItem) => {
+                        const index = itemsArr.findIndex(item => item.id === id);
+                        itemsArr[index].status = item.status;
+                        this._ownerItems.next(itemsArr);
+                        return updatedItem;
+                    }),
+                    switchMap(updatedItem => this.ownerItem$.pipe(
+                        take(1),
+                        filter(item => item && item.id === id),
+                        tap(() => {
+                            this._ownerItem.next(updatedItem);
+                            return updatedItem;
+                        })
+                    ))
+                ))
+            );
+        } else if(type === 'partner') {
+            return this.partnerItems$.pipe(
+                take(1),
+                switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}/status`, {
+                    ...item
+                }).pipe(
+                    map((updatedItem) => {
+                        const index = itemsArr.findIndex(item => item.id === id);
+                        itemsArr[index].status = item.status;
+                        this._partnerItems.next(itemsArr);
+                        return itemsArr[index];
+                    }),
+                    switchMap(updatedItem => this.partnerItem$.pipe(
+                        take(1),
+                        filter(item => item && item.id === id),
+                        tap(() => {
+                            this._partnerItem.next(updatedItem);
+                            return updatedItem;
+                        })
+                    ))
+                ))
+            );
+        }
+    }
+
+    delete(id: string, type: string): Observable<boolean> {
+        if(type === 'owner') {
+            return this.ownerItems$.pipe(
+                take(1),
+                switchMap(items => this._httpClient.delete(ENDPOINTS.task + `/${id}`, {params: {id}}).pipe(
+                    map((isDeleted: boolean) => {
+                        const index = items.findIndex(item => item.id === id);
+                        items.splice(index, 1);
+                        this._ownerItems.next(items);
+                        return isDeleted;
+                    })
+                ))
+            );
+        } else if(type === 'partner') {
+            return this.partnerItems$.pipe(
+                take(1),
+                switchMap(items => this._httpClient.delete(ENDPOINTS.task + `/${id}`, {params: {id}}).pipe(
+                    map((isDeleted: boolean) => {
+                        const index = items.findIndex(item => item.id === id);
+                        items.splice(index, 1);
+                        this._partnerItems.next(items);
+                        return isDeleted;
+                    })
+                ))
+            );
+            }
     }
 
     uploadImage(data : File): Observable<string>
@@ -183,19 +350,34 @@ export class TaskService {
         );
     }
 
-    addComment(id: string, content: string) {
-        return this.items$.pipe(
-            take(1),
-            switchMap(items => this._httpClient.post<Comment>(ENDPOINTS.comment, {taskId: id, content: content}).pipe(
-                map((comment: Comment) => {
-                    const index = items.findIndex(item => item.id === id);
-                    items[index].comments.push(comment)
-                    this._items.next(items);
-                    this._item.next(items[index]);
-                    // return isCommented;
-                })
-            ))
-        );
+    addComment(id: string, content: string, type: string) {
+        if(type === 'owner') {
+            return this.ownerItems$.pipe(
+                take(1),
+                switchMap(items => this._httpClient.post<Comment>(ENDPOINTS.comment, {taskId: id, content: content}).pipe(
+                    map((comment: Comment) => {
+                        const index = items.findIndex(item => item.id === id);
+                        items[index].comments.push(comment)
+                        this._ownerItems.next(items);
+                        this._ownerItem.next(items[index]);
+                        // return isCommented;
+                    })
+                ))
+            );
+        } else if(type === 'partner') {
+            return this.partnerItems$.pipe(
+                take(1),
+                switchMap(items => this._httpClient.post<Comment>(ENDPOINTS.comment, {taskId: id, content: content}).pipe(
+                    map((comment: Comment) => {
+                        const index = items.findIndex(item => item.id === id);
+                        items[index].comments.push(comment)
+                        this._partnerItems.next(items);
+                        this._partnerItem.next(items[index]);
+                        // return isCommented;
+                    })
+                ))
+            );
+        }
     }
 
     /**

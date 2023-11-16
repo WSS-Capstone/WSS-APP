@@ -132,28 +132,28 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
             imageEvidence: null
         }
 
-        this._taskService.create(requestBody).pipe(
+        this._taskService.create(requestBody, this._data.isOwnerService ? 'owner' : 'partner').pipe(
             map(() => {
                 this.showFlashMessage('success');
             })).subscribe();
-        
+
         setTimeout(() => {
             this._matDialogRef.close();
         }, 3100);
     }
 
-    update(): void {
-        this._taskService.update(this.form.get('id').value ,this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
-
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 1200);
-    }
+    // update(): void {
+    //     this._taskService.update(this.form.get('id').value ,this.form.value).pipe(
+    //         map(() => {
+    //             // Get the note
+    //             // this.cate$ = this._categoryService.category$;
+    //             this.showFlashMessage('success');
+    //         })).subscribe();
+    //
+    //     setTimeout(() => {
+    //         this._matDialogRef.close();
+    //     }, 1200);
+    // }
 
     /**
      * Upload image to given note

@@ -18,6 +18,7 @@ import {Category} from "../../category/category.types";
 import { formatDate } from '@angular/common';
 import { OrderService } from '../../order/order.service';
 import { Account } from '../../user/user.types';
+import {MatSelectChange} from "@angular/material/select";
 
 @Component({
     selector: 'Task-details',
@@ -50,7 +51,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
-        @Inject(MAT_DIALOG_DATA) private _data: { service: Task },
+        @Inject(MAT_DIALOG_DATA) public _data: { service: Task, type: string },
         private _service: TaskService,
         private _orderService: OrderService,
         private _matDialogRef: MatDialogRef<TaskDetailsComponent>
@@ -71,11 +72,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         // Edit
         if (this._data.service.id) {
             console.log("Edit");
-            // Request the data from the server
-            this._service.getItem(this._data.service.id).subscribe();
 
-            // Get the note
-            this.item$ = this._service.item$;
+            if(this._data.type === 'owner') {
+                this._service.getOwnerItem(this._data.service.id).subscribe();
+                this.item$ = this._service.ownerItem$;
+            } else if(this._data.type === 'partner') {
+                this._service.getPartnerItem(this._data.service.id).subscribe();
+                this.item$ = this._service.partnerItem$;
+            }
 
             this.item$.subscribe((value) => {
                 this._patchValue(value);
@@ -85,22 +89,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
                 });
             });
         }
-        // Add
-        // else {
-        //     console.log("Add");
-        //     // Create an empty note
-        //     const item: Task = {
-        //         id: null,
-        //         name: "",
-        //         code: "",
-        //         endTime: null,
-        //         startTime: null,
-        //         imageUrl: null,
-        //         TaskValueVoucher: null,
-        //     };
-        //
-        //     this.item$ = of(item);
-        // }
     }
 
     private _initForm(): void {
@@ -117,13 +105,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             partnerIde: [null],
             orderName: [null],
             serviceName: [null],
-            // order: [null],
-            // orderDetail: [null],
-            // comments: [null],
-            // createBy: [null],
-            // partner: [null],
-            // staff: [null],
-            // service: [null],
         });
     }
 
@@ -141,13 +122,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             partnerName: value.partner?.fullname,
             orderName: 'Đơn hàng của ' + value.orderDetails[0]?.order?.fullname,
             serviceName: value.orderDetails[0]?.service?.name,
-            // order: value.order,
-            // orderDetail: value.orderDetail,
-            // comments: value.comments,
-            // createBy: value.createBy,
-            // partner: value.partner,
-            // staff: value.staff,
-            // service: value.service,
         });
 
         this.comments = value.comments.sort((a:Comment, b:Comment) => {return a.createDate > b.createDate ? 1 : -1});
@@ -171,11 +145,23 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this._service.addComment(this._data.service.id, this.commentInput.value).pipe(
+        this._service.addComment(this._data.service.id, this.commentInput.value, this._data.type).pipe(
             map(() => {
                 this.commentInput.reset();
             })
         ).subscribe();
+    }
+
+    onSelectChange(event: MatSelectChange) {
+        console.log(event)
+        const requestBody = {
+            status: event.value,
+        }
+
+        this._service.updateStatus(this.form.get('id').value, requestBody, this._data.type).pipe(
+            map(() => {
+                this.showFlashMessage('success');
+            })).subscribe();
     }
 
     filterStart = (date: Date | null): boolean => {
@@ -195,29 +181,30 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
 
     create(): void {
-        this._service.create(this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
-
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 3100);
+        // this._service.create(this.form.value).pipe(
+        //     map(() => {
+        //         // Get the note
+        //         // this.cate$ = this._categoryService.category$;
+        //         this.showFlashMessage('success');
+        //     })).subscribe();
+        //
+        // setTimeout(() => {
+        //     this._matDialogRef.close();
+        // }, 3100);
     }
 
     update(): void {
-        this._service.update(this.form.get('id').value ,this.form.value).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
-
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 1200);
+        console.log(this.form.value)
+        // this._service.update(this.form.get('id').value ,this.form.value).pipe(
+        //     map(() => {
+        //         // Get the note
+        //         // this.cate$ = this._categoryService.category$;
+        //         this.showFlashMessage('success');
+        //     })).subscribe();
+        //
+        // setTimeout(() => {
+        //     this._matDialogRef.close();
+        // }, 1200);
     }
 
     /**

@@ -21,6 +21,7 @@
                     <mat-label>Người thực hiện</mat-label>
                     <input *ngIf="cate.partner !== null" matInput readonly [formControlName]="'partnerName'">
                     <input *ngIf="cate.staff !== null" matInput readonly [formControlName]="'staffName'">
+                    <input *ngIf="cate.staff === null && cate.partner === null" matInput readonly [formControlName]="'staffName'">
                 </mat-form-field>
 
                 <mat-form-field class="w-full">
@@ -48,49 +49,59 @@
                     </mat-form-field>
                 </div>
 
-                <div class="flex flex-row truncate">
-                    <div class="mr-4">Trạng thái</div>
-                    <ng-container *ngIf="cate.status === 'EXPECTED'"
-                                  class="flex flex-col justify-center content-center ">
-                        <mat-icon
-                            class="text-gray-600 icon-size-5"
-                            [svgIcon]="'mat_outline:pending_actions'">
-                        </mat-icon>
-                        <span class="text-gray-600">Đang chuẩn bị</span>
-                    </ng-container>
-                    <ng-container *ngIf="cate.status === 'TO_DO'"
-                                  class="flex flex-col justify-center content-center ">
-                        <mat-icon
-                            class="text-gray-600 icon-size-5"
-                            [svgIcon]="'mat_outline:pending_actions'">
-                        </mat-icon>
-                        <span class="text-gray-600">Đang chuẩn bị</span>
-                    </ng-container>
-                    <ng-container *ngIf="cate.status === 'IN_PROGRESS'"
-                                  class="flex flex-col justify-center content-center ">
-                        <mat-icon
-                            class="text-gray-600 icon-size-5"
-                            [svgIcon]="'mat_outline:pending_actions'">
-                        </mat-icon>
-                        <span class="text-gray-600">Đang thực hiện</span>
-                    </ng-container>
-                    <ng-container *ngIf="cate.status === 'DONE'"
-                                  class="flex flex-col justify-center content-center ">
-                        <mat-icon
-                            class="text-gray-600 icon-size-5"
-                            [svgIcon]="'mat_outline:pending_actions'">
-                        </mat-icon>
-                        <span class="text-gray-600">Hoành thành</span>
-                    </ng-container>
-                    <ng-container *ngIf="cate.status === 'CANCEL'"
-                                  class="flex flex-col justify-center content-center ">
-                        <mat-icon
-                            class="text-gray-600 icon-size-5"
-                            [svgIcon]="'mat_outline:pending_actions'">
-                        </mat-icon>
-                        <span class="text-gray-600">Đã hủy</span>
-                    </ng-container>
-                </div>
+                <mat-form-field class="w-full">
+                    <mat-label>Trạng thái</mat-label>
+                    <mat-select [formControlName]="'status'" (selectionChange)="onSelectChange($event)">
+                            <mat-option value="EXPECTED">Dự kiến</mat-option>
+                            <mat-option value="TO_DO">Đang chuẩn bị</mat-option>
+                            <mat-option value="IN_PROGRESS">Đang thực hiện</mat-option>
+                            <mat-option value="DONE">Hoành thành</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+<!--                <div class="flex flex-row truncate">-->
+<!--                    <div class="mr-4">Trạng thái</div>-->
+<!--                    <ng-container *ngIf="cate.status === 'EXPECTED'"-->
+<!--                                  class="flex flex-col justify-center content-center ">-->
+<!--                        <mat-icon-->
+<!--                            class="text-gray-600 icon-size-5"-->
+<!--                            [svgIcon]="'mat_outline:pending_actions'">-->
+<!--                        </mat-icon>-->
+<!--                        <span class="text-gray-600">Dự kiến</span>-->
+<!--                    </ng-container>-->
+<!--                    <ng-container *ngIf="cate.status === 'TO_DO'"-->
+<!--                                  class="flex flex-col justify-center content-center ">-->
+<!--                        <mat-icon-->
+<!--                            class="text-gray-600 icon-size-5"-->
+<!--                            [svgIcon]="'mat_outline:pending_actions'">-->
+<!--                        </mat-icon>-->
+<!--                        <span class="text-gray-600">Đang chuẩn bị</span>-->
+<!--                    </ng-container>-->
+<!--                    <ng-container *ngIf="cate.status === 'IN_PROGRESS'"-->
+<!--                                  class="flex flex-col justify-center content-center ">-->
+<!--                        <mat-icon-->
+<!--                            class="text-gray-600 icon-size-5"-->
+<!--                            [svgIcon]="'mat_outline:pending_actions'">-->
+<!--                        </mat-icon>-->
+<!--                        <span class="text-gray-600">Đang thực hiện</span>-->
+<!--                    </ng-container>-->
+<!--                    <ng-container *ngIf="cate.status === 'DONE'"-->
+<!--                                  class="flex flex-col justify-center content-center ">-->
+<!--                        <mat-icon-->
+<!--                            class="text-gray-600 icon-size-5"-->
+<!--                            [svgIcon]="'mat_outline:pending_actions'">-->
+<!--                        </mat-icon>-->
+<!--                        <span class="text-gray-600">Hoành thành</span>-->
+<!--                    </ng-container>-->
+<!--                    <ng-container *ngIf="cate.status === 'CANCEL'"-->
+<!--                                  class="flex flex-col justify-center content-center ">-->
+<!--                        <mat-icon-->
+<!--                            class="text-gray-600 icon-size-5"-->
+<!--                            [svgIcon]="'mat_outline:pending_actions'">-->
+<!--                        </mat-icon>-->
+<!--                        <span class="text-gray-600">Đã hủy</span>-->
+<!--                    </ng-container>-->
+<!--                </div>-->
             </div>
             <div class="w-1/2">
                 <div class="text-1xl font-semibold tracking-tight mb-1">Bình luận</div>
@@ -159,14 +170,12 @@
                 <div class="flex items-center justify-between mt-4">
                     <!-- Close -->
                     <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
-                    <!-- <button
-                        mat-flat-button
-                        [color]="'primary'"
-                        [disabled]="form.invalid"
-                        (click)="update()">
-                        Cập nhật
-                    </button> -->
-
+<!--                   <button-->
+<!--                        mat-flat-button-->
+<!--                        [color]="'primary'"-->
+<!--                        (click)="update()">-->
+<!--                        Cập nhật-->
+<!--                   </button>-->
                 </div>
             </ng-container>
         </div>

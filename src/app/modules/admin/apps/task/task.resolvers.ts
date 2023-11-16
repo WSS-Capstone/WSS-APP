@@ -20,7 +20,7 @@ export class CategoriesTaskResolver implements Resolve<any> {
 @Injectable({
     providedIn: 'root'
 })
-export class TaskResolver implements Resolve<any> {
+export class OwnerTaskResolver implements Resolve<any> {
     constructor(
         private _service: TaskService,
         private _router: Router
@@ -28,7 +28,7 @@ export class TaskResolver implements Resolve<any> {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Task> {
-        return this._service.getItem(route.paramMap.get('id'))
+        return this._service.getOwnerItem(route.paramMap.get('id'))
             .pipe(
                 // Error here means the requested product is not available
                 catchError((error) => {
@@ -52,11 +52,55 @@ export class TaskResolver implements Resolve<any> {
 @Injectable({
     providedIn: 'root'
 })
-export class TasksResolver implements Resolve<any> {
+export class PartnerTaskResolver implements Resolve<any> {
+    constructor(
+        private _service: TaskService,
+        private _router: Router
+    ) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Task> {
+        return this._service.getPartnerItem(route.paramMap.get('id'))
+            .pipe(
+                // Error here means the requested product is not available
+                catchError((error) => {
+
+                    // Log the error
+                    console.error(error);
+
+                    // Get the parent url
+                    const parentUrl = state.url.split('/').slice(0, -1).join('/');
+
+                    // Navigate to there
+                    this._router.navigateByUrl(parentUrl);
+
+                    // Throw an error
+                    return throwError(error);
+                })
+            );
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class OwnerTasksResolver implements Resolve<any> {
     constructor(private _service: TaskService) {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TaskResponse> {
-        return this._service.getItems();
+        return this._service.getOwnerItems();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class PartnerTasksResolver implements Resolve<any> {
+    constructor(private _service: TaskService) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TaskResponse> {
+        return this._service.getPartnerItems();
     }
 }

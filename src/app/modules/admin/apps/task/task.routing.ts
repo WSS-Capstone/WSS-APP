@@ -1,8 +1,8 @@
 import {Route} from '@angular/router';
 import {TaskComponent} from "./task.component";
 import {TaskListComponent} from "./list/task.component";
-import {TasksResolver} from "./task.resolvers";
 import { OrderUsersResolver } from '../order/order.resolvers';
+import {OwnerTasksResolver, PartnerTasksResolver} from "./task.resolvers";
 
 export const itemRoutes: Route[] = [
     // {
@@ -19,7 +19,8 @@ export const itemRoutes: Route[] = [
                 component: TaskListComponent,
                 resolve  : {
                     // category    : CategoriesServiceResolver,
-                    items: TasksResolver,
+                    ownerItems: OwnerTasksResolver,
+                    partnerItems: PartnerTasksResolver,
                     users    : OrderUsersResolver
                     // category  : CategoryResolver,
                 }
