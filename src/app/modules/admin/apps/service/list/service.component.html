@@ -42,10 +42,10 @@
     <!-- Main -->
     <div class="flex flex-auto overflow-auto">
         <div class="flex flex-col flex-auto mb-0 overflow-auto">
-            <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+            <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" (selectedTabChange)="onTabChange($event)">
                 <mat-tab label="Đối tác">
                     <div class="flex flex-auto">
-                        <div class="flex flex-col flex-auto mb-18 overflow-auto">
+                        <div class="flex flex-col flex-auto mb-10 overflow-auto vh-70">
                             <ng-container *ngIf="(partnerServices$ | async) as items">
                                 <ng-container *ngIf="items.length > 0; else noProducts">
                                     <div class="grid">
@@ -119,7 +119,7 @@
                                                         <button
                                                             class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                             mat-stroked-button
-                                                            (click)="update(item.id)">
+                                                            (click)="update(item.id, 'partner')">
                                                             <mat-icon
                                                                 class="icon-size-5"
                                                                 [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
@@ -128,7 +128,7 @@
                                                             class="min-w-10 min-h-7 h-7 px-2 leading-6 "
                                                             mat-stroked-button
                                                             [color]="'warn'"
-                                                            (click)="delete(item.id)">
+                                                            (click)="delete(item.id, 'partner')">
                                                             <mat-icon class="icon-size-5"
                                                                       [svgIcon]="'heroicons_solid:trash'"></mat-icon>
                                                         </button>
@@ -145,19 +145,19 @@
                                     </div>
 
                                     <mat-paginator
+                                        #partnerPaginator
                                         class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
                                         [ngClass]="{'pointer-events-none': isLoading}"
-                                        [length]="pagination.length"
-                                        [pageIndex]="pagination.page"
-                                        [pageSize]="pagination.size"
+                                        [length]="partnerServicesPagination.length"
+                                        [pageIndex]="partnerServicesPagination.page"
+                                        [pageSize]="partnerServicesPagination.size"
                                         [pageSizeOptions]="[5, 10, 25, 100]"
                                         [showFirstLastButtons]="true"></mat-paginator>
 
                                 </ng-container>
                             </ng-container>
                             <ng-template #noProducts>
-                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no
-                                    items!
+                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có dịch vụ nào!
                                 </div>
                             </ng-template>
                         </div>
@@ -165,8 +165,8 @@
                 </mat-tab>
                 <mat-tab label="Nhân viên">
                     <div class="flex flex-auto">
-                        <div class="flex flex-col flex-auto mb-18 overflow-auto">
-                            <ng-container *ngIf="(staffServices$ | async) as items">
+                        <div class="flex flex-col flex-auto mb-10 overflow-auto vh-70">
+                            <ng-container *ngIf="(ownerServices$ | async) as items">
                                 <ng-container *ngIf="items.length > 0; else noProducts">
                                     <div class="grid">
                                         <!-- Header -->
@@ -193,7 +193,7 @@
                                             <div class="hidden sm:block">Chi tiết</div>
                                         </div>
                                         <!-- Rows -->
-                                        <ng-container *ngIf="(staffServices$ | async) as items1">
+                                        <ng-container *ngIf="(ownerServices$ | async) as items1">
                                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
                                                 <div class="service-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
 
@@ -239,7 +239,7 @@
                                                         <button
                                                             class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                             mat-stroked-button
-                                                            (click)="update(item.id)">
+                                                            (click)="update(item.id, 'owner')">
                                                             <mat-icon
                                                                 class="icon-size-5"
                                                                 [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
@@ -248,7 +248,7 @@
                                                             class="min-w-10 min-h-7 h-7 px-2 leading-6 "
                                                             mat-stroked-button
                                                             [color]="'warn'"
-                                                            (click)="delete(item.id)">
+                                                            (click)="delete(item.id, 'owner')">
                                                             <mat-icon class="icon-size-5"
                                                                       [svgIcon]="'heroicons_solid:trash'"></mat-icon>
                                                         </button>
@@ -265,19 +265,19 @@
                                     </div>
 
                                     <mat-paginator
+                                        #ownerPaginator
                                         class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
                                         [ngClass]="{'pointer-events-none': isLoading}"
-                                        [length]="pagination.length"
-                                        [pageIndex]="pagination.page"
-                                        [pageSize]="pagination.size"
+                                        [length]="ownerServicesPagination.length"
+                                        [pageIndex]="ownerServicesPagination.page"
+                                        [pageSize]="ownerServicesPagination.size"
                                         [pageSizeOptions]="[5, 10, 25, 100]"
                                         [showFirstLastButtons]="true"></mat-paginator>
 
                                 </ng-container>
                             </ng-container>
                             <ng-template #noProducts>
-                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no
-                                    items!
+                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có dịch vụ nào!
                                 </div>
                             </ng-template>
                         </div>
@@ -285,8 +285,8 @@
                 </mat-tab>
                 <mat-tab label="Duyệt dịch vụ">
                     <div class="flex flex-auto">
-                        <div class="flex flex-col vh-70 flex-auto overflow-y-auto">
-                            <ng-container *ngIf="(approvalService$ | async) as items">
+                        <div class="flex flex-col mb-10 vh-70 flex-auto overflow-y-auto">
+                            <ng-container *ngIf="(pendingServices$ | async) as items">
                                 <ng-container *ngIf="items.length > 0; else noProducts">
                                     <div class="grid">
                                         <!-- Header -->
@@ -311,7 +311,7 @@
                                             <div class="">Chi tiết</div>
                                         </div>
                                         <!-- Rows -->
-                                        <ng-container *ngIf="(approvalService$ | async) as items1">
+                                        <ng-container *ngIf="(pendingServices$ | async) as items1">
                                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
                                                 <div class="service-approval-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                                                     <div class="truncate">
@@ -360,11 +360,12 @@
                                         </ng-container>
                                     </div>
                                     <mat-paginator
+                                        #pendingPaginator
                                         class="absolute inset-x-0 bottom-0 border-b border-t border-b-0 z-10 bg-gray-50 dark:bg-transparent"
                                         [ngClass]="{'pointer-events-none': isLoading}"
-                                        [length]="pagination.length"
-                                        [pageIndex]="pagination.page"
-                                        [pageSize]="pagination.size"
+                                        [length]="pendingServicesPagination.length"
+                                        [pageIndex]="pendingServicesPagination.page"
+                                        [pageSize]="pendingServicesPagination.size"
                                         [pageSizeOptions]="[5, 10, 25, 100]"
                                         [showFirstLastButtons]="true"></mat-paginator>
                                 </ng-container>

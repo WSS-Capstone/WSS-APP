@@ -21,6 +21,7 @@ import {ServiceDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
 import {ServiceApprovalDetailsComponent} from "../service-approval/details.component";
+import {MatTabChangeEvent} from "@angular/material/tabs";
 
 @Component({
     selector: 'service-list',
@@ -29,18 +30,18 @@ import {ServiceApprovalDetailsComponent} from "../service-approval/details.compo
         /* language=SCSS */
         `
             .service-grid {
-                grid-template-columns: 250px auto 218px 134px 156px 145px 113px;
+                grid-template-columns:  80px auto 218px 134px 156px 145px 113px;
 
                 @screen sm {
-                    grid-template-columns: 150px auto 80px;
+                    grid-template-columns:  80px auto 80px;
                 }
 
                 @screen md {
-                    grid-template-columns: 200px 126px auto 80px;
+                    grid-template-columns:  80px 126px auto 80px;
                 }
 
                 @screen lg {
-                    grid-template-columns: 250px auto 218px 134px 156px 145px 113px;
+                    grid-template-columns:  80px auto 218px 134px 156px 145px 113px;
                 }
             }
 
@@ -58,18 +59,20 @@ import {ServiceApprovalDetailsComponent} from "../service-approval/details.compo
     animations: fuseAnimations
 })
 export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild(MatPaginator) private _paginator: MatPaginator;
+    @ViewChild('ownerPaginator') private _ownerPaginator: MatPaginator;
+    @ViewChild('partnerPaginator') private _partnerPaginator: MatPaginator;
+    @ViewChild('pendingPaginator') private _pendingPaginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
     // items$: Observable<Service[]>;
     partnerServices$: Observable<Service[]>;
-    staffServices$: Observable<Service[]>;
-    approvalService$: Observable<Service[]>;
+    ownerServices$: Observable<Service[]>;
+    pendingServices$: Observable<Service[]>;
 
-    pagination: ServicePagination;
+    // pagination: ServicePagination;
     partnerServicesPagination: ServicePagination;
-    staffServicesPagination: ServicePagination;
-    approvalServicesPagination: ServicePagination;
+    ownerServicesPagination: ServicePagination;
+    pendingServicesPagination: ServicePagination;
 
     categories$: Observable<Category[]>;
 
@@ -81,6 +84,7 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
     selectedCategoryForm: UntypedFormGroup;
     isNew: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    selectedTab: number = 0;
 
     /**
      * Constructor
@@ -115,12 +119,34 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         // Get the pagination
-        this._service.pagination$
+        this._service.ownerPagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: ServicePagination) => {
 
                 // Update the pagination
-                this.pagination = pagination;
+                this.ownerServicesPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.partnerPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: ServicePagination) => {
+
+                // Update the pagination
+                this.partnerServicesPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.pendingPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: ServicePagination) => {
+
+                // Update the pagination
+                this.pendingServicesPagination = pagination;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -128,13 +154,13 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Get the products
         // this.items$ = this._service.items$;
-        this.partnerServices$ = this._service.items$;
-        this.staffServices$ = this._service.items$;
-        this.approvalService$ = this._service.items$.pipe(map(service => service.filter(x => x.status === 'Pending' || x.status === 'Reject')));
+        this.partnerServices$ = this._service.partnerItems$;
+        this.ownerServices$ = this._service.ownerItems$;
+        this.pendingServices$ = this._service.pendingItems$;
 
         this.categories$ = this._service.categories$;
 
-        // Subscribe to search input field value changes
+        //Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeAll),
@@ -142,7 +168,14 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
                 switchMap((query) => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getItems(0, 10, 'name', 'asc', query);
+                    switch (this.selectedTab) {
+                        case 0:
+                            return this._service.getPartnerItems(0, 10, 'status', 'asc', query);
+                        case 1:
+                            return this._service.getOwnerItems(0, 10, 'status', 'asc', query);
+                        case 2:
+                            return this._service.getPendingItems(0, 10, 'status', 'asc', query);
+                    }
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -155,7 +188,8 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
      * After view init
      */
     ngAfterViewInit(): void {
-        if (this._sort && this._paginator) {
+        //partner
+        if (this._sort && this._partnerPaginator) {
             // Set the initial sort
             this._sort.sort({
                 id: 'name',
@@ -171,24 +205,98 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
                 .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(() => {
                     // Reset back to the first page
-                    this._paginator.pageIndex = 1;
+                    this._partnerPaginator.pageIndex = 0;
 
                     // Close the details
                     this.closeDetails();
                 });
 
             // Get products if sort or page changes
-            merge(this._sort.sortChange, this._paginator.page).pipe(
+            merge(this._sort.sortChange, this._partnerPaginator.page).pipe(
                 switchMap(() => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getItems(this._paginator.pageIndex, this._paginator.pageSize, this._sort.active, this._sort.direction);
+                    return this._service.getPartnerItems(this._partnerPaginator.pageIndex, this._partnerPaginator.pageSize, this._sort.active, this._sort.direction);
                 }),
                 map(() => {
                     this.isLoading = false;
                 })
             ).subscribe();
         }
+
+        //owner
+        if (this._sort && this._ownerPaginator) {
+            // Set the initial sort
+            this._sort.sort({
+                id: 'name',
+                start: 'asc',
+                disableClear: true
+            });
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+
+            // If the user changes the sort order...
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    // Reset back to the first page
+                    this._ownerPaginator.pageIndex = 0;
+
+                    // Close the details
+                    this.closeDetails();
+                });
+
+            // Get products if sort or page changes
+            merge(this._sort.sortChange, this._ownerPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getOwnerItems(this._ownerPaginator.pageIndex, this._ownerPaginator.pageSize, this._sort.active, this._sort.direction);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        //pending
+        if (this._sort && this._pendingPaginator) {
+            // Set the initial sort
+            this._sort.sort({
+                id: 'name',
+                start: 'asc',
+                disableClear: true
+            });
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+
+            // If the user changes the sort order...
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    // Reset back to the first page
+                    this._pendingPaginator.pageIndex = 0;
+
+                    // Close the details
+                    this.closeDetails();
+                });
+
+            // Get products if sort or page changes
+            merge(this._sort.sortChange, this._pendingPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getPendingItems(this._pendingPaginator.pageIndex, this._pendingPaginator.pageSize, this._sort.active, this._sort.direction);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 
     /**
@@ -202,24 +310,28 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     toggleDetails(productId: string): void {
         // If the product is already selected...
-        if (this.selectedCategory && this.selectedCategory.id === productId) {
-            // Close the details
-            this.closeDetails();
-            return;
-        }
+        // if (this.selectedCategory && this.selectedCategory.id === productId) {
+        //     // Close the details
+        //     this.closeDetails();
+        //     return;
+        // }
+        //
+        // // Get the product by id
+        // this._service.getItem(productId)
+        //     .subscribe((item) => {
+        //
+        //         // Set the selected item
+        //         this.selectedCategory = item;
+        //
+        //         // Fill the form
+        //         this.selectedCategoryForm.patchValue(item);
+        //         // Mark for check
+        //         this._changeDetectorRef.markForCheck();
+        //     });
+    }
 
-        // Get the product by id
-        this._service.getItem(productId)
-            .subscribe((item) => {
-
-                // Set the selected item
-                this.selectedCategory = item;
-
-                // Fill the form
-                this.selectedCategoryForm.patchValue(item);
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+    onTabChange(event: MatTabChangeEvent): void {
+        this.selectedTab = event.index
     }
 
     /**
@@ -240,24 +352,59 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    update(id: string): void {
-        this._service.getItem(id)
-            .subscribe((item) => {
-                this.selectedCategory = item;
+    update(id: string, type: string): void {
+        if(type === 'owner') {
+            this._service.getOwnerItem(id)
+                .subscribe((item) => {
+                    this.selectedCategory = item;
 
-                this._matDialog.open(ServiceDetailsComponent, {
-                    autoFocus: false,
-                    data: {
-                        service: this.selectedCategory
-                    },
-                    width: '50vw',
+                    this._matDialog.open(ServiceDetailsComponent, {
+                        autoFocus: false,
+                        data: {
+                            service: this.selectedCategory,
+                            type: type
+                        },
+                        width: '50vw',
+                    });
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 });
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        } else if(type === 'partner') {
+            this._service.getPartnerItem(id)
+                .subscribe((item) => {
+                    this.selectedCategory = item;
+
+                    this._matDialog.open(ServiceDetailsComponent, {
+                        autoFocus: false,
+                        data: {
+                            service: this.selectedCategory,
+                            type: type
+                        },
+                        width: '50vw',
+                    });
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
+        } else if(type === 'pending') {
+            this._service.getPendingItem(id)
+                .subscribe((item) => {
+                    this.selectedCategory = item;
+
+                    this._matDialog.open(ServiceDetailsComponent, {
+                        autoFocus: false,
+                        data: {
+                            service: this.selectedCategory,
+                            type: type
+                        },
+                        width: '50vw',
+                    });
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
+        }
     }
 
-    delete(id: string): void {
+    delete(id: string, type: string): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             title: 'Xóa loại dịch vụ',
@@ -279,7 +426,7 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
             if (result === 'confirmed') {
                 console.log(id);
                 // Delete the product on the server
-                this._service.delete(id).subscribe(() => {
+                this._service.delete(id, type).subscribe(() => {
                     this.openSnackBar('Xóa thành công', 'Đóng');
                     // Close the details
                     this.closeDetails();
@@ -323,7 +470,7 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     approvalService(id: string): void {
-        this._service.getItem(id)
+        this._service.getPendingItem(id)
             .subscribe((item) => {
                 this.selectedCategory = item;
 

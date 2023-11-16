@@ -44,7 +44,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         private sanitizer: DomSanitizer,
-        @Inject(MAT_DIALOG_DATA) private _data: { service: Service },
+        @Inject(MAT_DIALOG_DATA) public _data: { service: Service, type: string },
         private _service: ServiceService,
         private _matDialogRef: MatDialogRef<ServiceDetailsComponent>
     ) {
@@ -63,11 +63,19 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
         // Edit
         if (this._data.service.id) {
             console.log("Edit");
-            // Request the data from the server
-            this._service.getItem(this._data.service.id).subscribe();
 
-            // Get the note
-            this.item$ = this._service.item$;
+            if(this._data.type === 'owner') {
+                this._service.getOwnerItem(this._data.service.id).subscribe();
+
+                // Get the note
+                this.item$ = this._service.ownerItem$;
+            } else if(this._data.type === 'partner') {
+                this._service.getPartnerItem(this._data.service.id).subscribe();
+
+                // Get the note
+                this.item$ = this._service.partnerItem;
+            }
+
 
             this.item$.subscribe((value) => {
                 this._patchValue(value);

@@ -69,10 +69,10 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
         if (this._data.service.id) {
             console.log("Edit");
             // Request the data from the server
-            this._service.getItem(this._data.service.id).subscribe();
+            this._service.getPendingItem(this._data.service.id).subscribe();
 
             // Get the note
-            this.item$ = this._service.item$;
+            this.item$ = this._service.pendingItem$;
 
             this.item$.subscribe((value) => {
                 this._patchValue(value);
@@ -146,7 +146,7 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
             })).subscribe();
 
         setTimeout(() => {
-            this._service.getItems();
+            this._service.getPendingItems();
             this._matDialogRef.close();
         }, 1200);
     }
@@ -179,7 +179,7 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
                     status: "Reject"
                 };
                 this._service.approval(id, requestBody).subscribe(() => {
-                    this._service.getItems();
+                    this._service.getPendingItems();
                     this.openSnackBar('Từ chối dịch vụ thành công', 'Đóng');
                     // Close the details
                     // this.closeDetails();

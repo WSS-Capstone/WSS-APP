@@ -1,7 +1,12 @@
 import {Route} from '@angular/router';
 import {ServiceComponent} from "./service.component";
 import {ServiceListComponent} from "./list/service.component";
-import {CategoriesServiceResolver, ServicesResolver} from "./service.resolvers";
+import {
+    CategoriesServiceResolver,
+    OwnerServicesResolver,
+    PartnerServicesResolver,
+    PendingServicesResolver
+} from "./service.resolvers";
 
 export const itemRoutes: Route[] = [
     // {
@@ -18,7 +23,9 @@ export const itemRoutes: Route[] = [
                 component: ServiceListComponent,
                 resolve  : {
                     category    : CategoriesServiceResolver,
-                    items: ServicesResolver,
+                    ownerItems: OwnerServicesResolver,
+                    partnerItems: PartnerServicesResolver,
+                    PendingItems: PendingServicesResolver,
                     // category  : CategoryResolver,
                 }
             }
