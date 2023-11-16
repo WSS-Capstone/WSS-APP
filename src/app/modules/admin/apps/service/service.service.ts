@@ -129,7 +129,7 @@ export class ServiceService {
 
     getPartnerItems(page: number = 0, size: number = 10, sort: string = 'status', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<ServiceResponse> {
-        return this._httpClient.get<ServiceResponse>(ENDPOINTS.service + '?ownerService=false', {
+        return this._httpClient.get<ServiceResponse>(ENDPOINTS.service + '?ownerService=false&status=Active&status=InActive&status=Deleted', {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
