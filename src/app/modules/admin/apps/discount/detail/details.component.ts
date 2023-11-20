@@ -68,6 +68,8 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
             this.item$ = this._service.item$;
 
             this.item$.subscribe((value) => {
+                this.imgDataOrLink = this.mapImageUrl(value.imageUrl);
+                this._changeDetectorRef.detectChanges();
                 this._patchValue(value);
             });
         }
@@ -92,24 +94,26 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
+            code: [null],
             name: [null, [Validators.required, Validators.maxLength(80)]],
             startTime: [null, [Validators.required]],
             endTime: [null, [Validators.required]],
             minAmount: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
             discountValueVoucher: [null, [Validators.required, Validators.min(1000), Validators.pattern('^-?[0-9]*$')]],
-            coverUrl: [null],
+            imageUrl: [null],
         });
     }
 
     private _patchValue(value: Discount) {
         this.form.patchValue({
             id: value.id,
+            code: value.code,
             name: value.name,
             startTime: new Date(value.startTime),
             endTime: new Date(value.endTime),
             minAmount: value.minAmount,
             discountValueVoucher: value.discountValueVoucher,
-            coverUrl: value.imageUrl
+            imageUrl: value.imageUrl
         });
     }
 
@@ -199,7 +203,7 @@ export class DiscountDetailsComponent implements OnInit, OnDestroy {
     }
 
     mapImageUrl(imageUrl: string): any {
-        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+        var imageRelativeUrl = imageUrl?.substring(imageUrl.indexOf('/upload/'));
         var apiUrl = environment.wssApi;
         return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
     }

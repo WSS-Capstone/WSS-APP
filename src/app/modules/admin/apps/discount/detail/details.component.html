@@ -9,8 +9,8 @@
             <!--            image-->
             <div class="flex flex-col items-center">
                 <div class="w-32 h-44 border rounded overflow-hidden">
-                    <ng-container *ngIf="cate.imageUrl; else noImage">
-                        <img class="w-full h-full object-cover" [src]="cate.imageUrl">
+                    <ng-container *ngIf="imgDataOrLink; else noImage">
+                        <img class="w-full h-full object-cover" [src]="imgDataOrLink">
                     </ng-container>
                     <ng-template #noImage>
                         <span class="flex justify-center items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
