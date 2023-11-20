@@ -22,6 +22,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
 import {ServiceApprovalDetailsComponent} from "../service-approval/details.component";
 import {MatTabChangeEvent} from "@angular/material/tabs";
+import {OrderService} from "../../order/order.service";
+import {Account} from "../../user/user.types";
 
 @Component({
     selector: 'service-list',
@@ -30,7 +32,7 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
         /* language=SCSS */
         `
             .service-grid {
-                grid-template-columns:  80px auto 218px 134px 156px 145px 113px;
+                grid-template-columns:  80px auto 218px 134px 80px 145px 80px;
 
                 @screen sm {
                     grid-template-columns:  80px auto 80px;
@@ -41,8 +43,12 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
                 }
 
                 @screen lg {
-                    grid-template-columns:  80px auto 218px 134px 156px 145px 113px;
+                    grid-template-columns:  80px auto 218px 80px 156px 145px 80px;
                 }
+            }
+
+            .partner-service-grid {
+                grid-template-columns:  80px auto 150px 218px 80px 156px 145px 80px;
             }
 
             .service-approval-grid {
@@ -75,6 +81,7 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
     pendingServicesPagination: ServicePagination;
 
     categories$: Observable<Category[]>;
+    users: Account[];
 
     parentCategories$: Observable<Service[]>;
     flashMessage: 'success' | 'error' | null = null;
@@ -95,7 +102,8 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
         private _formBuilder: UntypedFormBuilder,
         private _snackBar: MatSnackBar,
         private _matDialog: MatDialog,
-        private _service: ServiceService
+        private _service: ServiceService,
+        private _orderService: OrderService,
     ) {
     }
 
@@ -159,6 +167,11 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.pendingServices$ = this._service.pendingItems$;
 
         this.categories$ = this._service.categories$;
+        this._orderService.users$.subscribe(data => {
+            this.users = data;
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        })
 
         //Subscribe to search input field value changes
         this.searchInputControl.valueChanges
@@ -328,6 +341,11 @@ export class ServiceListComponent implements OnInit, AfterViewInit, OnDestroy {
         //         // Mark for check
         //         this._changeDetectorRef.markForCheck();
         //     });
+    }
+
+    getPartnerName(id: string) {
+        const user = this.users.find(x => x.id === id);
+        return user.user?.fullname || '';
     }
 
     onTabChange(event: MatTabChangeEvent): void {

@@ -7,6 +7,7 @@ import {
     PartnerServicesResolver,
     PendingServicesResolver
 } from "./service.resolvers";
+import {OrderUsersResolver} from "../order/order.resolvers";
 
 export const itemRoutes: Route[] = [
     // {
@@ -26,6 +27,7 @@ export const itemRoutes: Route[] = [
                     ownerItems: OwnerServicesResolver,
                     partnerItems: PartnerServicesResolver,
                     PendingItems: PendingServicesResolver,
+                    users: OrderUsersResolver,
                     // category  : CategoryResolver,
                 }
             }

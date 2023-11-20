@@ -1,5 +1,6 @@
 import {Category, CategoryResponse} from "../category/category.types";
 import {CurrentPrice} from "../current-price/current-price.types";
+import {Account} from "../user/user.types";
 
 export interface Service
 {
@@ -13,6 +14,7 @@ export interface Service
     quantity: string;
     ownerId: string;
     serviceImages: ImageUrl[];
+    createByNavigation?: Account;
     isOwnerService: boolean;
     status: string;
 }

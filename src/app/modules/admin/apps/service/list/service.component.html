@@ -51,13 +51,17 @@
                                     <div class="grid">
                                         <!-- Header -->
                                         <div
-                                            class="service-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                                            class="partner-service-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
                                             matSort
                                             matSortDisableClear>
                                             <div>Mã dịch vụ</div>
                                             <div
                                                 class="">
                                                 Tên dịch vụ
+                                            </div>
+                                            <div
+                                                class="">
+                                                Đối tác
                                             </div>
                                             <div
                                                 class="hidden md:block sm:block">
@@ -75,7 +79,7 @@
                                         <!-- Rows -->
                                         <ng-container *ngIf="(partnerServices$ | async) as items1">
                                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                                <div class="service-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                                <div class="partner-service-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
 
                                                     <!-- Image -->
                                                     <div class="truncate">
@@ -84,6 +88,9 @@
 
                                                     <div class="truncate">
                                                         {{item?.name}}
+                                                    </div>
+                                                    <div class="truncate">
+                                                        {{getPartnerName(item?.createByNavigation?.id)}}
                                                     </div>
                                                     <div class="hidden md:block truncate">
                                                         {{item?.category?.name}}
