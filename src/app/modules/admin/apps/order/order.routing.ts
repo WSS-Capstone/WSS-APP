@@ -1,6 +1,13 @@
 import {Route} from '@angular/router';
 import {OrderListComponent} from "./list/order.component";
-import {WeddingsServiceResolver, OrderResolver, OrdersResolver, OrderUsersResolver} from "./order.resolvers";
+import {
+    CancelledOrdersResolver,
+    DoingOrdersResolver,
+    DoneOrdersResolver,
+    OrderResolver,
+    OrderUsersResolver,
+    PendingOrdersResolver
+} from "./order.resolvers";
 import { OrderDetailsComponent } from './detail/details.component';
 import {DiscountsResolver} from "../discount/discount.resolvers";
 
@@ -18,14 +25,18 @@ export const itemRoutes: Route[] = [
                 path     : '',
                 component: OrderListComponent,
                 resolve  : {
-                    items: OrdersResolver,
+                    // items: OrdersResolver,
+                    pendingItems: PendingOrdersResolver,
+                    doingItems: DoingOrdersResolver,
+                    doneItems: DoneOrdersResolver,
+                    cancelledItems: CancelledOrdersResolver,
                 }
             },
             {
                 path         : ':id',
                 component    : OrderDetailsComponent,
                 resolve      : {
-                    items    : OrdersResolver,
+                    // items    : OrdersResolver,
                     item     : OrderResolver,
                     users    : OrderUsersResolver
                 },

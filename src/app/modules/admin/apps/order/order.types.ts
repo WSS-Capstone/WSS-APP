@@ -2,10 +2,12 @@ import { Combo } from "../combo/combo.types";
 import {Service} from "../service/service.types";
 import {Task} from "../task/task.types";
 import {Discount} from "../discount/discount.types";
+import {User} from "../user/user.types";
 export interface Order {
     id: string;
     code: string;
     customerId: string;
+    customer: User;
     ownerId: string;
     weddingInformationId?: string;
     weddingInformation: WeddingInformation;

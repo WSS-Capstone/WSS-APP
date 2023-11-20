@@ -78,11 +78,47 @@ export class OrderResolver implements Resolve<any> {
 @Injectable({
     providedIn: 'root'
 })
-export class OrdersResolver implements Resolve<any> {
+export class PendingOrdersResolver implements Resolve<any> {
     constructor(private _service: OrderService) {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<OrderResponse> {
-        return this._service.getItems();
+        return this._service.getPendingItems();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class DoingOrdersResolver implements Resolve<any> {
+    constructor(private _service: OrderService) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<OrderResponse> {
+        return this._service.getDoingItems();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class DoneOrdersResolver implements Resolve<any> {
+    constructor(private _service: OrderService) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<OrderResponse> {
+        return this._service.getDoneItems();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CancelledOrdersResolver implements Resolve<any> {
+    constructor(private _service: OrderService) {
+    }
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<OrderResponse> {
+        return this._service.getCancelledItems();
     }
 }

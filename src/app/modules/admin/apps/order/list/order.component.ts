@@ -21,6 +21,7 @@ import {OrderDetailsComponent} from "../detail/details.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
 import { Route, Router } from '@angular/router';
+import {MatTabChangeEvent} from "@angular/material/tabs";
 
 @Component({
     selector: 'service-list',
@@ -29,7 +30,7 @@ import { Route, Router } from '@angular/router';
         /* language=SCSS */
         `
             .order-grid {
-                grid-template-columns: 80px 120px auto 150px 150px 150px 150px 80px;
+                grid-template-columns: 100px 120px auto 150px 150px 150px 150px 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -50,20 +51,30 @@ import { Route, Router } from '@angular/router';
     animations: fuseAnimations
 })
 export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild(MatPaginator) private _paginator: MatPaginator;
+    @ViewChild('pendingItems') private _pendingPaginator: MatPaginator;
+    @ViewChild('doingItems') private _doingPaginator: MatPaginator;
+    @ViewChild('doneItems') private _donePaginator: MatPaginator;
+    @ViewChild('cancelledItems') private _cancelledPaginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
-    items$: Observable<Order[]>;
+    pendingItems$: Observable<Order[]>;
+    doingItems$: Observable<Order[]>;
+    doneItems$: Observable<Order[]>;
+    cancelledItems$: Observable<Order[]>;
     weddingInfos$: Observable<WeddingInformation[]>;
 
     parentCategories$: Observable<Order[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
-    pagination: OrderPagination;
+    pendingPagination: OrderPagination;
+    doingPagination: OrderPagination;
+    donePagination: OrderPagination;
+    cancelledPagination: OrderPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedCategory: Order | null = null;
     selectedCategoryForm: UntypedFormGroup;
     isNew: boolean = false;
+    selectedTab: number = 0;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -90,20 +101,57 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit(): void {
         // Get the pagination
-        this._service.pagination$
+        this._service.pendingPagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: OrderPagination) => {
 
                 // Update the pagination
-                this.pagination = pagination;
+                this.pendingPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.doingPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: OrderPagination) => {
+
+                // Update the pagination
+                this.doingPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.donePagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: OrderPagination) => {
+
+                // Update the pagination
+                this.donePagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.cancelledPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: OrderPagination) => {
+
+                // Update the pagination
+                this.cancelledPagination = pagination;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
         // Get the products
-        this.items$ = this._service.items$;
-        this.weddingInfos$ = this._service.weddings$;
+        this.pendingItems$ = this._service.pendingItems$;
+        this.doingItems$ = this._service.doingItems$;
+        this.doneItems$ = this._service.doneItems$;
+        this.cancelledItems$ = this._service.cancelledItems$;
+
+        // this.weddingInfos$ = this._service.weddings$;
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
@@ -113,7 +161,16 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
                 switchMap((query) => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getItems(0, 10, 'name', 'asc', query);
+                    switch (this.selectedTab) {
+                        case 0:
+                            return this._service.getDoingItems(0, 10, 'CreateDate', 'desc', query);
+                        case 1:
+                            return this._service.getPendingItems(0, 10, 'CreateDate', 'desc', query);
+                        case 2:
+                            return this._service.getDoneItems(0, 10, 'CreateDate', 'desc', query);
+                        case 3:
+                            return this._service.getCancelledItems(0, 10, 'CreateDate', 'desc', query);
+                    }
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -126,11 +183,11 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
      * After view init
      */
     ngAfterViewInit(): void {
-        if (this._sort && this._paginator) {
+        if (this._sort && this._pendingPaginator) {
             // Set the initial sort
             this._sort.sort({
-                id: 'name',
-                start: 'asc',
+                id: 'CreateDate',
+                start: 'desc',
                 disableClear: true
             });
 
@@ -142,18 +199,132 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
                 .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(() => {
                     // Reset back to the first page
-                    this._paginator.pageIndex = 1;
+                    this._pendingPaginator.pageIndex = 0;
+
+                    // Close the details
+                    // this.closeDetails();
+                });
+
+            // Get products if sort or page changes
+            merge(this._sort.sortChange, this._pendingPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getPendingItems(this._pendingPaginator.pageIndex, this._pendingPaginator.pageSize, this._sort.active, this._sort.direction);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }
+
+        if (this._sort && this._doingPaginator) {
+            // Set the initial sort
+            this._sort.sort({
+                id: 'CreateDate',
+                start: 'desc',
+                disableClear: true
+            });
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+
+            // If the user changes the sort order...
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    // Reset back to the first page
+                    this._doingPaginator.pageIndex = 0;
+
+                    // Close the details
+                    // this.closeDetails();
+                });
+
+            // Get products if sort or page changes
+            merge(this._sort.sortChange, this._doingPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getDoingItems(this._doingPaginator.pageIndex, this._doingPaginator.pageSize, this._sort.active, this._sort.direction);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }
+
+        if (this._sort && this._donePaginator) {
+            // Set the initial sort
+            this._sort.sort({
+                id: 'CreateDate',
+                start: 'desc',
+                disableClear: true
+            });
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+
+            // If the user changes the sort order...
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    // Reset back to the first page
+                    this._donePaginator.pageIndex = 0;
+
+                    // Close the details
+                    // this.closeDetails();
+                });
+
+            // Get products if sort or page changes
+            merge(this._sort.sortChange, this._donePaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getDoingItems(this._donePaginator.pageIndex, this._donePaginator.pageSize, this._sort.active, this._sort.direction);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }
+
+        if (this._sort && this._cancelledPaginator) {
+            // Set the initial sort
+            this._sort.sort({
+                id: 'CreateDate',
+                start: 'desc',
+                disableClear: true
+            });
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+
+            // If the user changes the sort order...
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    // Reset back to the first page
+                    this._cancelledPaginator.pageIndex = 0;
 
                     // Close the details
                     this.closeDetails();
                 });
 
             // Get products if sort or page changes
-            merge(this._sort.sortChange, this._paginator.page).pipe(
+            merge(this._sort.sortChange, this._cancelledPaginator.page).pipe(
                 switchMap(() => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getItems(this._paginator.pageIndex, this._paginator.pageSize, this._sort.active, this._sort.direction);
+                    return this._service.getCancelledItems(this._cancelledPaginator.pageIndex, this._cancelledPaginator.pageSize, this._sort.active, this._sort.direction);
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -250,11 +421,11 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
             if (result === 'confirmed') {
                 console.log(id);
                 // Delete the product on the server
-                this._service.delete(id).subscribe(() => {
-                    this.openSnackBar('Xóa thành công', 'Đóng');
-                    // Close the details
-                    this.closeDetails();
-                });
+                // this._service.delete(id).subscribe(() => {
+                //     this.openSnackBar('Xóa thành công', 'Đóng');
+                //     // Close the details
+                //     this.closeDetails();
+                // });
             }
         });
     }
@@ -279,10 +450,6 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 3000);
     }
 
-    openSnackBar(message: string, action: string) {
-        this._snackBar.open(message, action);
-    }
-
     /**
      * Track by function for ngFor loops
      *
@@ -291,5 +458,9 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     trackByFn(index: number, item: any): any {
         return item.id || index;
+    }
+
+    onTabChange(event: MatTabChangeEvent): void {
+        this.selectedTab = event.index
     }
 }

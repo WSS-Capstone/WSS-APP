@@ -9,7 +9,7 @@
                 *ngIf="isLoading">
                 <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
             </div>
-                <div class="flex flex-row cursor-pointer w-fit" routerLink="../">
+                <div class="flex flex-row cursor-pointer w-fit" [routerLink]="['..']">
                     <mat-icon [svgIcon]="'heroicons_solid:arrow-left'"></mat-icon>
                     <div class="text-2xl font-extrabold tracking-tight ml-4">Quay lại</div>
                 </div>
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Tên khách hàng</div>
-                                    <div class="text-lg font-semibold">{{item.fullname}}</div>
+                                    <div class="text-lg font-semibold">{{item.customer.fullname}}</div>
                                 </div>
                             </div>
                             <div class="flex flex-row h-18">
@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Địa chỉ</div>
-                                    <div class="text-lg font-semibold">{{item.address}}</div>
+                                    <div class="text-lg font-semibold">{{item.customer.address}}</div>
                                 </div>
                             </div>
                         </div>
@@ -135,14 +135,14 @@
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-[#8E8EA1] text-sm ">Số điện thoại</div>
-                                    <div class="text-lg font-semibold">{{item.phone}}</div>
+                                    <div class="text-lg font-semibold">{{item.customer.phone}}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div>
                         <div class="text-2xl font-extrabold tracking-tight">Ghi chú</div>
-                        <div>{{item.description}}</div>
+                        <div>{{item.description || 'Không có'}}</div>
                     </div>
                 </div>
                 <div class="">
@@ -228,13 +228,13 @@
 
             <div class="mt-6">
                 <ng-container *ngIf="item.statusOrder === 'PENDING' && item.statusOrder !== 'CANCEL'">
-                    <button mat-raised-button color="primary" class="mr-4" (click)="updateStatus(item.id, 'CONFIRM', 'Xác nhận đơn hàng')">Xác nhận đơn hàng</button>
+                    <button mat-raised-button color="primary" class="mr-4" (click)="updateStatus(item.id, 'CONFIRM', 'Xác nhận đơn hàng', item.statusOrder)">Xác nhận đơn hàng</button>
                 </ng-container>
                 <ng-container *ngIf="item.statusOrder !== 'PENDING' && item.statusOrder !== 'DONE' && item.statusOrder !== 'CANCEL'">
-                    <button mat-raised-button color="primary" class="mr-4" (click)="updateStatus(item.id, 'DONE', 'Hoàn tất đơn hàng')">Hoàn tất đơn hàng</button>
+                    <button mat-raised-button color="primary" class="mr-4" (click)="updateStatus(item.id, 'DONE', 'Hoàn tất đơn hàng', item.statusOrder)">Hoàn tất đơn hàng</button>
                 </ng-container>
                 <ng-container *ngIf="(item.statusOrder === 'PENDING' || item.statusOrder === 'CONFIRM') && item.statusOrder !== 'DONE' && item.statusOrder !== 'CANCEL'">
-                    <button mat-raised-button color="warn" (click)="updateStatus(item.id, 'CANCEL', 'Hủy đơn hàng')">Hủy đơn hàng</button>
+                    <button mat-raised-button color="warn" (click)="updateStatus(item.id, 'CANCEL', 'Hủy đơn hàng', item.statusOrder)">Hủy đơn hàng</button>
                 </ng-container>
             </div>
 
@@ -259,7 +259,7 @@
                                 <div class="">Địa điểm</div>
                                 <div class="">Giá tiền</div>
                                 <div class="">Trạng thái</div>
-                                <div>Tạo công việc</div>
+                                <div *ngIf="item.statusOrder === 'CONFIRM' || item.statusOrder === 'DOING'">Tạo công việc</div>
                             </div>
 
                             <!-- Rows -->
@@ -312,6 +312,7 @@
 
                                         <div class="flex flex-row">
                                             <button
+                                                *ngIf="item.statusOrder === 'CONFIRM' || item.statusOrder === 'DOING'"
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
                                                 (click)="createTask(orderDetail.id, orderDetail.service?.isOwnerService)"

@@ -40,164 +40,656 @@
     </div>
 
     <!-- Main -->
-    <div class="flex flex-auto overflow-hidden">
+    <div class="flex flex-auto overflow-auto">
 
         <!-- Products list -->
-        <div class="flex flex-col flex-auto sm:mb-18 sm:overflow-y-auto">
-            <ng-container *ngIf="(items$ | async) as items">
-                <ng-container *ngIf="items.length > 0; else noProducts">
-                    <div class="grid">
-                        <!-- Header -->
-                        <div
-                            class="order-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
-                            matSort
-                            matSortDisableClear>
-                            <div class="">Mã đơn hàng</div>
-                            <div class="">Ngày đặt</div>
-                            <div class="">Tên khách hàng</div>
-                            <div class="">Giá trị hóa đơn</div>
-                            <div class="">Tiền đã thanh toán</div>
-                            <div class="">Trạng thái thanh toán</div>
-                            <div class="">Trạng thái đơn hàng</div>
-                            <div>Chi tiết</div>
-                        </div>
-
-                        <!-- Rows -->
-                        <ng-container *ngIf="(items$ | async) as items1">
-                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                <div class="order-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                    <div class="truncate">
-                                        {{item.code}}
-                                    </div>
-                                    <div class="truncate">
-                                        {{item.createDate | date: 'dd/MM/yyyy'}}
-                                    </div>
-                                    <div class="truncate">
-                                        {{item.fullname}}
+        <div class="flex flex-col flex-auto mb-0 overflow-auto">
+            <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" (selectedTabChange)="onTabChange($event)">
+                <mat-tab label="Đang thực hiện">
+                    <div class="flex flex-auto">
+                        <div class="flex flex-col flex-auto mb-10 overflow-auto" style="height: 66vh">
+                        <ng-container *ngIf="(doingItems$ | async) as items">
+                            <ng-container *ngIf="items.length > 0; else noProducts">
+                                <div class="grid">
+                                    <!-- Header -->
+                                    <div
+                                        class="order-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                                        matSort
+                                        matSortDisableClear>
+                                        <div class="">Mã đơn hàng</div>
+                                        <div class="">Ngày đặt</div>
+                                        <div class="">Tên khách hàng</div>
+                                        <div class="">Giá trị hóa đơn</div>
+                                        <div class="">Tiền đã thanh toán</div>
+                                        <div class="">Trạng thái thanh toán</div>
+                                        <div class="">Trạng thái đơn hàng</div>
+                                        <div>Chi tiết</div>
                                     </div>
 
-                                    <div class="truncate">
-                                        {{item.totalAmount | number: '1.0-0'}}  VNĐ
-                                    </div>
+                                    <!-- Rows -->
+                                    <ng-container *ngIf="(doingItems$ | async) as items1">
+                                        <ng-container *ngFor="let item of items1; trackBy: trackByFn">
+                                            <div class="order-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                                <div class="truncate">
+                                                    {{item.code}}
+                                                </div>
+                                                <div class="truncate">
+                                                    {{item.createDate | date: 'dd/MM/yyyy'}}
+                                                </div>
+                                                <div class="truncate">
+                                                    {{item.fullname}}
+                                                </div>
 
-                                    <div class="truncate">
-                                        {{item.totalAmountRequest| number: '1.0-0'}}  VNĐ
-                                    </div>
+                                                <div class="truncate">
+                                                    {{item.totalAmount | number: '1.0-0'}}  VNĐ
+                                                </div>
 
-                                    <div class="flex flex-row truncate">
-                                        <ng-container *ngIf="item.statusPayment === 'PENDING'">
-                                            <mat-icon
-                                                class="text-gray-400 icon-size-5"
-                                                [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
-                                            <span class="text-gray-400">Chờ xác nhận</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.statusPayment === 'CONFIRM'">
-                                            <mat-icon
-                                                class="text-green-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'">
-                                            </mat-icon>
-                                            <span class="text-green-400">Chờ đặt cọc</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.statusPayment === 'DOING'">
-                                            <mat-icon
-                                                class="text-green-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'">
-                                            </mat-icon>
-                                            <span class="text-green-400">Đã đặt cọc</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.statusPayment === 'DONE'">
-                                            <mat-icon
-                                                class="text-green-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'">
-                                            </mat-icon>
-                                            <span class="text-green-400">Đã thanh toán đủ</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.statusPayment === 'CANCEL'">
-                                            <mat-icon
-                                                class="text-gray-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                            <span class="text-gray-400">Đã hủy</span>
-                                        </ng-container>
-                                    </div>
+                                                <div class="truncate">
+                                                    {{item.totalAmountRequest| number: '1.0-0'}}  VNĐ
+                                                </div>
 
-                                    <div class="flex flex-row truncate">
-                                        <ng-container *ngIf="item.statusOrder === 'PENDING'">
-                                            <mat-icon
-                                                class="text-gray-400 icon-size-5"
-                                                [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
-                                            <span class="text-gray-400">Chờ xác nhận</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.statusOrder === 'CONFIRM'">
-                                            <mat-icon
-                                                class="text-green-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'">
-                                            </mat-icon>
-                                            <span class="text-green-400">Xác nhận</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.statusOrder === 'DOING'">
-                                            <mat-icon
-                                                class="text-green-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'">
-                                            </mat-icon>
-                                            <span class="text-green-400">Đang thực hiện</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.statusOrder === 'DONE'">
-                                            <mat-icon
-                                                class="text-green-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'">
-                                            </mat-icon>
-                                            <span class="text-green-400">Hoàn thành</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="item.statusOrder === 'CANCEL'">
-                                            <mat-icon
-                                                class="text-gray-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                            <span class="text-gray-400">Đã hủy</span>
-                                        </ng-container>
-                                    </div>
+                                                <div class="flex flex-row truncate">
+                                                    <ng-container *ngIf="item.statusPayment === 'PENDING'">
+                                                        <mat-icon
+                                                            class="text-gray-400 icon-size-5"
+                                                            [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
+                                                        <span class="text-gray-400">Chờ xác nhận</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.statusPayment === 'CONFIRM'">
+                                                        <mat-icon
+                                                            class="text-green-400 icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:check'">
+                                                        </mat-icon>
+                                                        <span class="text-green-400">Chờ đặt cọc</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.statusPayment === 'DOING'">
+                                                        <mat-icon
+                                                            class="text-green-400 icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:check'">
+                                                        </mat-icon>
+                                                        <span class="text-green-400">Đã đặt cọc</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.statusPayment === 'DONE'">
+                                                        <mat-icon
+                                                            class="text-green-400 icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:check'">
+                                                        </mat-icon>
+                                                        <span class="text-green-400">Đã thanh toán đủ</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.statusPayment === 'CANCEL'">
+                                                        <mat-icon
+                                                            class="text-gray-400 icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                        <span class="text-gray-400">Đã hủy</span>
+                                                    </ng-container>
+                                                </div>
 
-                                    <!-- Details button -->
-                                    <div class="flex flex-row">
-                                        <button
-                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                            mat-stroked-button
-                                            routerLink="{{item.id}}"
-                                            >
-                                            <mat-icon
-                                                class="icon-size-5"
-                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                        </button>
-                                        <!-- <button
-                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 "
-                                            mat-stroked-button
-                                            [color]="'warn'"
-                                            (click)="delete(item.id)">
-                                            <mat-icon class="icon-size-5"
-                                                      [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-                                        </button> -->
-                                    </div>
+                                                <div class="flex flex-row truncate">
+                                                    <ng-container *ngIf="item.statusOrder === 'PENDING'">
+                                                        <mat-icon
+                                                            class="text-gray-400 icon-size-5"
+                                                            [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
+                                                        <span class="text-gray-400">Chờ xác nhận</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.statusOrder === 'CONFIRM'">
+                                                        <mat-icon
+                                                            class="text-green-400 icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:check'">
+                                                        </mat-icon>
+                                                        <span class="text-green-400">Xác nhận</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.statusOrder === 'DOING'">
+                                                        <mat-icon
+                                                            class="text-green-400 icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:check'">
+                                                        </mat-icon>
+                                                        <span class="text-green-400">Đang thực hiện</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.statusOrder === 'DONE'">
+                                                        <mat-icon
+                                                            class="text-green-400 icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:check'">
+                                                        </mat-icon>
+                                                        <span class="text-green-400">Hoàn thành</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.statusOrder === 'CANCEL'">
+                                                        <mat-icon
+                                                            class="text-gray-400 icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                        <span class="text-gray-400">Đã hủy</span>
+                                                    </ng-container>
+                                                </div>
+
+                                                <!-- Details button -->
+                                                <div class="flex flex-row">
+                                                    <button
+                                                        class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                                        mat-stroked-button
+                                                        routerLink="{{item.id}}"
+                                                        >
+                                                        <mat-icon
+                                                            class="icon-size-5"
+                                                            [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+                                                    </button>
+                                                    <!-- <button
+                                                        class="min-w-10 min-h-7 h-7 px-2 leading-6 "
+                                                        mat-stroked-button
+                                                        [color]="'warn'"
+                                                        (click)="delete(item.id)">
+                                                        <mat-icon class="icon-size-5"
+                                                                  [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                                    </button> -->
+                                                </div>
+                                            </div>
+            <!--                                <div class="grid">-->
+            <!--                                    <ng-container *ngIf="selectedCategory?.id === cate.id">-->
+            <!--                                        <ng-container-->
+            <!--                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: cate}"></ng-container>-->
+            <!--                                    </ng-container>-->
+            <!--                                </div>-->
+                                        </ng-container>
+                                    </ng-container>
                                 </div>
-<!--                                <div class="grid">-->
-<!--                                    <ng-container *ngIf="selectedCategory?.id === cate.id">-->
-<!--                                        <ng-container-->
-<!--                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: cate}"></ng-container>-->
-<!--                                    </ng-container>-->
-<!--                                </div>-->
+
+                                <mat-paginator
+                                    #doingItems
+                                    class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                    [ngClass]="{'pointer-events-none': isLoading}"
+                                    [length]="doingPagination.length"
+                                    [pageIndex]="doingPagination.page"
+                                    [pageSize]="doingPagination.size"
+                                    [pageSizeOptions]="[5, 10, 25, 100]"
+                                    [showFirstLastButtons]="true"></mat-paginator>
+
                             </ng-container>
                         </ng-container>
+                        </div>
                     </div>
+                </mat-tab>
+                <mat-tab label="Chờ xác nhận">
+                    <div class="flex flex-auto">
+                        <div class="flex flex-col flex-auto mb-10 overflow-auto" style="height: 66vh">
+                            <ng-container *ngIf="(pendingItems$ | async) as items">
+                                <ng-container *ngIf="items.length > 0; else noProducts">
+                                    <div class="grid">
+                                        <!-- Header -->
+                                        <div
+                                            class="order-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                                            matSort
+                                            matSortDisableClear>
+                                            <div class="">Mã đơn hàng</div>
+                                            <div class="">Ngày đặt</div>
+                                            <div class="">Tên khách hàng</div>
+                                            <div class="">Giá trị hóa đơn</div>
+                                            <div class="">Tiền đã thanh toán</div>
+                                            <div class="">Trạng thái thanh toán</div>
+                                            <div class="">Trạng thái đơn hàng</div>
+                                            <div>Chi tiết</div>
+                                        </div>
 
-                    <mat-paginator
-                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-                        [ngClass]="{'pointer-events-none': isLoading}"
-                        [length]="pagination.length"
-                        [pageIndex]="pagination.page"
-                        [pageSize]="pagination.size"
-                        [pageSizeOptions]="[5, 10, 25, 100]"
-                        [showFirstLastButtons]="true"></mat-paginator>
+                                        <!-- Rows -->
+                                        <ng-container *ngIf="(pendingItems$ | async) as items1">
+                                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
+                                                <div class="order-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                                    <div class="truncate">
+                                                        {{item.code}}
+                                                    </div>
+                                                    <div class="truncate">
+                                                        {{item.createDate | date: 'dd/MM/yyyy'}}
+                                                    </div>
+                                                    <div class="truncate">
+                                                        {{item.fullname}}
+                                                    </div>
 
-                </ng-container>
-            </ng-container>
+                                                    <div class="truncate">
+                                                        {{item.totalAmount | number: '1.0-0'}}  VNĐ
+                                                    </div>
+
+                                                    <div class="truncate">
+                                                        {{item.totalAmountRequest| number: '1.0-0'}}  VNĐ
+                                                    </div>
+
+                                                    <div class="flex flex-row truncate">
+                                                        <ng-container *ngIf="item.statusPayment === 'PENDING'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
+                                                            <span class="text-gray-400">Chờ xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'CONFIRM'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Chờ đặt cọc</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'DOING'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đã đặt cọc</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'DONE'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đã thanh toán đủ</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'CANCEL'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                            <span class="text-gray-400">Đã hủy</span>
+                                                        </ng-container>
+                                                    </div>
+
+                                                    <div class="flex flex-row truncate">
+                                                        <ng-container *ngIf="item.statusOrder === 'PENDING'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
+                                                            <span class="text-gray-400">Chờ xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'CONFIRM'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'DOING'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đang thực hiện</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'DONE'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Hoàn thành</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'CANCEL'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                            <span class="text-gray-400">Đã hủy</span>
+                                                        </ng-container>
+                                                    </div>
+
+                                                    <!-- Details button -->
+                                                    <div class="flex flex-row">
+                                                        <button
+                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                                            mat-stroked-button
+                                                            routerLink="{{item.id}}"
+                                                        >
+                                                            <mat-icon
+                                                                class="icon-size-5"
+                                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+                                                        </button>
+                                                        <!-- <button
+                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 "
+                                                            mat-stroked-button
+                                                            [color]="'warn'"
+                                                            (click)="delete(item.id)">
+                                                            <mat-icon class="icon-size-5"
+                                                                      [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                                        </button> -->
+                                                    </div>
+                                                </div>
+                                                <!--                                <div class="grid">-->
+                                                <!--                                    <ng-container *ngIf="selectedCategory?.id === cate.id">-->
+                                                <!--                                        <ng-container-->
+                                                <!--                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: cate}"></ng-container>-->
+                                                <!--                                    </ng-container>-->
+                                                <!--                                </div>-->
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+
+                                    <mat-paginator
+                                        #pendingItems
+                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                        [ngClass]="{'pointer-events-none': isLoading}"
+                                        [length]="pendingPagination.length"
+                                        [pageIndex]="pendingPagination.page"
+                                        [pageSize]="pendingPagination.size"
+                                        [pageSizeOptions]="[5, 10, 25, 100]"
+                                        [showFirstLastButtons]="true"></mat-paginator>
+
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Hoàn thành">
+                    <div class="flex flex-auto">
+                        <div class="flex flex-col flex-auto mb-10 overflow-auto" style="height: 66vh">
+                            <ng-container *ngIf="(doneItems$ | async) as items">
+                                <ng-container *ngIf="items.length > 0; else noProducts">
+                                    <div class="grid">
+                                        <!-- Header -->
+                                        <div
+                                            class="order-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                                            matSort
+                                            matSortDisableClear>
+                                            <div class="">Mã đơn hàng</div>
+                                            <div class="">Ngày đặt</div>
+                                            <div class="">Tên khách hàng</div>
+                                            <div class="">Giá trị hóa đơn</div>
+                                            <div class="">Tiền đã thanh toán</div>
+                                            <div class="">Trạng thái thanh toán</div>
+                                            <div class="">Trạng thái đơn hàng</div>
+                                            <div>Chi tiết</div>
+                                        </div>
+
+                                        <!-- Rows -->
+                                        <ng-container *ngIf="(doneItems$ | async) as items1">
+                                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
+                                                <div class="order-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                                    <div class="truncate">
+                                                        {{item.code}}
+                                                    </div>
+                                                    <div class="truncate">
+                                                        {{item.createDate | date: 'dd/MM/yyyy'}}
+                                                    </div>
+                                                    <div class="truncate">
+                                                        {{item.fullname}}
+                                                    </div>
+
+                                                    <div class="truncate">
+                                                        {{item.totalAmount | number: '1.0-0'}}  VNĐ
+                                                    </div>
+
+                                                    <div class="truncate">
+                                                        {{item.totalAmountRequest| number: '1.0-0'}}  VNĐ
+                                                    </div>
+
+                                                    <div class="flex flex-row truncate">
+                                                        <ng-container *ngIf="item.statusPayment === 'PENDING'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
+                                                            <span class="text-gray-400">Chờ xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'CONFIRM'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Chờ đặt cọc</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'DOING'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đã đặt cọc</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'DONE'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đã thanh toán đủ</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'CANCEL'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                            <span class="text-gray-400">Đã hủy</span>
+                                                        </ng-container>
+                                                    </div>
+
+                                                    <div class="flex flex-row truncate">
+                                                        <ng-container *ngIf="item.statusOrder === 'PENDING'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
+                                                            <span class="text-gray-400">Chờ xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'CONFIRM'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'DOING'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đang thực hiện</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'DONE'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Hoàn thành</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'CANCEL'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                            <span class="text-gray-400">Đã hủy</span>
+                                                        </ng-container>
+                                                    </div>
+
+                                                    <!-- Details button -->
+                                                    <div class="flex flex-row">
+                                                        <button
+                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                                            mat-stroked-button
+                                                            routerLink="{{item.id}}"
+                                                        >
+                                                            <mat-icon
+                                                                class="icon-size-5"
+                                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+                                                        </button>
+                                                        <!-- <button
+                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 "
+                                                            mat-stroked-button
+                                                            [color]="'warn'"
+                                                            (click)="delete(item.id)">
+                                                            <mat-icon class="icon-size-5"
+                                                                      [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                                        </button> -->
+                                                    </div>
+                                                </div>
+                                                <!--                                <div class="grid">-->
+                                                <!--                                    <ng-container *ngIf="selectedCategory?.id === cate.id">-->
+                                                <!--                                        <ng-container-->
+                                                <!--                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: cate}"></ng-container>-->
+                                                <!--                                    </ng-container>-->
+                                                <!--                                </div>-->
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+
+                                    <mat-paginator
+                                        #doneItems
+                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                        [ngClass]="{'pointer-events-none': isLoading}"
+                                        [length]="donePagination.length"
+                                        [pageIndex]="donePagination.page"
+                                        [pageSize]="donePagination.size"
+                                        [pageSizeOptions]="[5, 10, 25, 100]"
+                                        [showFirstLastButtons]="true"></mat-paginator>
+
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Đã hủy">
+                    <div class="flex flex-auto">
+                        <div class="flex flex-col flex-auto mb-10 overflow-auto" style="height: 66vh">
+                            <ng-container *ngIf="(cancelledItems$ | async) as items">
+                                <ng-container *ngIf="items.length > 0; else noProducts">
+                                    <div class="grid">
+                                        <!-- Header -->
+                                        <div
+                                            class="order-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                                            matSort
+                                            matSortDisableClear>
+                                            <div class="">Mã đơn hàng</div>
+                                            <div class="">Ngày đặt</div>
+                                            <div class="">Tên khách hàng</div>
+                                            <div class="">Giá trị hóa đơn</div>
+                                            <div class="">Tiền đã thanh toán</div>
+                                            <div class="">Trạng thái thanh toán</div>
+                                            <div class="">Trạng thái đơn hàng</div>
+                                            <div>Chi tiết</div>
+                                        </div>
+
+                                        <!-- Rows -->
+                                        <ng-container *ngIf="(cancelledItems$ | async) as items1">
+                                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
+                                                <div class="order-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                                    <div class="truncate">
+                                                        {{item.code}}
+                                                    </div>
+                                                    <div class="truncate">
+                                                        {{item.createDate | date: 'dd/MM/yyyy'}}
+                                                    </div>
+                                                    <div class="truncate">
+                                                        {{item.fullname}}
+                                                    </div>
+
+                                                    <div class="truncate">
+                                                        {{item.totalAmount | number: '1.0-0'}}  VNĐ
+                                                    </div>
+
+                                                    <div class="truncate">
+                                                        {{item.totalAmountRequest| number: '1.0-0'}}  VNĐ
+                                                    </div>
+
+                                                    <div class="flex flex-row truncate">
+                                                        <ng-container *ngIf="item.statusPayment === 'PENDING'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
+                                                            <span class="text-gray-400">Chờ xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'CONFIRM'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Chờ đặt cọc</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'DOING'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đã đặt cọc</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'DONE'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đã thanh toán đủ</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusPayment === 'CANCEL'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                            <span class="text-gray-400">Đã hủy</span>
+                                                        </ng-container>
+                                                    </div>
+
+                                                    <div class="flex flex-row truncate">
+                                                        <ng-container *ngIf="item.statusOrder === 'PENDING'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'mat_outline:pending_actions'"></mat-icon>
+                                                            <span class="text-gray-400">Chờ xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'CONFIRM'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Xác nhận</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'DOING'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Đang thực hiện</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'DONE'">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'">
+                                                            </mat-icon>
+                                                            <span class="text-green-400">Hoàn thành</span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.statusOrder === 'CANCEL'">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                            <span class="text-gray-400">Đã hủy</span>
+                                                        </ng-container>
+                                                    </div>
+
+                                                    <!-- Details button -->
+                                                    <div class="flex flex-row">
+                                                        <button
+                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                                            mat-stroked-button
+                                                            routerLink="{{item.id}}"
+                                                        >
+                                                            <mat-icon
+                                                                class="icon-size-5"
+                                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+                                                        </button>
+                                                        <!-- <button
+                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 "
+                                                            mat-stroked-button
+                                                            [color]="'warn'"
+                                                            (click)="delete(item.id)">
+                                                            <mat-icon class="icon-size-5"
+                                                                      [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                                        </button> -->
+                                                    </div>
+                                                </div>
+                                                <!--                                <div class="grid">-->
+                                                <!--                                    <ng-container *ngIf="selectedCategory?.id === cate.id">-->
+                                                <!--                                        <ng-container-->
+                                                <!--                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: cate}"></ng-container>-->
+                                                <!--                                    </ng-container>-->
+                                                <!--                                </div>-->
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+
+                                    <mat-paginator
+                                        #cancelledItems
+                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                        [ngClass]="{'pointer-events-none': isLoading}"
+                                        [length]="cancelledPagination.length"
+                                        [pageIndex]="cancelledPagination.page"
+                                        [pageSize]="cancelledPagination.size"
+                                        [pageSizeOptions]="[5, 10, 25, 100]"
+                                        [showFirstLastButtons]="true"></mat-paginator>
+
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
             <ng-template #noProducts>
                 <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
                     Không có đơn hàng!

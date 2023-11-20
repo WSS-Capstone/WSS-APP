@@ -8,7 +8,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {map, Observable, of, Subject, switchMap} from 'rxjs';
+import {map, Observable, of, Subject, switchMap, take} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Order, WeddingInformation} from "../order.types";
 import {OrderService} from "../order.service";
@@ -91,6 +91,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             this._service.getItem(id).subscribe(p => {
                 this.item$ = this._service.item$;
                 this.isLoading = false;
+                this._changeDetectorRef.markForCheck();
             });
 
             // Get the note
@@ -187,7 +188,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
     }
 
-    updateStatus(id: string, status: string, text: string) {
+    updateStatus(id: string, status: string, text: string, currentStatus: string) {
         const confirmation = this._fuseConfirmationService.open({
             title: text + ' đơn hàng',
             message: `Bạn có chắc chắn muốn ${text.toLowerCase()} này?!`,
@@ -212,8 +213,10 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 console.log(result);
-                this._service.approval(id, status).subscribe(() => {
+                const cccc = this._service.approval(id, status, currentStatus).subscribe(() => {
                     this.openSnackBar(`${text} thành công`, 'Đóng');
+                    cccc.unsubscribe();
+                    this._changeDetectorRef.markForCheck();
                 });
             }
         });

@@ -22,6 +22,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 import { OrderCreateTaskComponent } from './create-task/details.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
     declarations: [
@@ -50,6 +51,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
         SharedModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatTabsModule,
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
