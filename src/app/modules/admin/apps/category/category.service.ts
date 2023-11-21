@@ -66,6 +66,7 @@ export class CategoryService {
         return this._httpClient.get<CategoryResponse>(ENDPOINTS.category, {
             params: {
                 'page-size': '' + 250,
+                'sort-key': 'Status'
                 // 'status': 'Active'
             }
         }).pipe(

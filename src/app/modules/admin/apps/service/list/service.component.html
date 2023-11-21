@@ -103,7 +103,7 @@
                                                         {{item?.currentPrices?.price | number: '1.0-0' }} VNĐ
                                                     </div>
 
-                                                    <div class="flex flex-row justify-center content-center truncate">
+                                                    <div class="flex flex-row justify-start content-center truncate">
                                                         <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
                                                             <mat-icon
                                                                 class="text-green-400 icon-size-5"
@@ -189,7 +189,7 @@
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="Nhân viên">
+                <mat-tab label="Cửa hàng">
                     <div class="flex flex-auto">
                         <div class="flex flex-col flex-auto mb-10 overflow-auto vh-70">
                             <ng-container *ngIf="(ownerServices$ | async) as items">
@@ -242,7 +242,7 @@
                                                         {{item?.currentPrices?.price | number: '1.0-0' }} VNĐ
                                                     </div>
 
-                                                    <div class="flex flex-row justify-center content-center truncate">
+                                                    <div class="flex flex-row justify-start content-center truncate">
                                                         <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
                                                             <mat-icon
                                                                 class="text-green-400 icon-size-5"

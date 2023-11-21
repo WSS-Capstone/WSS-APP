@@ -54,7 +54,7 @@ import {environment} from "../../../../../../environments/environment";
                 }
 
                 @screen lg {
-                    grid-template-columns: 50px 163px 114px auto 81px 153px 79px;
+                    grid-template-columns: 5% 13% 5% auto 6% 10% 5%;
                 }
             }
         `,
