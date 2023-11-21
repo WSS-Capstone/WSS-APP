@@ -157,6 +157,28 @@ export class FeedbackService {
         );
     }
 
+    patch(id: string, status: string): Observable<Feedback> {
+        return this.items$.pipe(
+            take(1),
+            switchMap(itemsArr => this._httpClient.patch<Feedback>(ENDPOINTS.feedback + `/${id}?status=${status}`, {}).pipe(
+                map((updatedItem) => {
+                    const index = itemsArr.findIndex(item => item.id === id);
+                    itemsArr[index] = updatedItem;
+                    this._items.next(itemsArr);
+                    return updatedItem;
+                }),
+                switchMap(updatedItem => this.item$.pipe(
+                    take(1),
+                    filter(item => item && item.id === id),
+                    tap(() => {
+                        this._item.next(updatedItem);
+                        return updatedItem;
+                    })
+                ))
+            ))
+        );
+    }
+
     delete(id: string): Observable<boolean> {
         return this.items$.pipe(
             take(1),

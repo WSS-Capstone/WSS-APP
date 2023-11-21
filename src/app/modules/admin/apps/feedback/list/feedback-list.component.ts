@@ -218,15 +218,12 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 console.log(result);
-                // this._service.getItem(id).subscribe(
-                //     value => {
-                //         this._service.update(id, value).subscribe(() => {
-                //             this.openSnackBar('Hiện đánh giá thành công', 'Đóng');
-                //             // Close the details
-                //             this.closeDetails();
-                //         });
-                //     }
-                // )
+                const ccc = this._service.patch(id, 'Approved').subscribe(() => {
+                    this.openSnackBar('Đã hiện bình luận', 'Đóng');
+                    ccc.unsubscribe();
+                    // Close the details
+                    // this.closeDetails();
+                });
             }
         });
     }
@@ -255,15 +252,12 @@ export class FeedbackListComponent implements OnInit, AfterViewInit, OnDestroy {
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 console.log(result);
-                // this._service.getItem(id).subscribe(
-                //     value => {
-                //         this._service.update(id, value).subscribe(() => {
-                //             this.openSnackBar('Hiện đánh giá thành công', 'Đóng');
-                //             // Close the details
-                //             this.closeDetails();
-                //         });
-                //     }
-                // )
+                const ccc = this._service.patch(id, 'Rejected').subscribe(() => {
+                    this.openSnackBar('Đã ẩn bình luận', 'Đóng');
+                    ccc.unsubscribe();
+                    // Close the details
+                    // this.closeDetails();
+                });
             }
         });
     }

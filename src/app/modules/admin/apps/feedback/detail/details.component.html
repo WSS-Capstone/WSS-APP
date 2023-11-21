@@ -134,7 +134,7 @@
                         Đóng
                     </button>
                     <button
-                        *ngIf="item.status === 'Approved'"
+                        *ngIf="item.status !== 'Rejected'"
                         mat-flat-button
                         [color]="'warn'"
                         (click)="hide(item.id)"
@@ -142,8 +142,9 @@
                         Ẩn đánh giá
                     </button>
                     <button
-                        *ngIf="item.status !== 'Approved'"
+                        *ngIf="item.status === 'Rejected'"
                         mat-flat-button
+                        [color]="'accent'"
                         (click)="show(item.id)"
                     >
                         Hiện đánh giá

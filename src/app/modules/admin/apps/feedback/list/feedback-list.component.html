@@ -120,7 +120,7 @@
                                                 class="icon-size-5"
                                                 [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
                                         </button>
-                                        <button *ngIf="item.status === 'Approved'"
+                                        <button *ngIf="item.status !== 'Rejected'"
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
                                                 [color]="'warn'"
@@ -128,7 +128,7 @@
                                             <mat-icon class="icon-size-5"
                                                       [svgIcon]="'mat_solid:visibility_off'"></mat-icon>
                                         </button>
-                                        <button *ngIf="item.status !== 'Approved'"
+                                        <button *ngIf="item.status === 'Rejected'"
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
                                                 (click)="show(item.id)">
@@ -136,7 +136,7 @@
                                                       [svgIcon]="'mat_solid:visibility'"></mat-icon>
                                         </button>
 
-                                       
+
                                     </div>
                                 </div>
                             </ng-container>
