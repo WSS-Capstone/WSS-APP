@@ -312,7 +312,7 @@
 
                                         <div class="flex flex-row">
                                             <button
-                                                *ngIf="item.statusOrder === 'CONFIRM' || item.statusOrder === 'DOING'"
+                                                *ngIf="(item.statusOrder === 'CONFIRM' || item.statusOrder === 'DOING') && orderDetail.service.isOwnerService"
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
                                                 (click)="createTask(orderDetail.id, orderDetail.service?.isOwnerService)"

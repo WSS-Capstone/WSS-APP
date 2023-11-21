@@ -215,6 +215,30 @@ export class TaskService {
         }
     }
 
+    updateTask(id: string, item: any): Observable<Task> {
+        return this.ownerItems$.pipe(
+            take(1),
+            switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}`, {
+                ...item
+            }).pipe(
+                map((updatedItem) => {
+                    const index = itemsArr.findIndex(item => item.id === id);
+                    itemsArr[index] = updatedItem;
+                    this._ownerItems.next(itemsArr);
+                    return updatedItem;
+                }),
+                switchMap(updatedItem => this.ownerItem$.pipe(
+                    take(1),
+                    filter(item => item && item.id === id),
+                    tap(() => {
+                        this._ownerItem.next(updatedItem);
+                        return updatedItem;
+                    })
+                ))
+            ))
+        );
+    }
+
     update(id: string, item: Task, type: string): Observable<Task> {
         if(type === 'owner') {
             return this.ownerItems$.pipe(

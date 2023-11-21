@@ -5,7 +5,7 @@
         <div class="text-3xl font-extrabold tracking-tight p-5">{{cate.id ? 'Chi tiết công việc' : 'Thêm công việc'}}</div>
 
         <!-- Image -->
-        <div class="flex flex-auto flex-row p-5 fix-height">
+        <div class="flex flex-auto flex-row p-5 fix-height divide-x">
             <div class="w-1/2 mr-4">
                 <mat-form-field class="w-full">
                     <mat-label>Mã số</mat-label>
@@ -19,9 +19,23 @@
 
                 <mat-form-field class="w-full" >
                     <mat-label>Người thực hiện</mat-label>
-                    <input *ngIf="cate.partner !== null" matInput readonly [formControlName]="'partnerName'">
-                    <input *ngIf="cate.staff !== null" matInput readonly [formControlName]="'staffName'">
-                    <input *ngIf="cate.staff === null && cate.partner === null" matInput readonly [formControlName]="'staffName'">
+                    <ng-container *ngIf="cate.partner !== null">
+                        <input matInput readonly [formControlName]="'partnerName'">
+                    </ng-container>
+                    <ng-container *ngIf="cate.staff !== null || (cate.staff === null && cate.partner === null)">
+                        <mat-select [formControlName]="'staffId'" (selectionChange)="onSelectChangeStaff($event)">
+                            <mat-option *ngFor="let user of users" [value]="user?.id">{{user.user?.fullname}}</mat-option>
+                        </mat-select>
+<!--                        <input type="text" matInput [formControlName]="'staffId'" [matAutocomplete]="auto">-->
+<!--                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectChangeStaff($event)">-->
+<!--                            <mat-option *ngFor="let user of filteredOptions | async" [value]="user">-->
+<!--                                {{user.user?.fullname}}-->
+<!--                            </mat-option>-->
+<!--                        </mat-autocomplete>-->
+                    </ng-container>
+<!--                    <ng-container *ngIf="">-->
+<!--                        <input matInput readonly [formControlName]="'staffName'">-->
+<!--                    </ng-container>-->
                 </mat-form-field>
 
                 <mat-form-field class="w-full">
@@ -103,7 +117,7 @@
 <!--                    </ng-container>-->
 <!--                </div>-->
             </div>
-            <div class="w-1/2">
+            <div class="w-1/2 pl-4">
                 <div class="text-1xl font-semibold tracking-tight mb-1">Bình luận</div>
                 <div class="flex flex-col overflow-auto h-2/3">
                     <ng-container *ngIf="comments.length > 0; else noComments">
@@ -131,7 +145,7 @@
                             Bình luận không được bỏ trống.
                         </mat-error>
                     </mat-form-field>
-                    <button mat-flat-button (click)="addComment()">Bình luận</button>
+                    <button mat-flat-button color="accent" (click)="addComment()">Bình luận</button>
                 </div>
             </div>
         </div>
@@ -170,12 +184,12 @@
                 <div class="flex items-center justify-between mt-4">
                     <!-- Close -->
                     <button class="mr-4" mat-flat-button matDialogClose>Đóng</button>
-<!--                   <button-->
-<!--                        mat-flat-button-->
-<!--                        [color]="'primary'"-->
-<!--                        (click)="update()">-->
-<!--                        Cập nhật-->
-<!--                   </button>-->
+                   <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        (click)="update()">
+                        Cập nhật
+                   </button>
                 </div>
             </ng-container>
         </div>

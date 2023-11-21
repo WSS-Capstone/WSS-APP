@@ -8,7 +8,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {map, Observable, of, Subject} from 'rxjs';
+import {map, Observable, of, startWith, Subject, tap} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Comment, Task} from "../task.types";
 import {TaskService} from "../task.service";
@@ -19,6 +19,7 @@ import { formatDate } from '@angular/common';
 import { OrderService } from '../../order/order.service';
 import { Account } from '../../user/user.types';
 import {MatSelectChange} from "@angular/material/select";
+import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 
 @Component({
     selector: 'Task-details',
@@ -44,6 +45,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     imgDataOrLink: any;
     form: FormGroup;
     commentInput = new FormControl('', [Validators.required, Validators.maxLength(300)]);
+    filteredOptions: Observable<Account[]>;
+    tempUserId: string;
+    tempUserName: string;
+    tempUser: Account;
 
     /**
      * Constructor
@@ -84,7 +89,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             this.item$.subscribe((value) => {
                 this._patchValue(value);
                 this._orderService.users$.subscribe(userss => {
-                    this.users = userss.filter(x => value.staff ? x.roleName === 'Staff' : x.roleName === 'Partner');
+                    this.users = userss.filter(x => value.partner ? x.roleName === 'Partner' : x.roleName === 'Staff');
+                    this.tempUser = this.users.find(x => x.id === value.staff.id);
                     this._changeDetectorRef.markForCheck();
                 });
             });
@@ -102,7 +108,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             staffId: [null],
             staffName: [null],
             partnerName: [null],
-            partnerIde: [null],
+            partnerId: [null],
             orderName: [null],
             serviceName: [null],
         });
@@ -116,15 +122,26 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             endTime: new Date(value.orderDetails[0]?.endTime),
             taskName: value.taskName,
             status: value.status,
-            staffId: null,
+            staffId: value.staff?.id,
             staffName: value.staff?.fullname,
-            partnerId: null,
+            partnerId: value.partner?.id,
             partnerName: value.partner?.fullname,
             orderName: 'Đơn hàng của ' + value.orderDetails[0]?.order?.fullname,
             serviceName: value.orderDetails[0]?.service?.name,
         });
 
         this.comments = value.comments.sort((a:Comment, b:Comment) => {return a.createDate > b.createDate ? 1 : -1});
+
+        // this.tempUserId = this.form.get('staffId')?.value;
+        // this.tempUserName = this.form.get('staffName')?.value || '';
+        //
+        // this.filteredOptions = this.form.get('staffId').valueChanges.pipe(
+        //     startWith(''),
+        //     map(value => {
+        //         const name = typeof value === 'string' ? value : value?.name;
+        //         return name ? this._filter(name as string) : this.users.slice();
+        //     })
+        // );
     }
 
     /**
@@ -152,16 +169,30 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    onSelectChangeStaff(event: MatSelectChange) {
+        // this.tempUserId = event.option.value.id;
+        // this.tempUserName = event.option.value.user?.fullname  || '';
+        // console.log(this.tempUserId, this.tempUserName, event)
+        console.log(event)
+        this.form.patchValue({
+            staffId: event.value
+        })
+    }
+
     onSelectChange(event: MatSelectChange) {
         console.log(event)
-        const requestBody = {
-            status: event.value,
-        }
+        this.form.patchValue({
+            status: event.value
+        })
 
-        this._service.updateStatus(this.form.get('id').value, requestBody, this._data.type).pipe(
-            map(() => {
-                this.showFlashMessage('success');
-            })).subscribe();
+        // const requestBody = {
+        //     status: event.value,
+        // }
+        //
+        // this._service.updateStatus(this.form.get('id').value, requestBody, this._data.type).pipe(
+        //     map(() => {
+        //         this.showFlashMessage('success');
+        //     })).subscribe();
     }
 
     filterStart = (date: Date | null): boolean => {
@@ -195,16 +226,49 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
     update(): void {
         console.log(this.form.value)
-        // this._service.update(this.form.get('id').value ,this.form.value).pipe(
-        //     map(() => {
-        //         // Get the note
-        //         // this.cate$ = this._categoryService.category$;
-        //         this.showFlashMessage('success');
-        //     })).subscribe();
-        //
-        // setTimeout(() => {
-        //     this._matDialogRef.close();
-        // }, 1200);
+        let stt = 0;
+
+        switch (this.form.get('status').value) {
+            case 'EXPECTED':
+                stt = 0
+                break;
+            case 'TO_DO':
+                stt = 1
+                break;
+            case 'IN_PROGRESS':
+                stt = 2
+                break;
+            case 'DONE':
+                stt = 3
+                break;
+        }
+
+        const request = {
+            id: this.form.get('id').value,
+            userId: this.form.get('staffId').value,
+            status: stt
+        }
+
+        this._service.updateTask(this.form.get('id').value, request).pipe(
+            map(() => {
+                // Get the note
+                // this.cate$ = this._categoryService.category$;
+                this.showFlashMessage('success');
+            })).subscribe();
+
+        setTimeout(() => {
+            this._matDialogRef.close();
+        }, 1200);
+    }
+
+    private _filter(name: string): Account[] {
+        const filterValue = name.toLowerCase();
+
+        return this.users.filter(option => option.user?.fullname.toLowerCase().includes(filterValue));
+    }
+
+    displayFn(user: Account): string {
+        return user && user.user?.fullname ? user.user?.fullname : '';
     }
 
     /**
