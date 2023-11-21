@@ -30,7 +30,7 @@ import {AddServiceComponent} from "../add-service/details.component";
         /* language=SCSS */
         `
             .combo-detail-grid {
-                grid-template-columns: 120px 150px auto 150px 150px 80px;
+                grid-template-columns: 120px 150px auto 150px 80px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -62,7 +62,8 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
     imgDataOrLink: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     readonly MAX_RATING = 5;
-
+    initPrice: number = 0;
+    initPriceText: string = '';
     form: FormGroup;
 
     /**
@@ -110,6 +111,8 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
                     status: null
                 }
                 this.item$ = of(item);
+                this.initPrice = 0;
+                this.initPriceText = '';
             }
             this.isLoading = false;
         })
@@ -150,6 +153,8 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             status: value.status,
         });
         this.tempImageUrl = value.imageUrl;
+        this.initPrice = this.sumArray(value.comboServices.map(x => x.currentPrices?.price));
+        // this.initPriceText = this.initPrice.toString() |
     }
 
     /**
@@ -164,6 +169,14 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    sumArray(numbers: number[]): number {
+        let total = 0;
+        for (let num of numbers) {
+            total += num;
+        }
+        return total;
+    }
 
     getService(id: string): Service {
         return this.services.find(x => x.id === id);
@@ -189,6 +202,10 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
                     comboServicesId: this.form.get('comboServicesId').value ? [...this.form.get('comboServicesId').value, ...result] : [...result],
                 })
                 console.log(this.form.get('comboServicesId').value)
+
+                const cc = this.services.filter(x => result.includes(x.id)).map(x => x.currentPrices?.price);
+                this.initPrice += this.sumArray(cc);
+
                  // Mark for check
                 this._changeDetectorRef.markForCheck();
             }
@@ -199,6 +216,8 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         const index = this.form.get('comboServicesId').value.findIndex(x => x === comboServiceId);
         this.form.get('comboServicesId').value.splice(index, 1);
          // Mark for check
+        const cc = this.sumArray(this.services.filter(x => x.id === comboServiceId).map(x => x.currentPrices?.price));
+        this.initPrice -= cc;
          this._changeDetectorRef.markForCheck();
     }
 
@@ -254,7 +273,7 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         }
 
         this._service.update(id, requestBody).pipe(
-            map(() => {
+            map((data) => {
                 this.showFlashMessage('success');
             })).subscribe();
     }

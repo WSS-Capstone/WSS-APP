@@ -88,18 +88,19 @@
                                 <mat-label>Tổng giá</mat-label>
                                 <input
                                     matInput
-                                    type="number"
-                                    [formControlName]="'totalAmount'"
+                                    readonly
+
+                                    [value]="initPrice | number : '1.0-0'"
                                 />
-                                <mat-error
-                                    *ngIf="
-                                        form
-                                            .get('totalAmount')
-                                            .hasError('required')
-                                    "
-                                >
-                                    Tổng giá không được để trống
-                                </mat-error>
+<!--                                <mat-error-->
+<!--                                    *ngIf="-->
+<!--                                        form-->
+<!--                                            .get('totalAmount')-->
+<!--                                            .hasError('required')-->
+<!--                                    "-->
+<!--                                >-->
+<!--                                    Tổng giá không được để trống-->
+<!--                                </mat-error>-->
                             </mat-form-field>
 
                             <mat-form-field class="w-full pr-2">
@@ -125,8 +126,7 @@
                                 <input
                                     matInput
                                     readonly
-                                    [formControlName]="'discountPrice'"
-                                    [value]="form.get('totalAmount').value - (form.get('totalAmount').value * form.get('discountValueCombo').value / 100) + ''"
+                                    [value]="initPrice - (initPrice * form.get('discountValueCombo').value / 100)  | number : '1.0-0'"
                                 />
                             </mat-form-field>
                         </div>
@@ -291,7 +291,6 @@
                                     <div class="">Mã dịch vụ</div>
                                     <div class="">Loại dịch vụ</div>
                                     <div class="">Tên dịch vụ</div>
-                                    <div class="">Số lượng</div>
                                     <div class="">Giá cho thuê</div>
                                     <div>Chi tiết</div>
                                 </div>
@@ -331,10 +330,6 @@
                                                 </div>
                                                 <div class="truncate">
                                                     {{ services1.name }}
-                                                </div>
-
-                                                <div class="truncate">
-                                                    {{ services1.quantity }}
                                                 </div>
 
                                                 <div class="truncate">

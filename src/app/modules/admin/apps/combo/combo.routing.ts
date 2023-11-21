@@ -38,7 +38,7 @@ export const itemRoutes: Route[] = [
                 path     : ':id',
                 component: ComboDetailComponent,
                 resolve  : {
-                    items: CombosResolver,
+                    // items: CombosResolver,
                     item: ComboResolver,
                     services: ServicesServiceResolver,
                 }

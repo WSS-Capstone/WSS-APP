@@ -5,6 +5,7 @@ import {Combo, ComboPagination, ComboResponse} from './combo.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse, FileInfo} from "../category/category.types";
 import { Service, ServiceResponse } from '../service/service.types';
+import {Order} from "../order/order.types";
 
 @Injectable({
     providedIn: 'root'
@@ -139,6 +140,16 @@ export class ComboService {
         );
     }
 
+    getItemById(id: string): Observable<Combo> {
+        return this._httpClient.get<Combo>(ENDPOINTS.combo + `/${id}`).pipe(
+            tap((response) => {
+                console.log(response);
+                this._item.next(response);
+                return response;
+            })
+        )
+    }
+
     create(item: any): Observable<Combo> {
         return this.items$.pipe(
             take(1),
@@ -166,7 +177,7 @@ export class ComboService {
                     const index = itemsArr.findIndex(item => item.id === id);
                     itemsArr[index] = updatedItem;
                     this._items.next(itemsArr);
-                    return updatedItem;
+                    return itemsArr[index];
                 }),
                 switchMap(updatedItem => this.item$.pipe(
                     take(1),

@@ -12,6 +12,7 @@ export interface Combo {
     imageUrl: string;
     status: boolean;
     rating: number;
+    tempPrice?: number;
     comboServices?: ComboServiceType[]
 }
 
