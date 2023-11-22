@@ -153,7 +153,8 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             status: value.status,
         });
         this.tempImageUrl = value.imageUrl;
-        this.initPrice = this.sumArray(value.comboServices.map(x => x.currentPrices?.price));
+        // this.initPrice = this.sumArray(value.comboServices.map(x => x.currentPrices?.price));
+        this.initPrice = value.totalAmount;
         // this.initPriceText = this.initPrice.toString() |
     }
 
