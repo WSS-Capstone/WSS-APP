@@ -1,0 +1,163 @@
+<div class="flex flex-col flex-auto -m-6 pt-1">
+    <!-- Title -->
+    <div class="flex justify-between">
+        <div class="text-3xl font-extrabold tracking-tight p-5">
+            Đánh giá từ khách hàng
+        </div>
+        <!--        <mat-icon matDialogClose-->
+        <!--            class="icon-size-10 pr-4 pt-4"-->
+        <!--            [svgIcon]="'heroicons_outline:x'"></mat-icon>-->
+    </div>
+
+    <ng-container *ngIf="item$ | async as item" [formGroup]="form">
+        <!-- Image -->
+        <div class="flex flex-auto flex-row p-5">
+            <!--            image-->
+            <!-- <div class="flex flex-col items-center">
+                <div class="w-32 h-44 border rounded overflow-hidden">
+                    <ng-container *ngIf="item.imageUrl; else noImage">
+                        <img class="w-full h-full object-cover" [src]="item.imageUrl">
+                    </ng-container>
+                    <ng-template #noImage>
+                        <span class="flex justify-center items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
+                    </ng-template>
+                </div>
+
+            </div> -->
+
+            <!-- Name, SKU & etc. -->
+            <div class="flex flex-col w-full sm:pl-8">
+                <!-- id -->
+                <mat-form-field class="w-full">
+                    <mat-label>Ngày</mat-label>
+                    <input matInput readonly [formControlName]="'createDate'" />
+                </mat-form-field>
+
+                <!-- name -->
+                <mat-form-field class="w-full">
+                    <mat-label>Tên khách hàng</mat-label>
+                    <input matInput readonly [formControlName]="'fullname'" />
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Tên dịch vụ</mat-label>
+                    <input
+                        matInput
+                        readonly
+                        [formControlName]="'serviceName'"
+                    />
+                </mat-form-field>
+
+                <div class="flex flex-row mb-4 font-medium">
+                    <div>Đánh giá</div>
+                    <div class="flex flex-row ml-4">
+                        <span
+                            *ngFor="
+                                let n of numSequence(MAX_RATING - item.rating)
+                            "
+                        >
+                            <mat-icon
+                                class="icon-size-5 text-[#E8E8E8]"
+                                matPrefix
+                                [svgIcon]="'heroicons_solid:star'"
+                            >
+                            </mat-icon>
+                        </span>
+                        <span *ngFor="let n of numSequence(item.rating)">
+                            <mat-icon
+                                class="icon-size-5 text-[#FABF35]"
+                                matPrefix
+                                [svgIcon]="'heroicons_solid:star'"
+                            >
+                            </mat-icon>
+                        </span>
+                    </div>
+                </div>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Mô tả</mat-label>
+                    <textarea
+                        matInput
+                        readonly
+                        [rows]="5"
+                        [formControlName]="'content'"
+                    ></textarea>
+                    <!--                    <mat-error *ngIf="form.get('content').hasError('content')">-->
+                    <!--                        Mô tả không được quá 300 ký tự-->
+                    <!--                    </mat-error>-->
+                </mat-form-field>
+
+                <div class="flex flex-row mb-4 font-medium">
+                    <div>Trạng thái</div>
+                    <div class="flex flex-row truncate ml-4">
+                        <ng-container *ngIf="item.status === 'Approved'">
+                            <mat-icon
+                                class="text-green-400 icon-size-5"
+                                [svgIcon]="'heroicons_solid:check'"
+                            >
+                            </mat-icon>
+                            <span class="text-green-400">Hiện</span>
+                        </ng-container>
+                        <ng-container *ngIf="item.status !== 'Approved'">
+                            <mat-icon
+                                class="text-gray-400 icon-size-5"
+                                [svgIcon]="'heroicons_solid:x'"
+                            ></mat-icon>
+                            <span class="text-gray-400">Đã ẩn</span>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end items-center m-4">
+            <div class="flex items-center mr-4 mt-4" *ngIf="flashMessage">
+                <ng-container *ngIf="flashMessage === 'success'">
+                    <mat-icon
+                        class="text-green-500"
+                        [svgIcon]="'heroicons_outline:check'"
+                    ></mat-icon>
+                    <span class="ml-2">Thành công</span>
+                </ng-container>
+                <ng-container *ngIf="flashMessage === 'error'">
+                    <mat-icon
+                        class="text-red-500"
+                        [svgIcon]="'heroicons_outline:x'"
+                    ></mat-icon>
+                    <span class="ml-2">Có lỗi xảy ra, vui lòng thử lại!</span>
+                </ng-container>
+            </div>
+            <!-- Edit Actions -->
+            <ng-container>
+                <div class="flex items-center justify-between mt-4">
+                    <!-- Close -->
+                    <button class="mr-4" mat-flat-button matDialogClose>
+                        Đóng
+                    </button>
+                    <button
+                        *ngIf="item.status !== 'Rejected'"
+                        mat-flat-button
+                        [color]="'warn'"
+                        (click)="hide(item.id)"
+                    >
+                        Ẩn đánh giá
+                    </button>
+                    <button
+                        *ngIf="item.status === 'Rejected'"
+                        mat-flat-button
+                        [color]="'accent'"
+                        (click)="show(item.id)"
+                    >
+                        Hiện đánh giá
+                    </button>
+                    <!-- <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        (click)="update()"
+                    >
+                        Cập nhật
+                    </button> -->
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>

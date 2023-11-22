@@ -77,6 +77,13 @@ export class NavigationService
                 "link": "/owner/order"
             },
             {
+                "id": "owner.payment",
+                "title": "Thanh toán",
+                "icon": "mat_outline:payments",
+                "type": "basic",
+                "link": "/owner/payment"
+            },
+            {
                 "id": "owner.task",
                 "title": "Công Việc",
                 "icon": "mat_outline:task_alt",

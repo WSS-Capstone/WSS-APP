@@ -85,6 +85,7 @@ export const appRoutes: Route[] = [
                     {path: 'chat', loadChildren: () => import('app/modules/admin/apps/chat/chat.module').then(m => m.ChatModule)},
                     {path: 'feedback', loadChildren: () => import('app/modules/admin/apps/feedback/feedback.module').then(m => m.FeedbackModule)},
                     {path: 'task', loadChildren: () => import('app/modules/admin/apps/task/task.module').then(m => m.TaskModule)},
+                    {path: 'payment', loadChildren: () => import('app/modules/admin/apps/payment/payment.module').then(m => m.PaymentModule)},
                 ]
             },
             {
