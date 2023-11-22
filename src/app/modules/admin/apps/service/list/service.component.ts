@@ -39,11 +39,11 @@ import {Account} from "../../user/user.types";
                 }
 
                 @screen md {
-                    grid-template-columns:  80px 126px auto 80px;
+                    grid-template-columns:  80px auto 218px 134px 80px 145px 80px;
                 }
 
                 @screen lg {
-                    grid-template-columns:  80px auto 218px 80px 156px 145px 80px;
+                    grid-template-columns:  80px auto 218px 134px 80px 145px 80px;
                 }
             }
 

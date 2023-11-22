@@ -69,10 +69,10 @@
                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
                                 <div class="payment-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                                     <div class="truncate">
-                                        {{item.id}}
+                                        {{item.code}}
                                     </div>
                                     <div class="truncate">
-                                        {{item.order?.code}}
+                                       <a class="accent-yellow-600" [routerLink]="['/owner','order',item.order.id]" > {{item.order?.code}}</a>
                                     </div>
                                     <div class="truncate">
                                         Đơn hàng của {{item.order?.fullname}}

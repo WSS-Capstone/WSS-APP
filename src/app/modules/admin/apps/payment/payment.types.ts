@@ -4,6 +4,7 @@ import {Order} from "../order/order.types";
 
 export interface Payment {
     id: string;
+    code: string;
     createDate: string;
     imageUrl: string;
     order: Order;

@@ -29,7 +29,7 @@ import {AccountRequest} from "../../user/user.types";
         /* language=SCSS */
         `
             .payment-grid {
-                grid-template-columns: 220px 100px auto 160px 130px 160px 180px 75px;
+                grid-template-columns: 100px 100px auto 160px 130px 160px 180px 75px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;

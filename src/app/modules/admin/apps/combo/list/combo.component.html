@@ -57,6 +57,7 @@
                                 class="">
                                 Tên gói dịch vụ
                             </div>
+                            <div class="hidden lg:block">Mô tả</div>
                             <div
                                 class="hidden md:block sm:block">
                                 Giảm giá
@@ -65,7 +66,7 @@
                                 class="hidden lg:block ">
                                 Giá cho thuê
                             </div>
-                            <div class="hidden lg:block">Mô tả</div>
+
 
                             <div class="hidden sm:block">Trạng thái</div>
                             <div class="hidden sm:block">Chi tiết</div>
@@ -95,18 +96,19 @@
                                     <div class="truncate">
                                         {{item.name}}
                                     </div>
-                                    <div class="hidden md:block truncate">
+                                    <div class="truncate">
+                                        {{item.description}}
+                                    </div>
+                                    <div class="truncate">
                                         {{item.discountValueCombo | number : '1.0-0' }}%
                                     </div>
-                                    <div class="hidden lg:block truncate">
+                                    <div class=" truncate">
                                         {{item.totalAmount | number : '1.0-0'}} VNĐ
                                     </div>
 
-                                    <div class="hidden lg:block truncate">
-                                        {{item.description}}
-                                    </div>
 
-                                    <div class="flex flex-row justify-center content-center truncate">
+
+                                    <div class="flex flex-row justify-start content-center truncate">
                                         <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
                                             <mat-icon
                                                 class="text-green-400 icon-size-5"
