@@ -97,7 +97,7 @@ export class CategoryService {
                 page: '' + (page),
                 // 'status': 'Active',
                 'page-size': '' + size,
-                'sort-key': 'CreateDate',
+                'sort-key': 'Status',
                 'sort-order': 'DESC',
                 name: search
             }
@@ -224,6 +224,40 @@ export class CategoryService {
 
                     return isDeleted;
                 })
+            ))
+        );
+    }
+
+    changeStatus(id: string, status: string): Observable<Category> {
+        return this._categorys.pipe(
+            take(1),
+            switchMap(categories => this._httpClient.patch<Category>(ENDPOINTS.category + `/${id}/status?status=${status}`, {}).pipe(
+                map((updatedCategory) => {
+
+                    // Find the index of the updated product
+                    const index = categories.findIndex(item => item.id === id);
+
+                    // Update the product
+                    categories[index].status = status;
+
+                    // Update the categories
+                    this._categorys.next(categories);
+
+                    // Return the updated product
+                    return updatedCategory;
+                }),
+                switchMap(updatedCategory => this.category$.pipe(
+                    take(1),
+                    filter(item => item && item.id === id),
+                    tap(() => {
+
+                        // Update the product if it's selected
+                        this._category.next(updatedCategory);
+
+                        // Return the updated product
+                        return updatedCategory;
+                    })
+                ))
             ))
         );
     }

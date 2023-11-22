@@ -6,7 +6,7 @@ export interface Category {
     imageUrl: string;
     isOrderLimit: boolean;
     commission: Commission;
-    status: boolean;
+    status: string;
 }
 
 export interface Commission {

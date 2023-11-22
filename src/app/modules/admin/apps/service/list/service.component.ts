@@ -48,7 +48,7 @@ import {Account} from "../../user/user.types";
             }
 
             .partner-service-grid {
-                grid-template-columns:  80px auto 150px 218px 80px 156px 145px 80px;
+                grid-template-columns:  6% auto 13% 11% 5% 9% 10% 5%;
             }
 
             .service-approval-grid {

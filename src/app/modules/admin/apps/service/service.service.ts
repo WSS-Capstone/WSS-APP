@@ -101,7 +101,7 @@ export class ServiceService {
     }
 
 
-    getOwnerItems(page: number = 0, size: number = 10, sort: string = 'status', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+    getOwnerItems(page: number = 0, size: number = 10, sort: string = 'Status', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<ServiceResponse> {
         return this._httpClient.get<ServiceResponse>(ENDPOINTS.service + '?ownerService=true', {
             params: {
@@ -127,7 +127,7 @@ export class ServiceService {
         );
     }
 
-    getPartnerItems(page: number = 0, size: number = 10, sort: string = 'status', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+    getPartnerItems(page: number = 0, size: number = 10, sort: string = 'Status', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<ServiceResponse> {
         return this._httpClient.get<ServiceResponse>(ENDPOINTS.service + '?ownerService=false&status=Active&status=InActive&status=Deleted', {
             params: {
@@ -256,6 +256,67 @@ export class ServiceService {
             })
         );
     }
+
+    changeStatusPartner(id: string, status: string): Observable<Service> {
+        return this._partnerItems.pipe(
+            take(1),
+            switchMap(services => this._httpClient.patch<Service>(ENDPOINTS.service + `/${id}/status?status=${status}`, {}).pipe(
+                map((updatedService) => {
+
+                    // Find the index of the updated product
+                    const index = services.findIndex(item => item.id === id);
+
+                    // Update the product
+                    services[index].status = status;
+
+                    // Update the services
+                    this._partnerItems.next(services);
+
+                    // Return the updated product
+                    return updatedService;
+                }),
+                switchMap(updatedCategory => this._partnerItem.pipe(
+                    take(1),
+                    filter(item => item && item.id === id),
+                    tap(() => {
+                        this._partnerItem.next(updatedCategory);
+                        return updatedCategory;
+                    })
+                ))
+            ))
+        );
+    }
+
+    changeStatusOwner(id: string, status: string): Observable<Service> {
+        return this._ownerItems.pipe(
+            take(1),
+            switchMap(services => this._httpClient.patch<Service>(ENDPOINTS.service + `/${id}/status?status=${status}`, {}).pipe(
+                map((updatedService) => {
+
+                    // Find the index of the updated product
+                    const index = services.findIndex(item => item.id === id);
+
+                    // Update the product
+                    services[index].status = status;
+
+                    // Update the services
+                    this._ownerItems.next(services);
+
+                    // Return the updated product
+                    return updatedService;
+                }),
+                switchMap(updatedCategory => this._ownerItem.pipe(
+                    take(1),
+                    filter(item => item && item.id === id),
+                    tap(() => {
+                        this._ownerItem.next(updatedCategory);
+                        return updatedCategory;
+                    })
+                ))
+            ))
+        );
+    }
+
 
     create(item: Service): Observable<Service> {
         return this.ownerItems$.pipe(

@@ -7,7 +7,7 @@ import {
     OnInit,
     ViewEncapsulation
 } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Service} from "../service.types";
@@ -17,6 +17,8 @@ import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import {environment} from "../../../../../../environments/environment";
 import {DomSanitizer} from "@angular/platform-browser";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
 
 @Component({
     selector: 'category-details',
@@ -46,6 +48,9 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
         private sanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) public _data: { service: Service, type: string },
         private _service: ServiceService,
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _snackBar: MatSnackBar,
+        private _matDialog: MatDialog,
         private _matDialogRef: MatDialogRef<ServiceDetailsComponent>
     ) {
         this._initForm();
@@ -124,7 +129,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             quantity: value.quantity,
             price: value.currentPrices?.price,
             imageUrls: value.serviceImages.map((image) => image.imageUrl),
-            status: value.status,
+            status: value.status === 'Active',
         });
         this.tempImageUrls = value.serviceImages.map((image) => image.imageUrl);
         console.log(this.tempImageUrls)
@@ -142,6 +147,90 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    openSnackBar(message: string, action: string) {
+        this._snackBar.open(message, action);
+    }
+
+    public changeStatusPartner(event: any): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Xác nhận đổi trạng thái',
+            message: 'Bạn có muốn đổi trạng thái loại dịch vụ này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Xác nhận',
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Đóng'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(event.checked);
+                const ccc = this._service.changeStatusPartner(this.form.get('id').value, event.checked ? 'Active' : 'InActive').subscribe(() => {
+                    this.openSnackBar('Đã đổi trạng thái', 'Đóng');
+                    ccc.unsubscribe();
+                    this._matDialogRef.close();
+                    // Close the details
+                    // this.closeDetails();
+                });
+            } else {
+                this.form.patchValue({
+                    status: !event.checked,
+                });
+            }
+        });
+    }
+
+    public changeStatusOwner(event: any): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Xác nhận đổi trạng thái',
+            message: 'Bạn có muốn đổi trạng thái loại dịch vụ này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Xác nhận',
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Đóng'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(event.checked);
+                const ccc = this._service.changeStatusOwner(this.form.get('id').value, event.checked ? 'Active' : 'InActive').subscribe(() => {
+                    this.openSnackBar('Đã đổi trạng thái', 'Đóng');
+                    ccc.unsubscribe();
+                    this._matDialogRef.close();
+                    // Close the details
+                    // this.closeDetails();
+                });
+            } else {
+                this.form.patchValue({
+                    status: !event.checked,
+                });
+            }
+        });
+    }
 
     create(): void {
         this._service.create(this.form.value).pipe(

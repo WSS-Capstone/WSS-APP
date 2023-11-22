@@ -7,7 +7,7 @@ import {
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { map, Observable, of, Subject } from 'rxjs';
 import { Label } from 'app/modules/admin/apps/notes/notes.types';
 import { Category } from '../category.types';
@@ -17,6 +17,8 @@ import { fuseAnimations } from '../../../../../../@fuse/animations';
 import { FuseAlertService } from '../../../../../../@fuse/components/alert';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from '../../../../../../environments/environment';
+import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
     selector: 'category-details',
@@ -44,6 +46,9 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
         private sanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) private _data: { category: Category },
         private _categoryService: CategoryService,
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _snackBar: MatSnackBar,
+        private _matDialog: MatDialog,
         private _matDialogRef: MatDialogRef<CategoryDetailsComponent>,
     ) {
         this._initForm();
@@ -97,7 +102,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
                 description: '',
                 imageUrl: null,
                 categoryId: null,
-                status: true
+                status: 'Active'
             };
 
             this.cate$ = of(category);
@@ -117,6 +122,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
     }
 
     private _patchValue(value: Category) {
+        console.log('value', value)
         this.form.patchValue({
             id: value.id,
             name: value.name,
@@ -124,7 +130,51 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
             imageUrl: value.imageUrl,
             commissionValue: value?.commission?.commisionValue,
             isOrderLimit: value.isOrderLimit,
-            status: value.status,
+            status: value.status == 'Active',
+        });
+    }
+
+    openSnackBar(message: string, action: string) {
+        this._snackBar.open(message, action);
+    }
+
+    public changeStatus(event: any): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Xác nhận đổi trạng thái',
+            message: 'Bạn có muốn đổi trạng thái loại dịch vụ này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Xác nhận',
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Đóng'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(event.checked);
+                const ccc = this._categoryService.changeStatus(this.form.get('id').value, event.checked ? 'Active' : 'InActive').subscribe(() => {
+                    this.openSnackBar('Đã đổi trạng thái', 'Đóng');
+                    ccc.unsubscribe();
+                    this._matDialogRef.close();
+                    // Close the details
+                    // this.closeDetails();
+                });
+            } else {
+                this.form.patchValue({
+                    status: !event.checked,
+                });
+            }
         });
     }
 

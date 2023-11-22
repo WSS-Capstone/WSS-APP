@@ -23,6 +23,18 @@
                     Chọn ảnh
                 </button>
                 <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
+
+                <div class="status mt-5">
+                    <span class="text-yellow-600">Hoạt động</span>
+                    <mat-slide-toggle
+                        class="ml-2"
+                        [color]="'primary'"
+                        [formControlName]="'status'"
+                        (change)="changeStatus($event)"
+                        #status>
+                    </mat-slide-toggle>
+                </div>
+
             </div>
 
             <div class="flex flex-auto flex-wrap">
