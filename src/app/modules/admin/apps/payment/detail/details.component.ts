@@ -87,15 +87,15 @@ export class PaymentDetailsComponent implements OnInit, OnDestroy {
     }
 
     private _patchValue(value: Payment) {
-        this.form.patchValue({
-            id: value.id,
-            fullname: value.user?.fullname,
-            serviceName: value.service?.name,
-            createDate: formatDate(value.createDate, 'dd/MM/yyyy hh:mm', 'en'),
-            content: value.content,
-            rating: value.rating,
-            status: value.status,
-        });
+        // this.form.patchValue({
+        //     id: value.id,
+        //     fullname: value.user?.fullname,
+        //     serviceName: value.service?.name,
+        //     createDate: formatDate(value.createDate, 'dd/MM/yyyy hh:mm', 'en'),
+        //     content: value.content,
+        //     rating: value.rating,
+        //     status: value.status,
+        // });
     }
 
     /**

@@ -1,17 +1,17 @@
 import {Service} from "../service/service.types";
 import {User} from "../user/user.types";
+import {Order} from "../order/order.types";
 
 export interface Payment {
     id: string;
-    content: string;
     createDate: string;
-    rating: number;
-    orderDetailId: string;
-    userId: string;
-    status: string;
     imageUrl: string;
-    user: User;
-    service: Service;
+    order: Order;
+    orderId: string;
+    partner: User;
+    partnerId: string;
+    status: string;
+    total: number;
 }
 
 export interface PaymentPagination {

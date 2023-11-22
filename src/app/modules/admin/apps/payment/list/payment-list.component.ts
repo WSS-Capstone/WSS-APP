@@ -29,7 +29,7 @@ import {AccountRequest} from "../../user/user.types";
         /* language=SCSS */
         `
             .payment-grid {
-                grid-template-columns: 151px 166px auto 233px 180px 116px 75px;
+                grid-template-columns: 220px 100px auto 160px 130px 160px 180px 75px;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -193,21 +193,21 @@ export class PaymentListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedCategory = null;
     }
 
-    show(id: string): void {
+    pay(id: string): void {
         const confirmation = this._fuseConfirmationService.open({
-            title: 'Hiển thị đánh giá',
-            message: 'Bạn có chắc chắn muốn hiển thị đánh giá này?!',
+            title: 'Xác nhận thanh toán',
+            message: 'Bạn có muốn thanh toán đơn hàng này?!',
             icon:{
                 show: true,
                 color: "primary"
             },
             actions: {
                 confirm: {
-                    label: 'Hiện',
+                    label: 'Xác nhận',
                     color: 'primary'
                 },
                 cancel: {
-                    label: 'Hủy'
+                    label: 'Đóng'
                 }
             }
         });
@@ -218,8 +218,8 @@ export class PaymentListComponent implements OnInit, AfterViewInit, OnDestroy {
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 console.log(result);
-                const ccc = this._service.patch(id, 'Approved').subscribe(() => {
-                    this.openSnackBar('Đã hiện bình luận', 'Đóng');
+                const ccc = this._service.patch(id, 'ACTIVE').subscribe(() => {
+                    this.openSnackBar('Đã thanh toán đơn hàng', 'Đóng');
                     ccc.unsubscribe();
                     // Close the details
                     // this.closeDetails();

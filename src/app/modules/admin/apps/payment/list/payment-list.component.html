@@ -14,19 +14,19 @@
         <!-- Actions -->
         <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
             <!-- Search -->
-            <mat-form-field
-                class="fuse-mat-dense fuse-mat-rounded min-w-64"
-                [subscriptSizing]="'dynamic'">
-                <mat-icon
-                    class="icon-size-5"
-                    matPrefix
-                    [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                <input
-                    matInput
-                    [formControl]="searchInputControl"
-                    [autocomplete]="'off'"
-                    [placeholder]="'Tìm kiếm đánh giá'">
-            </mat-form-field>
+<!--            <mat-form-field-->
+<!--                class="fuse-mat-dense fuse-mat-rounded min-w-64"-->
+<!--                [subscriptSizing]="'dynamic'">-->
+<!--                <mat-icon-->
+<!--                    class="icon-size-5"-->
+<!--                    matPrefix-->
+<!--                    [svgIcon]="'heroicons_solid:search'"></mat-icon>-->
+<!--                <input-->
+<!--                    matInput-->
+<!--                    [formControl]="searchInputControl"-->
+<!--                    [autocomplete]="'off'"-->
+<!--                    [placeholder]="'Tìm kiếm đánh giá'">-->
+<!--            </mat-form-field>-->
         </div>
     </div>
 
@@ -34,7 +34,7 @@
     <div class="flex flex-auto">
 
         <!-- Products list -->
-        <div class="flex flex-col flex-auto sm:mb-18 sm:overflow-y-auto">
+        <div class="flex flex-col flex-auto mb-18 overflow-y-auto">
             <ng-container *ngIf="(items$ | async) as items">
                 <ng-container *ngIf="items.length > 0; else noProducts">
                     <div class="grid">
@@ -45,18 +45,22 @@
                             matSortDisableClear>
                             <div
                                 class="">
-                                Ngày
+                                Mã thanh toán
                             </div>
                             <div
                                 class="">
-                                Khách hàng
+                                Mã đơn hàng
                             </div>
                             <div
                                 class="">
-                                Nội dung
+                                Đơn hàng
                             </div>
-                            <div class="">Tên dịch vụ</div>
-                            <div class="">Đánh giá</div>
+                            <div
+                                class="">
+                                Đối tác
+                            </div>
+                            <div class="">Ngày tạo</div>
+                            <div class="">Tổng giá</div>
                             <div class="">Trạng thái</div>
                             <div class="">Chi tiết</div>
                         </div>
@@ -64,76 +68,66 @@
                         <ng-container *ngIf="(items$ | async) as items1">
                             <ng-container *ngFor="let item of items1; trackBy: trackByFn">
                                 <div class="payment-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                    <div
-                                        class="">
-                                        {{item.createDate | date: "dd/MM/yyyy hh:mm"}}
+                                    <div class="truncate">
+                                        {{item.id}}
                                     </div>
-                                    <div
-                                        class="">
-                                        {{item.user?.fullname}}
+                                    <div class="truncate">
+                                        {{item.order?.code}}
+                                    </div>
+                                    <div class="truncate">
+                                        Đơn hàng của {{item.order?.fullname}}
+                                    </div>
+                                    <div class="truncate">
+                                        {{item.partner?.fullname}}
                                     </div>
                                     <div
                                         class="truncate">
-                                        {{item.content}}
+                                        {{item.createDate | date: "dd/MM/yyyy"}}
                                     </div>
-                                    <div class="">{{item.service?.name}}</div>
-                                    <div class="flex flex-row">
-                                        <span *ngFor="let n of numSequence(MAX_RATING - item.rating)">
-                                            <mat-icon
-                                                class="icon-size-5 text-[#E8E8E8]"
-                                                matPrefix
-                                                [svgIcon]="'heroicons_solid:star'">
-                                            </mat-icon>
-                                        </span>
-                                        <span *ngFor="let n of numSequence(item.rating)">
-                                            <mat-icon
-                                                class="icon-size-5 text-[#FABF35]"
-                                                matPrefix
-                                                [svgIcon]="'heroicons_solid:star'">
-                                            </mat-icon>
-                                        </span>
+                                    <div
+                                        class="truncate">
+                                        {{item.total | number: '1.0-0'}} VNĐ
                                     </div>
-
                                     <div class="flex flex-row truncate">
-                                        <ng-container *ngIf="item.status === 'Approved'">
+                                        <ng-container *ngIf="item.status === 'ACTIVE'">
                                             <mat-icon
                                                 class="text-green-400 icon-size-5"
                                                 [svgIcon]="'heroicons_solid:check'">
                                             </mat-icon>
-                                            <span class="text-green-400">Hiện</span>
+                                            <span class="text-green-400">Đã thanh toán</span>
                                         </ng-container>
-                                        <ng-container *ngIf="item.status !== 'Approved'">
+                                        <ng-container *ngIf="item.status !== 'ACTIVE'">
                                             <mat-icon
                                                 class="text-gray-400 icon-size-5"
                                                 [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                            <span class="text-gray-400">Đã ẩn</span>
+                                            <span class="text-gray-400">Chưa thanh toán</span>
                                         </ng-container>
                                     </div>
 
-                                    <!-- Details button -->
+<!--                                    &lt;!&ndash; Details button &ndash;&gt;-->
                                     <div class="flex flex-row">
-                                        <button
-                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                           mat-stroked-button
-                                           (click)="update(item.id)">
-                                            <mat-icon
-                                                class="icon-size-5"
-                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                        </button>
-                                        <button *ngIf="item.status !== 'Rejected'"
+<!--                                        <button-->
+<!--                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"-->
+<!--                                           mat-stroked-button-->
+<!--                                           (click)="update(item.id)">-->
+<!--                                            <mat-icon-->
+<!--                                                class="icon-size-5"-->
+<!--                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>-->
+<!--                                        </button>-->
+<!--                                        <button *ngIf="item.status !== 'Rejected'"-->
+<!--                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"-->
+<!--                                                mat-stroked-button-->
+<!--                                                [color]="'warn'"-->
+<!--                                                (click)="hide(item.id)">-->
+<!--                                            <mat-icon class="icon-size-5"-->
+<!--                                                      [svgIcon]="'mat_solid:visibility_off'"></mat-icon>-->
+<!--                                        </button>-->
+                                        <button *ngIf="item.status === 'INACTIVE'"
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
-                                                [color]="'warn'"
-                                                (click)="hide(item.id)">
+                                                (click)="pay(item.id)">
                                             <mat-icon class="icon-size-5"
-                                                      [svgIcon]="'mat_solid:visibility_off'"></mat-icon>
-                                        </button>
-                                        <button *ngIf="item.status === 'Rejected'"
-                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                mat-stroked-button
-                                                (click)="show(item.id)">
-                                            <mat-icon class="icon-size-5 text-green-600"
-                                                      [svgIcon]="'mat_solid:visibility'"></mat-icon>
+                                                      [svgIcon]="'mat_solid:attach_money'"></mat-icon>
                                         </button>
 
 

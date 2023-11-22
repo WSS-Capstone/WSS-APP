@@ -64,14 +64,14 @@ export class PaymentService {
     }
 
 
-    getItems(page: number = 0, size: number = 10, sort: string = 'Name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+    getItems(page: number = 0, size: number = 10, sort: string = 'Status', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<PaymentResponse> {
-        return this._httpClient.get<PaymentResponse>(ENDPOINTS.feedback, {
+        return this._httpClient.get<PaymentResponse>(ENDPOINTS.payment + '/partner', {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
-                'sort-key': 'CreateDate',
-                'sort-order': 'DESC',
+                'sort-key': sort,
+                'sort-order': order,
                 name: search
             }
         }).pipe(
@@ -160,12 +160,12 @@ export class PaymentService {
     patch(id: string, status: string): Observable<Payment> {
         return this.items$.pipe(
             take(1),
-            switchMap(itemsArr => this._httpClient.patch<Payment>(ENDPOINTS.feedback + `/${id}?status=${status}`, {}).pipe(
+            switchMap(itemsArr => this._httpClient.patch<Payment>(ENDPOINTS.payment + `/partner/${id}/status?status=${status}`, {}).pipe(
                 map((updatedItem) => {
                     const index = itemsArr.findIndex(item => item.id === id);
-                    itemsArr[index] = updatedItem;
+                    itemsArr[index].status = status;
                     this._items.next(itemsArr);
-                    return updatedItem;
+                    return itemsArr[index];
                 }),
                 switchMap(updatedItem => this.item$.pipe(
                     take(1),
