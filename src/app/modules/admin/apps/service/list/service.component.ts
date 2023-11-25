@@ -32,7 +32,7 @@ import {Account} from "../../user/user.types";
         /* language=SCSS */
         `
             .service-grid {
-                grid-template-columns:  80px auto 218px 134px 80px 145px 80px;
+                grid-template-columns:  6% auto 13% 4% 9% 9% 5%;
 
                 @screen sm {
                     grid-template-columns:  80px auto 80px;
@@ -43,7 +43,7 @@ import {Account} from "../../user/user.types";
                 }
 
                 @screen lg {
-                    grid-template-columns:  80px auto 218px 134px 80px 145px 80px;
+                    grid-template-columns:  6% auto 13% 4% 9% 9% 5%;
                 }
             }
 

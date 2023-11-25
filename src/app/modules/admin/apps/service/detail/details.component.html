@@ -67,7 +67,7 @@
                 </div>
                 <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
 
-                <div class="status mt-5">
+                <div class="flex justify-end w-full status mt-5" *ngIf="cate.id">
                     <span class="text-yellow-600">Hoạt động</span>
                     <mat-slide-toggle
                         class="ml-2"
@@ -131,7 +131,7 @@
                             [rows]="5"
                             [formControlName]="'description'"></textarea>
                         <mat-error *ngIf="form.get('description').hasError('maxlength')">
-                            Mô tả không được quá 300 ký tự
+                            Mô tả không được quá 1000 ký tự
                         </mat-error>
                     </mat-form-field>
                 </div>

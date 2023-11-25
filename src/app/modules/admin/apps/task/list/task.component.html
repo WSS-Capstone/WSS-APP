@@ -86,19 +86,19 @@
                                         {{item.partner?.fullname}}
                                     </div>
                                     <div class="truncate">
-                                        {{item.orderDetails[0]?.service?.name}}
+                                        {{item.orderDetail?.service?.name}}
                                     </div>
 
                                     <div class="truncate">
-                                        {{'Đơn hàng của ' + item.orderDetails[0]?.order?.fullname}}
+                                        {{'Đơn hàng của ' + item.orderDetail?.order?.fullname}}
                                     </div>
 
                                     <div class="truncate">
-                                        {{item.orderDetails[0]?.startTime | date: 'dd/MM/yyyy'}}
+                                        {{item.orderDetail?.startTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="truncate">
-                                        {{item.orderDetails[0]?.endTime | date: 'dd/MM/yyyy'}}
+                                        {{item.orderDetail?.endTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="flex flex-row truncate">
@@ -238,19 +238,19 @@
                                         {{item.staff?.fullname}}
                                     </div>
                                     <div class="truncate">
-                                        {{item.service?.name}}
+                                        {{item.orderDetail?.service.name}}
                                     </div>
 
                                     <div class="truncate">
-                                        {{'Đơn hàng của ' + item.order?.fullname}}
+                                        {{'Đơn hàng của ' + item.orderDetail?.order?.customer?.fullname}}
                                     </div>
 
                                     <div class="truncate">
-                                        {{item.orderDetails[0]?.startTime | date: 'dd/MM/yyyy'}}
+                                        {{item.orderDetail?.startTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="truncate">
-                                        {{item.orderDetails[0]?.endTime | date: 'dd/MM/yyyy'}}
+                                        {{item.orderDetail?.endTime | date: 'dd/MM/yyyy'}}
                                     </div>
 
                                     <div class="flex flex-row truncate">
