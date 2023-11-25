@@ -56,6 +56,24 @@
                     </mat-form-field>
                 </div>
 
+                <div class="flex" *ngIf="_data.currentRole === 'Partner' || _data.currentRole === 'Staff'">
+                    <mat-form-field class="w-full">
+                        <mat-label>Loại dịch vụ</mat-label>
+                        <mat-select [formControlName]="'categoryId'">
+                            <ng-container *ngIf="categories$ | async as cateParent">
+                                <ng-container *ngFor="let category of cateParent">
+                                    <mat-option [value]="category.id">
+                                        {{category.name}}
+                                    </mat-option>
+                                </ng-container>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('categoryId').hasError('required')">
+                            Loại dịch vụ không được bỏ trống
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
                 <div class="flex">
                     <mat-form-field class="w-full pr-2">
                         <mat-label>Số điện thoại</mat-label>

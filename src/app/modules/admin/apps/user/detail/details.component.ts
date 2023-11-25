@@ -81,6 +81,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
                 break;
         }
 
+
+        this.categories$ = this._service.categories$;
         this.item$.subscribe((value) => {
             this._patchValue(value);
         });
@@ -93,6 +95,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             fullname: [null],
             gender: [null],
             dateOfBirth: [null],
+            categoryId: [null, [Validators.required]],
             phone: [null],
             address: [null],
             email: [null],
@@ -102,6 +105,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     private _patchValue(value: Account) {
+        console.log("s", value.user.categoryId);
         this.form.patchValue({
             id: value.id,
             imageUrl: value.user?.imageUrl,
@@ -109,6 +113,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             gender: value.user ? value.user?.gender === 'Male' ? 'Nam': 'Nữ' : '',
             dateOfBirth: value.user?.dateOfBirth ? formatDate(value.user?.dateOfBirth, "dd/MM/yyyy", "en") : '',
             phone: value.user?.phone,
+            categoryId: value.user?.categoryId,
             address: value.user?.address,
             email: value.username,
             status: value.status,

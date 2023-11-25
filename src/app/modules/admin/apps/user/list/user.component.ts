@@ -449,7 +449,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
             },
             actions: {
                 confirm: {
-                    label: 'Khóa'
+                    label: 'Khóa',
                 },
                 cancel: {
                     label: 'Hủy'
@@ -459,9 +459,8 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed().subscribe((result) => {
-
             // If the confirm button pressed...
-            // if (result === 'confirmed') {
+            if (result !== 'cancelled') {
                 console.log(result);
                 // Delete the product on the server
                 // this._service.delete(id).subscribe(() => {
@@ -479,7 +478,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                     // Close the details
                     this.closeDetails();
                 });
-            // }
+            }
         });
     }
 
