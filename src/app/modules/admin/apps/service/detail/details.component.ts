@@ -98,7 +98,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
                 serviceImages: null,
                 categoryId: null,
                 isOwnerService: true,
-                status: ''
+                status: 'Active'
             };
 
             this.item$ = of(item);
@@ -110,12 +110,12 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             id: [null],
             name: [null, [Validators.required, Validators.maxLength(80)]],
             categoryId: [null],
-            description: [null, Validators.maxLength(300)],
+            description: [null, Validators.maxLength(1000)],
             ownerId: [null],
             quantity: [null, Validators.required],
             price: [null, Validators.required],
             imageUrls: [[]],
-            status: [null],
+            status: [true],
         });
     }
 
