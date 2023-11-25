@@ -118,16 +118,16 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.form.patchValue({
             id: value.id,
             code: value.code,
-            startTime: new Date(value.orderDetails[0]?.startTime),
-            endTime: new Date(value.orderDetails[0]?.endTime),
+            startTime: new Date(value.orderDetail?.startTime),
+            endTime: new Date(value.orderDetail?.endTime),
             taskName: value.taskName,
             status: value.status,
             staffId: value.staff?.id,
             staffName: value.staff?.fullname,
             partnerId: value.partner?.id,
             partnerName: value.partner?.fullname,
-            orderName: 'Đơn hàng của ' + value.orderDetails[0]?.order?.fullname,
-            serviceName: value.orderDetails[0]?.service?.name,
+            orderName: 'Đơn hàng của ' + value.orderDetail?.order?.fullname,
+            serviceName: value.orderDetail?.service?.name,
         });
 
         this.comments = value.comments.sort((a:Comment, b:Comment) => {return a.createDate > b.createDate ? 1 : -1});

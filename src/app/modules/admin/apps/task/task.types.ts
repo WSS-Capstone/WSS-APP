@@ -14,7 +14,7 @@ export interface Task {
     staff?: User;
     service?: Service;
     order?: Order;
-    orderDetails?: OrderDetail[];
+    orderDetail?: OrderDetail;
     createBy?: User;
 }
 
