@@ -1,5 +1,6 @@
 export interface Account {
     id: string;
+    code: string;
     username: string;
     roleName: string;
     status: string;

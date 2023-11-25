@@ -23,6 +23,7 @@ import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/materia
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {ChangePasswordComponent} from "./change-password/change-password.component";
 import {CreateAccountComponent} from "./create-account/create-account.component";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
     declarations: [
@@ -52,6 +53,7 @@ import {CreateAccountComponent} from "./create-account/create-account.component"
         SharedModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatTabsModule,
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
