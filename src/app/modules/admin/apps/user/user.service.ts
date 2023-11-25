@@ -141,8 +141,8 @@ export class UserService {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
-                'sort-key': 'MinAmount',
-                'sort-order': 'DESC',
+                'sort-key': sort,
+                'sort-order': order,
                 name: search
             }
         }).pipe(

@@ -33,7 +33,7 @@ export class CreateAccountComponent implements OnInit, OnDestroy
     categories$: Observable<Category[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     imgDataOrLink: any;
-    roles = ['Admin', 'Owner', 'Staff', 'Partner', 'Customer']
+    roles = ['Owner', 'Staff', 'Partner', 'Customer']
     form: FormGroup;
     tempImageUrls: string;
 
