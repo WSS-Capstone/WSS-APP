@@ -187,6 +187,13 @@
 
                             <div class="flex flex-row truncate">
                                 <div class="font-medium mr-4">Trạng thái</div>
+                                <mat-slide-toggle
+                                    class="ml-2"
+                                    [color]="'primary'"
+                                    [formControlName]="'status'"
+                                    (change)="_data.type === 'owner' || !cate.id ? changeStatusOwner($event) : changeStatusPartner($event)"
+                                    #status>
+                                </mat-slide-toggle>
                                 <ng-container
                                     *ngIf="item.status === 'Active'"
                                     class="flex flex-col justify-center content-center"
