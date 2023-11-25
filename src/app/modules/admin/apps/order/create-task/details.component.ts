@@ -139,7 +139,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
             this._matDialogRef.close();
-        }, 3100);
+        }, 1100);
     }
 
     // update(): void {
