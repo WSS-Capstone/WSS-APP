@@ -41,7 +41,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
-        @Inject(MAT_DIALOG_DATA) private _data: { data: Account, currentRole: string },
+        @Inject(MAT_DIALOG_DATA) private _data: { data: Account },
         private _service: UserService,
         private _matDialogRef: MatDialogRef<ChangePasswordComponent>
     ) {
@@ -59,28 +59,10 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
         // Edit
         console.log("Edit");
         // Request the data from the server
-        switch (this._data.currentRole) {
-            case 'Owner':
-                this._service.getOwnerItem(this._data.data.id).subscribe();
-                // Get the note
-                this.item$ = this._service.ownerItem$;
-                break;
-            case 'Partner':
-                this._service.getPartnerItem(this._data.data.id).subscribe();
-                // Get the note
-                this.item$ = this._service.partnerItem$;
-                break;
-            case 'Staff':
-                this._service.getStaffItem(this._data.data.id).subscribe();
-                // Get the note
-                this.item$ = this._service.staffItem$;
-                break;
-            case 'Customer':
-                this._service.getCustomerItem(this._data.data.id).subscribe();
-                // Get the note
-                this.item$ = this._service.customerItem$;
-                break;
-        }
+        this._service.getItem(this._data.data.id).subscribe();
+
+        // Get the note
+        this.item$ = this._service.item$;
 
         this.item$.subscribe((value) => {
             this._patchValue(value);
@@ -146,7 +128,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
             email: this.form.get('email').value,
             password: this.form.get('password').value,
         }
-        this._service.update(this.form.get('id').value, requestBody, this._data.currentRole).pipe(
+        this._service.update(this.form.get('id').value, requestBody).pipe(
             map(() => {
                 // Get the note
                 // this.cate$ = this._categoryService.category$;

@@ -1,12 +1,7 @@
 import {Route} from '@angular/router';
 import {UserComponent} from "./user.component";
 import {UserListComponent} from "./list/user.component";
-import {
-    CategoriesResolver, CustomerUsersResolver,
-    OwnerUsersResolver,
-    PartnerUsersResolver,
-    StaffUsersResolver,
-} from "./user.resolvers";
+import {CategoriesResolver, UsersResolver} from "./user.resolvers";
 import {User} from "./user.types";
 
 export const itemRoutes: Route[] = [
@@ -24,10 +19,7 @@ export const itemRoutes: Route[] = [
                 component: UserListComponent,
                 resolve  : {
                     // category    : CategoriesServiceResolver,
-                    ownerItems: OwnerUsersResolver,
-                    partnerItems: PartnerUsersResolver,
-                    staffItems: StaffUsersResolver,
-                    customerItems: CustomerUsersResolver,
+                    items: UsersResolver,
                     category  : CategoriesResolver,
                 }
             }

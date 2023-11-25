@@ -22,7 +22,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {Category} from "../../category/category.types";
 import {ChangePasswordComponent} from "../change-password/change-password.component";
 import {CreateAccountComponent} from "../create-account/create-account.component";
-import {MatTabChangeEvent} from "@angular/material/tabs";
 
 @Component({
     selector: 'user-list',
@@ -52,31 +51,21 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
     animations: fuseAnimations
 })
 export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild('ownerItems') private _ownerPaginator: MatPaginator;
-    @ViewChild('partnerItems') private _partnerPaginator: MatPaginator;
-    @ViewChild('staffItems') private _staffPaginator: MatPaginator;
-    @ViewChild('customerItems') private _customerPaginator: MatPaginator;
+    @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
-    ownerItems$: Observable<Account[]>;
-    partnerItems$: Observable<Account[]>;
-    staffItems$: Observable<Account[]>;
-    customerItems$: Observable<Account[]>;
+    items$: Observable<Account[]>;
     categories$: Observable<Category[]>;
 
     parentCategories$: Observable<Account[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
-    ownerPagination: AccountPagination;
-    partnerPagination: AccountPagination;
-    staffPagination: AccountPagination;
-    customerPagination: AccountPagination;
+    pagination: AccountPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedAccount: Account | null = null;
     selectedAccountForm: UntypedFormGroup;
     isNew: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-    selectedTab = 0;
 
     /**
      * Constructor
@@ -111,39 +100,19 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         // Get the pagination
-        this._service.ownerPagination$
+        this._service.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: AccountPagination) => {
-                this.ownerPagination = pagination;
-                this._changeDetectorRef.markForCheck();
-            });
 
-        this._service.partnerPagination$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((pagination: AccountPagination) => {
-                this.partnerPagination = pagination;
-                this._changeDetectorRef.markForCheck();
-            });
+                // Update the pagination
+                this.pagination = pagination;
 
-        this._service.staffPagination$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((pagination: AccountPagination) => {
-                this.staffPagination = pagination;
-                this._changeDetectorRef.markForCheck();
-            });
-
-        this._service.customerPagination$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((pagination: AccountPagination) => {
-                this.customerPagination = pagination;
+                // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
         // Get the products
-        this.ownerItems$ = this._service.ownerItems$;
-        this.partnerItems$ = this._service.partnerItems$;
-        this.staffItems$ = this._service.staffItems$;
-        this.customerItems$ = this._service.customerItems$;
+        this.items$ = this._service.items$;
         this.categories$ = this._service.categories$;
 
         // Subscribe to search input field value changes
@@ -154,16 +123,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                 switchMap((query) => {
                     this.closeDetails();
                     this.isLoading = true;
-                    switch (this.selectedTab) {
-                        case 0:
-                            return this._service.getOwnerItems(0, 10, 'status', 'asc', query);
-                        case 1:
-                            return this._service.getPartnerItems(0, 10, 'status', 'asc', query);
-                        case 2:
-                            return this._service.getStaffItems(0, 10, 'status', 'asc', query);
-                        case 3:
-                            return this._service.getCustomerItems(0, 10, 'status', 'asc', query);
-                    }
+                    return this._service.getItems(0, 10, 'name', 'asc', query);
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -176,10 +136,10 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
      * After view init
      */
     ngAfterViewInit(): void {
-        if (this._sort && this._ownerPaginator) {
+        if (this._sort && this._paginator) {
             // Set the initial sort
             this._sort.sort({
-                id: 'status',
+                id: 'name',
                 start: 'asc',
                 disableClear: true
             });
@@ -192,123 +152,18 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                 .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(() => {
                     // Reset back to the first page
-                    this._ownerPaginator.pageIndex = 0;
+                    this._paginator.pageIndex = 1;
 
                     // Close the details
                     this.closeDetails();
                 });
 
             // Get products if sort or page changes
-            merge(this._sort.sortChange, this._ownerPaginator.page).pipe(
+            merge(this._sort.sortChange, this._paginator.page).pipe(
                 switchMap(() => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getOwnerItems(this._ownerPaginator.pageIndex, this._ownerPaginator.pageSize, this._sort.active, this._sort.direction);
-                }),
-                map(() => {
-                    this.isLoading = false;
-                })
-            ).subscribe();
-        }
-
-        if (this._sort && this._partnerPaginator) {
-            // Set the initial sort
-            this._sort.sort({
-                id: 'status',
-                start: 'asc',
-                disableClear: true
-            });
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-
-            // If the user changes the sort order...
-            this._sort.sortChange
-                .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(() => {
-                    // Reset back to the first page
-                    this._partnerPaginator.pageIndex = 0;
-
-                    // Close the details
-                    this.closeDetails();
-                });
-
-            // Get products if sort or page changes
-            merge(this._sort.sortChange, this._partnerPaginator.page).pipe(
-                switchMap(() => {
-                    this.closeDetails();
-                    this.isLoading = true;
-                    return this._service.getPartnerItems(this._partnerPaginator.pageIndex, this._partnerPaginator.pageSize, this._sort.active, this._sort.direction);
-                }),
-                map(() => {
-                    this.isLoading = false;
-                })
-            ).subscribe();
-        }
-
-        if (this._sort && this._staffPaginator) {
-            // Set the initial sort
-            this._sort.sort({
-                id: 'status',
-                start: 'asc',
-                disableClear: true
-            });
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-
-            // If the user changes the sort order...
-            this._sort.sortChange
-                .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(() => {
-                    // Reset back to the first page
-                    this._staffPaginator.pageIndex = 0;
-
-                    // Close the details
-                    this.closeDetails();
-                });
-
-            // Get products if sort or page changes
-            merge(this._sort.sortChange, this._staffPaginator.page).pipe(
-                switchMap(() => {
-                    this.closeDetails();
-                    this.isLoading = true;
-                    return this._service.getStaffItems(this._staffPaginator.pageIndex, this._staffPaginator.pageSize, this._sort.active, this._sort.direction);
-                }),
-                map(() => {
-                    this.isLoading = false;
-                })
-            ).subscribe();
-        }
-
-        if (this._sort && this._customerPaginator) {
-            // Set the initial sort
-            this._sort.sort({
-                id: 'status',
-                start: 'asc',
-                disableClear: true
-            });
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-
-            // If the user changes the sort order...
-            this._sort.sortChange
-                .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(() => {
-                    // Reset back to the first page
-                    this._customerPaginator.pageIndex = 0;
-
-                    // Close the details
-                    this.closeDetails();
-                });
-
-            // Get products if sort or page changes
-            merge(this._sort.sortChange, this._customerPaginator.page).pipe(
-                switchMap(() => {
-                    this.closeDetails();
-                    this.isLoading = true;
-                    return this._service.getCustomerItems(this._customerPaginator.pageIndex, this._customerPaginator.pageSize, this._sort.active, this._sort.direction);
+                    return this._service.getItems(this._paginator.pageIndex, this._paginator.pageSize, this._sort.active, this._sort.direction);
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -326,37 +181,33 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    // toggleDetails(productId: string): void {
-    //     // If the product is already selected...
-    //     if (this.selectedAccount && this.selectedAccount.id === productId) {
-    //         // Close the details
-    //         this.closeDetails();
-    //         return;
-    //     }
-    //
-    //     // Get the product by id
-    //     this._service.getItem(productId)
-    //         .subscribe((item) => {
-    //
-    //             // Set the selected item
-    //             this.selectedAccount = item;
-    //
-    //             // Fill the form
-    //             this.selectedAccountForm.patchValue(item);
-    //             // Mark for check
-    //             this._changeDetectorRef.markForCheck();
-    //         });
-    // }
+    toggleDetails(productId: string): void {
+        // If the product is already selected...
+        if (this.selectedAccount && this.selectedAccount.id === productId) {
+            // Close the details
+            this.closeDetails();
+            return;
+        }
+
+        // Get the product by id
+        this._service.getItem(productId)
+            .subscribe((item) => {
+
+                // Set the selected item
+                this.selectedAccount = item;
+
+                // Fill the form
+                this.selectedAccountForm.patchValue(item);
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+    }
 
     /**
      * Close the details
      */
     closeDetails(): void {
         this.selectedAccount = null;
-    }
-
-    onTabChange(event: MatTabChangeEvent) {
-        this.selectedTab = event.index
     }
 
     createItem(): void {
@@ -369,76 +220,24 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
     }
 
-    update(id: string, currentRole: string): void {
-        switch (currentRole) {
-            case 'Owner':
-                this._service.getOwnerItem(id)
-                    .subscribe((item) => {
-                        this.selectedAccount = item;
-                        this._matDialog.open(UserDetailsComponent, {
-                            autoFocus: false,
-                            data: {
-                                data: this.selectedAccount,
-                                currentRole: currentRole
-                            },
-                            width: '50vw',
-                        });
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
-                break;
-            case 'Partner':
-                this._service.getPartnerItem(id)
-                    .subscribe((item) => {
-                        this.selectedAccount = item;
-                        this._matDialog.open(UserDetailsComponent, {
-                            autoFocus: false,
-                            data: {
-                                data: this.selectedAccount,
-                                currentRole: currentRole
-                            },
-                            width: '50vw',
-                        });
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
-                break;
-            case 'Staff':
-                this._service.getStaffItem(id)
-                    .subscribe((item) => {
-                        this.selectedAccount = item;
-                        this._matDialog.open(UserDetailsComponent, {
-                            autoFocus: false,
-                            data: {
-                                data: this.selectedAccount,
-                                currentRole: currentRole
-                            },
-                            width: '50vw',
-                        });
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
-                break;
-            case 'Customer':
-                this._service.getCustomerItem(id)
-                    .subscribe((item) => {
-                        this.selectedAccount = item;
-                        this._matDialog.open(UserDetailsComponent, {
-                            autoFocus: false,
-                            data: {
-                                data: this.selectedAccount,
-                                currentRole: currentRole
-                            },
-                            width: '50vw',
-                        });
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
-                break;
-        }
+    update(id: string): void {
+        this._service.getItem(id)
+            .subscribe((item) => {
+                this.selectedAccount = item;
+
+                this._matDialog.open(UserDetailsComponent, {
+                    autoFocus: false,
+                    data: {
+                        data: this.selectedAccount
+                    },
+                    width: '50vw',
+                });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
     }
 
-    block(id: string, email: string, currentRole: string): void {
+    block(id: string, email: string): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             title: 'Khóa tài khoản',
@@ -474,7 +273,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                     reason: result,
                     status: "InActive"
                 };
-                this._service.update(id, requestBody, currentRole).subscribe(() => {
+                this._service.update(id, requestBody).subscribe(() => {
                     this.openSnackBar('Khóa thành công', 'Đóng');
                     // Close the details
                     this.closeDetails();
@@ -483,7 +282,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    unblock(id: string, email: string, currentRole: string): void {
+    unblock(id: string, email: string): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             title: 'Mở khóa tài khoản',
@@ -513,7 +312,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                     email: email,
                     status: "Active"
                 };
-                this._service.update(id, requestBody, currentRole).subscribe(() => {
+                this._service.update(id, requestBody).subscribe(() => {
                     this.openSnackBar('Mở khóa thành công', 'Đóng');
                     // Close the details
                     this.closeDetails();
@@ -522,77 +321,21 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    changePassword(id: string, currentRole: string){
-        switch (currentRole) {
-            case 'Owner':
-                this._service.getOwnerItem(id)
-                    .subscribe((item) => {
-                        this.selectedAccount = item;
+    changePassword(id: string){
+        this._service.getItem(id)
+            .subscribe((item) => {
+                this.selectedAccount = item;
 
-                        this._matDialog.open(ChangePasswordComponent, {
-                            autoFocus: false,
-                            data: {
-                                data: this.selectedAccount,
-                                currentRole: currentRole
-                            },
-                            width: '20vw',
-                        });
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
-                break;
-            case 'Partner':
-                this._service.getPartnerItem(id)
-                    .subscribe((item) => {
-                        this.selectedAccount = item;
-
-                        this._matDialog.open(ChangePasswordComponent, {
-                            autoFocus: false,
-                            data: {
-                                data: this.selectedAccount,
-                                currentRole: currentRole
-                            },
-                            width: '20vw',
-                        });
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
-                break;
-            case 'Staff':
-                this._service.getStaffItem(id)
-                    .subscribe((item) => {
-                        this.selectedAccount = item;
-
-                        this._matDialog.open(ChangePasswordComponent, {
-                            autoFocus: false,
-                            data: {
-                                data: this.selectedAccount,
-                                currentRole: currentRole
-                            },
-                            width: '20vw',
-                        });
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
-                break;
-            case 'Customer':
-                this._service.getCustomerItem(id)
-                    .subscribe((item) => {
-                        this.selectedAccount = item;
-
-                        this._matDialog.open(ChangePasswordComponent, {
-                            autoFocus: false,
-                            data: {
-                                data: this.selectedAccount,
-                                currentRole: currentRole
-                            },
-                            width: '20vw',
-                        });
-                        // Mark for check
-                        this._changeDetectorRef.markForCheck();
-                    });
-                break;
-        }
+                this._matDialog.open(ChangePasswordComponent, {
+                    autoFocus: false,
+                    data: {
+                        data: this.selectedAccount
+                    },
+                    width: '20vw',
+                });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
     }
 
     /**

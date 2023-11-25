@@ -39,490 +39,128 @@
         </div>
     </div>
 
-    <div class="flex flex-auto overflow-auto">
-        <div class="flex flex-col flex-auto mb-0 overflow-auto">
-            <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" (selectedTabChange)="onTabChange($event)">
-                <mat-tab label="Người sở hữu">
-                    <div class="flex flex-auto">
-                        <div class="flex flex-col flex-auto mb-10 overflow-auto" style="height: 66vh">
-                            <ng-container *ngIf="(ownerItems$ | async) as items">
-                                <ng-container *ngIf="items.length > 0; else noProducts">
-                                    <div class="grid">
-                                        <!-- Header -->
-                                        <div
-                                            class="user-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
-                                            matSort
-                                            matSortDisableClear>
-                                            <div
-                                                class="">
-                                                ID
-                                            </div>
-                                            <div
-                                                class="">
-                                                Tên đầy đủ
-                                            </div>
-                                            <div
-                                                class="">
-                                                Số điện thoại
-                                            </div>
-                                            <div
-                                                class="">
-                                                Giới tính
-                                            </div>
-                                            <div class="">Trạng thái</div>
-                                            <div class="">Chi tiết</div>
-                                        </div>
+    <!-- Main -->
+    <div class="flex flex-auto">
 
-                                        <ng-container *ngIf="(ownerItems$ | async) as items1">
-                                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                                <div class="user-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                                    <div class="truncate">
-                                                        {{item.code}}
-                                                    </div>
-                                                    <div class="hidden md:block truncate">
-                                                        {{item.user?.fullname}}
-                                                    </div>
-                                                    <div class="hidden md:block truncate">
-                                                        {{item.user?.phone}}
-                                                    </div>
-                                                    <div class="hidden lg:block truncate">
-                                                        {{item.user ? item.user?.gender === 'Male' ? 'Nam' : 'Nữ' : ''}}
-                                                    </div>
+        <!-- Products list -->
+        <div class="flex flex-col flex-auto sm:mb-18 sm:overflow-y-auto">
+            <ng-container *ngIf="(items$ | async) as items">
+                <ng-container *ngIf="items.length > 0; else noProducts">
+                    <div class="grid">
+                        <!-- Header -->
+                        <div
+                            class="user-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+                            <div
+                                class="">
+                                ID
+                            </div>
+                            <div
+                                class="">
+                                Tên đầy đủ
+                            </div>
+                            <div
+                                class="">
+                                Số điện thoại
+                            </div>
+                            <div
+                                class="">
+                                Giới tính
+                            </div>
+                            <div class="">Trạng thái</div>
+                            <div class="">Chi tiết</div>
+                        </div>
 
-                                                    <div class="flex flex-row truncate">
-                                                        <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
-                                                            <mat-icon
-                                                                class="text-green-400 icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:check'">
-                                                            </mat-icon>
-                                                            <span class="text-green-400">Đang hoạt động</span>
-                                                        </ng-container>
-                                                        <ng-container *ngIf="item.status !== 'Active'">
-                                                            <mat-icon
-                                                                class="text-gray-400 icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                                            <span class="text-gray-400">Đã khóa</span>
-                                                        </ng-container>
-                                                    </div>
+                        <ng-container *ngIf="(items$ | async) as items1">
+                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
+                                <div class="user-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                    <div class="truncate">
+                                        {{item.code}}
+                                    </div>
+                                    <div class="hidden md:block truncate">
+                                        {{item.user?.fullname}}
+                                    </div>
+                                    <div class="hidden md:block truncate">
+                                        {{item.user?.phone}}
+                                    </div>
+                                    <div class="hidden lg:block truncate">
+                                        {{item.user ? item.user?.gender === 'Male' ? 'Nam' : 'Nữ' : ''}}
+                                    </div>
 
-                                                    <!-- Details button -->
-                                                    <div class="flex flex-row">
-                                                        <button
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                            mat-stroked-button
-                                                            (click)="update(item.id, 'Owner')">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                                        </button>
-                                                        <button *ngIf="item.status === 'Active'"
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                            mat-stroked-button
-                                                            [color]="'warn'"
-                                                            (click)="block(item.id, item.username, 'Owner')">
-                                                            <mat-icon class="icon-size-5"
-                                                                      [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
-                                                        </button>
-                                                        <button *ngIf="item.status !== 'Active'"
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                            mat-stroked-button
-                                                            (click)="unblock(item.id, item.username, 'Owner')">
-                                                            <mat-icon class="icon-size-5 text-green-600"
-                                                                      [svgIcon]="'heroicons_solid:lock-open'"></mat-icon>
-                                                        </button>
-                                                        <button
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
-                                                            mat-stroked-button
-                                                            (click)="changePassword(item.id, 'Owner')">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_outline:key'"></mat-icon>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </ng-container>
+                                    <div class="flex flex-row truncate">
+                                        <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
+                                            <mat-icon
+                                                class="text-green-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:check'">
+                                            </mat-icon>
+                                            <span class="text-green-400">Đang hoạt động</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="item.status !== 'Active'">
+                                            <mat-icon
+                                                class="text-gray-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                            <span class="text-gray-400">Đã khóa</span>
                                         </ng-container>
                                     </div>
 
-                                    <mat-paginator
-                                        #ownerItems
-                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-                                        [ngClass]="{'pointer-events-none': isLoading}"
-                                        [length]="ownerPagination.length"
-                                        [pageIndex]="ownerPagination.page"
-                                        [pageSize]="ownerPagination.size"
-                                        [pageSizeOptions]="[5, 10, 25, 100]"
-                                        [showFirstLastButtons]="true"></mat-paginator>
-                                </ng-container>
-                            </ng-container>
-                            <ng-template #noProducts>
-                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có tài khoản nào!
-                                </div>
-                            </ng-template>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab label="Đối tác">
-                    <div class="flex flex-auto">
-                        <div class="flex flex-col flex-auto mb-10 overflow-auto" style="height: 66vh">
-                            <ng-container *ngIf="(partnerItems$ | async) as items">
-                                <ng-container *ngIf="items.length > 0; else noProducts">
-                                    <div class="grid">
-                                        <!-- Header -->
-                                        <div
-                                            class="user-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
-                                            matSort
-                                            matSortDisableClear>
-                                            <div
-                                                class="">
-                                                ID
-                                            </div>
-                                            <div
-                                                class="">
-                                                Tên đầy đủ
-                                            </div>
-                                            <div
-                                                class="">
-                                                Số điện thoại
-                                            </div>
-                                            <div
-                                                class="">
-                                                Giới tính
-                                            </div>
-                                            <div class="">Trạng thái</div>
-                                            <div class="">Chi tiết</div>
-                                        </div>
-
-                                        <ng-container *ngIf="(partnerItems$ | async) as items1">
-                                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                                <div class="user-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                                    <div class="truncate">
-                                                        {{item.code}}
-                                                    </div>
-                                                    <div class="hidden md:block truncate">
-                                                        {{item.user?.fullname}}
-                                                    </div>
-                                                    <div class="hidden md:block truncate">
-                                                        {{item.user?.phone}}
-                                                    </div>
-                                                    <div class="hidden lg:block truncate">
-                                                        {{item.user ? item.user?.gender === 'Male' ? 'Nam' : 'Nữ' : ''}}
-                                                    </div>
-
-                                                    <div class="flex flex-row truncate">
-                                                        <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
-                                                            <mat-icon
-                                                                class="text-green-400 icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:check'">
-                                                            </mat-icon>
-                                                            <span class="text-green-400">Đang hoạt động</span>
-                                                        </ng-container>
-                                                        <ng-container *ngIf="item.status !== 'Active'">
-                                                            <mat-icon
-                                                                class="text-gray-400 icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                                            <span class="text-gray-400">Đã khóa</span>
-                                                        </ng-container>
-                                                    </div>
-
-                                                    <!-- Details button -->
-                                                    <div class="flex flex-row">
-                                                        <button
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                            mat-stroked-button
-                                                            (click)="update(item.id, 'Partner')">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                                        </button>
-                                                        <button *ngIf="item.status === 'Active'"
-                                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                                mat-stroked-button
-                                                                [color]="'warn'"
-                                                                (click)="block(item.id, item.username, 'Partner')">
-                                                            <mat-icon class="icon-size-5"
-                                                                      [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
-                                                        </button>
-                                                        <button *ngIf="item.status !== 'Active'"
-                                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                                mat-stroked-button
-                                                                (click)="unblock(item.id, item.username, 'Partner')">
-                                                            <mat-icon class="icon-size-5 text-green-600"
-                                                                      [svgIcon]="'heroicons_solid:lock-open'"></mat-icon>
-                                                        </button>
-                                                        <button
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
-                                                            mat-stroked-button
-                                                            (click)="changePassword(item.id, 'Partner')">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_outline:key'"></mat-icon>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </ng-container>
-                                        </ng-container>
+                                    <!-- Details button -->
+                                    <div class="flex flex-row">
+                                        <button
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                            mat-stroked-button
+                                            (click)="update(item.id)">
+                                            <mat-icon
+                                                class="icon-size-5"
+                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+                                        </button>
+                                        <button *ngIf="item.status === 'Active'"
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                            mat-stroked-button
+                                            [color]="'warn'"
+                                            (click)="block(item.id, item.username)">
+                                            <mat-icon class="icon-size-5"
+                                                      [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
+                                        </button>
+                                        <button *ngIf="item.status !== 'Active'"
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                            mat-stroked-button
+                                            (click)="unblock(item.id, item.username)">
+                                            <mat-icon class="icon-size-5 text-green-600"
+                                                      [svgIcon]="'heroicons_solid:lock-open'"></mat-icon>
+                                        </button>
+                                        <button
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                            mat-stroked-button
+                                            (click)="changePassword(item.id)">
+                                            <mat-icon
+                                                class="icon-size-5"
+                                                [svgIcon]="'heroicons_outline:key'"></mat-icon>
+                                        </button>
                                     </div>
-
-                                    <mat-paginator
-                                        #partnerItems
-                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-                                        [ngClass]="{'pointer-events-none': isLoading}"
-                                        [length]="partnerPagination.length"
-                                        [pageIndex]="partnerPagination.page"
-                                        [pageSize]="partnerPagination.size"
-                                        [pageSizeOptions]="[5, 10, 25, 100]"
-                                        [showFirstLastButtons]="true"></mat-paginator>
-                                </ng-container>
-                            </ng-container>
-                            <ng-template #noProducts>
-                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có tài khoản nào!
                                 </div>
-                            </ng-template>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab label="Nhân viên">
-                    <div class="flex flex-auto">
-                        <div class="flex flex-col flex-auto mb-10 overflow-auto" style="height: 66vh">
-                            <ng-container *ngIf="(staffItems$ | async) as items">
-                                <ng-container *ngIf="items.length > 0; else noProducts">
-                                    <div class="grid">
-                                        <!-- Header -->
-                                        <div
-                                            class="user-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
-                                            matSort
-                                            matSortDisableClear>
-                                            <div
-                                                class="">
-                                                ID
-                                            </div>
-                                            <div
-                                                class="">
-                                                Tên đầy đủ
-                                            </div>
-                                            <div
-                                                class="">
-                                                Số điện thoại
-                                            </div>
-                                            <div
-                                                class="">
-                                                Giới tính
-                                            </div>
-                                            <div class="">Trạng thái</div>
-                                            <div class="">Chi tiết</div>
-                                        </div>
-
-                                        <ng-container *ngIf="(staffItems$ | async) as items1">
-                                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                                <div class="user-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                                    <div class="truncate">
-                                                        {{item.code}}
-                                                    </div>
-                                                    <div class="hidden md:block truncate">
-                                                        {{item.user?.fullname}}
-                                                    </div>
-                                                    <div class="hidden md:block truncate">
-                                                        {{item.user?.phone}}
-                                                    </div>
-                                                    <div class="hidden lg:block truncate">
-                                                        {{item.user ? item.user?.gender === 'Male' ? 'Nam' : 'Nữ' : ''}}
-                                                    </div>
-
-                                                    <div class="flex flex-row truncate">
-                                                        <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
-                                                            <mat-icon
-                                                                class="text-green-400 icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:check'">
-                                                            </mat-icon>
-                                                            <span class="text-green-400">Đang hoạt động</span>
-                                                        </ng-container>
-                                                        <ng-container *ngIf="item.status !== 'Active'">
-                                                            <mat-icon
-                                                                class="text-gray-400 icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                                            <span class="text-gray-400">Đã khóa</span>
-                                                        </ng-container>
-                                                    </div>
-
-                                                    <!-- Details button -->
-                                                    <div class="flex flex-row">
-                                                        <button
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                            mat-stroked-button
-                                                            (click)="update(item.id, 'Staff')">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                                        </button>
-                                                        <button *ngIf="item.status === 'Active'"
-                                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                                mat-stroked-button
-                                                                [color]="'warn'"
-                                                                (click)="block(item.id, item.username, 'Staff')">
-                                                            <mat-icon class="icon-size-5"
-                                                                      [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
-                                                        </button>
-                                                        <button *ngIf="item.status !== 'Active'"
-                                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                                mat-stroked-button
-                                                                (click)="unblock(item.id, item.username, 'Staff')">
-                                                            <mat-icon class="icon-size-5 text-green-600"
-                                                                      [svgIcon]="'heroicons_solid:lock-open'"></mat-icon>
-                                                        </button>
-                                                        <button
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
-                                                            mat-stroked-button
-                                                            (click)="changePassword(item.id, 'Staff')">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_outline:key'"></mat-icon>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </ng-container>
-                                        </ng-container>
-                                    </div>
-
-                                    <mat-paginator
-                                        #staffItems
-                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-                                        [ngClass]="{'pointer-events-none': isLoading}"
-                                        [length]="staffPagination.length"
-                                        [pageIndex]="staffPagination.page"
-                                        [pageSize]="staffPagination.size"
-                                        [pageSizeOptions]="[5, 10, 25, 100]"
-                                        [showFirstLastButtons]="true"></mat-paginator>
-                                </ng-container>
                             </ng-container>
-                            <ng-template #noProducts>
-                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có tài khoản nào!
-                                </div>
-                            </ng-template>
-                        </div>
+                        </ng-container>
                     </div>
-                </mat-tab>
-                <mat-tab label="Khách hàng">
-                    <div class="flex flex-auto">
-                        <div class="flex flex-col flex-auto mb-10 overflow-auto" style="height: 66vh">
-                            <ng-container *ngIf="(customerItems$ | async) as items">
-                                <ng-container *ngIf="items.length > 0; else noProducts">
-                                    <div class="grid">
-                                        <!-- Header -->
-                                        <div
-                                            class="user-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
-                                            matSort
-                                            matSortDisableClear>
-                                            <div
-                                                class="">
-                                                ID
-                                            </div>
-                                            <div
-                                                class="">
-                                                Tên đầy đủ
-                                            </div>
-                                            <div
-                                                class="">
-                                                Số điện thoại
-                                            </div>
-                                            <div
-                                                class="">
-                                                Giới tính
-                                            </div>
-                                            <div class="">Trạng thái</div>
-                                            <div class="">Chi tiết</div>
-                                        </div>
 
-                                        <ng-container *ngIf="(customerItems$ | async) as items1">
-                                            <ng-container *ngFor="let item of items1; trackBy: trackByFn">
-                                                <div class="user-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                                                    <div class="truncate">
-                                                        {{item.code}}
-                                                    </div>
-                                                    <div class="hidden md:block truncate">
-                                                        {{item.user?.fullname}}
-                                                    </div>
-                                                    <div class="hidden md:block truncate">
-                                                        {{item.user?.phone}}
-                                                    </div>
-                                                    <div class="hidden lg:block truncate">
-                                                        {{item.user ? item.user?.gender === 'Male' ? 'Nam' : 'Nữ' : ''}}
-                                                    </div>
+                    <mat-paginator
+                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                        [ngClass]="{'pointer-events-none': isLoading}"
+                        [length]="pagination.length"
+                        [pageIndex]="pagination.page"
+                        [pageSize]="pagination.size"
+                        [pageSizeOptions]="[5, 10, 25, 100]"
+                        [showFirstLastButtons]="true"></mat-paginator>
 
-                                                    <div class="flex flex-row truncate">
-                                                        <ng-container *ngIf="item.status === 'Active'" class="flex flex-col justify-center content-center ">
-                                                            <mat-icon
-                                                                class="text-green-400 icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:check'">
-                                                            </mat-icon>
-                                                            <span class="text-green-400">Đang hoạt động</span>
-                                                        </ng-container>
-                                                        <ng-container *ngIf="item.status !== 'Active'">
-                                                            <mat-icon
-                                                                class="text-gray-400 icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                                                            <span class="text-gray-400">Đã khóa</span>
-                                                        </ng-container>
-                                                    </div>
+                </ng-container>
+            </ng-container>
+            <ng-template #noProducts>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có voucher nào!
+                </div>
+            </ng-template>
 
-                                                    <!-- Details button -->
-                                                    <div class="flex flex-row">
-                                                        <button
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                            mat-stroked-button
-                                                            (click)="update(item.id, 'Customer')">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
-                                                        </button>
-                                                        <button *ngIf="item.status === 'Active'"
-                                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                                mat-stroked-button
-                                                                [color]="'warn'"
-                                                                (click)="block(item.id, item.username, 'Customer')">
-                                                            <mat-icon class="icon-size-5"
-                                                                      [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
-                                                        </button>
-                                                        <button *ngIf="item.status !== 'Active'"
-                                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
-                                                                mat-stroked-button
-                                                                (click)="unblock(item.id, item.username, 'Customer')">
-                                                            <mat-icon class="icon-size-5 text-green-600"
-                                                                      [svgIcon]="'heroicons_solid:lock-open'"></mat-icon>
-                                                        </button>
-                                                        <button
-                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
-                                                            mat-stroked-button
-                                                            (click)="changePassword(item.id, 'Customer')">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_outline:key'"></mat-icon>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </ng-container>
-                                        </ng-container>
-                                    </div>
-
-                                    <mat-paginator
-                                        #customerItems
-                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-                                        [ngClass]="{'pointer-events-none': isLoading}"
-                                        [length]="customerPagination.length"
-                                        [pageIndex]="customerPagination.page"
-                                        [pageSize]="customerPagination.size"
-                                        [pageSizeOptions]="[5, 10, 25, 100]"
-                                        [showFirstLastButtons]="true"></mat-paginator>
-                                </ng-container>
-                            </ng-container>
-                            <ng-template #noProducts>
-                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">Không có tài khoản nào!
-                                </div>
-                            </ng-template>
-                        </div>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
         </div>
+
     </div>
+
 </div>
