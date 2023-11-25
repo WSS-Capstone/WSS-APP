@@ -70,7 +70,7 @@ export class UserService {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
-                'sort-key': 'MinAmount',
+                'sort-key': 'Username',
                 'sort-order': 'DESC',
                 name: search
             }
