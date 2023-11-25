@@ -22,6 +22,8 @@ import { ServiceDetailsComponent } from '../../service/detail/details.component'
 import { ComboServiceDetailsComponent } from '../comnbo-service-detail/details.component';
 import { Service } from '../../service/service.types';
 import {AddServiceComponent} from "../add-service/details.component";
+import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
     selector: 'category-details',
@@ -75,6 +77,8 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
         private _service: ComboService,
         private _matDialog: MatDialog,
         private acitvatedRoute: ActivatedRoute,
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _snackBar: MatSnackBar,
         private route: Router,
         private sanitizer: DomSanitizer,
     ) {
@@ -382,6 +386,50 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             // Mark for check
             this._changeDetectorRef.markForCheck();
         }, 1000);
+    }
+
+    openSnackBar(message: string, action: string) {
+        this._snackBar.open(message, action);
+    }
+
+    public changeStatusOwner(event: any): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Xác nhận đổi trạng thái',
+            message: 'Bạn có muốn đổi trạng thái loại dịch vụ này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Xác nhận',
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Đóng'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(event.checked);
+                const ccc = this._service.changeStatus(this.form.get('id').value, event.checked ? 'Active' : 'InActive').subscribe(() => {
+                    this.openSnackBar('Đã đổi trạng thái', 'Đóng');
+                    ccc.unsubscribe();
+                    // this._matDialogRef.close();
+                    // Close the details
+                    // this.closeDetails();
+                });
+            } else {
+                this.form.patchValue({
+                    status: !event.checked,
+                });
+            }
+        });
     }
 
     protected readonly Math = Math;
