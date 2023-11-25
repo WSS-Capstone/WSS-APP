@@ -163,6 +163,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     updateRole(): void {
         const requestBody:AccountRequest = {
             email: this.form.get('email').value,
+            categoryId: this.form.get('categoryId').value,
             // gender: this.form.get('gender').value === 'Nam' ? 1 : 0,
             roleName: this.form.get('roleName').value,
         }
