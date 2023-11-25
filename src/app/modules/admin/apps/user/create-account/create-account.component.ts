@@ -120,20 +120,20 @@ export class CreateAccountComponent implements OnInit, OnDestroy
     }
 
     update(): void {
-        const requestBody:AccountRequest = {
-            email: this.form.get('email').value,
-            password: this.form.get('password').value,
-        }
-        this._service.update(this.form.get('id').value, requestBody).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
-
-        setTimeout(() => {
-            this._matDialogRef.close();
-        }, 1200);
+        // const requestBody:AccountRequest = {
+        //     email: this.form.get('email').value,
+        //     password: this.form.get('password').value,
+        // }
+        // this._service.update(this.form.get('id').value, requestBody).pipe(
+        //     map(() => {
+        //         // Get the note
+        //         // this.cate$ = this._categoryService.category$;
+        //         this.showFlashMessage('success');
+        //     })).subscribe();
+        //
+        // setTimeout(() => {
+        //     this._matDialogRef.close();
+        // }, 1200);
     }
 
     /**
