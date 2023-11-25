@@ -6,6 +6,7 @@ import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse, FileInfo} from "../category/category.types";
 import { Service, ServiceResponse } from '../service/service.types';
 import {Order} from "../order/order.types";
+import {items} from "../../../../mock-api/apps/file-manager/data";
 
 @Injectable({
     providedIn: 'root'
@@ -190,6 +191,30 @@ export class ComboService {
             ))
         );
     }
+
+    changeStatus(id: string,  status: string){
+        return this._items.pipe(
+            take(1),
+            switchMap(combos => this._httpClient.patch<Combo>(ENDPOINTS.combo + `/${id}/status?status=${status}`,{})
+                .pipe(
+                    map(updatedCombo => {
+                        const index = combos.findIndex(item => item.id === id);
+                        combos[index].status = true;
+                        this._items.next(combos);
+                        return updatedCombo;
+                    }),
+                    switchMap(updatedCombo => this._item.pipe(
+                        take(1),
+                        filter(item => item && item.id === id),
+                        tap(() => {
+                            this._item.next(updatedCombo);
+                            return updatedCombo;
+                        })
+                    ))
+                ))
+        );
+    }
+
 
     delete(id: string): Observable<boolean> {
         return this.items$.pipe(
