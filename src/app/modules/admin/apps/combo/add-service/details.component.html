@@ -2,12 +2,39 @@
         <div class="text-3xl font-extrabold tracking-tight p-5">Thêm dịch vụ</div>
             <div class="flex flex-col w-full px-5">
                 <div class="flex flex-row w-full pb-2">
+                    <mat-form-field
+                        class="block w-3/5 pr-2"
+                        [subscriptSizing]="'dynamic'">
+                        <mat-icon
+                            matPrefix
+                            [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                        <input
+                            matInput
+                            [autocomplete]="'off'"
+                            [placeholder]="'Tìm kiếm dịch vụ'"
+                            (input)="searchServices(searchField.value)"
+                            #searchField>
+                    </mat-form-field>
+                    <mat-form-field class="w-2/5">
+                        <mat-select [value]="selectedCate" (selectionChange)="filterCate($event)">
+                            <mat-option [value]="''">Tất cả dịch vụ</mat-option>
+                            <ng-container *ngIf="categories$ | async as cateParent">
+                                <ng-container *ngFor="let category of cateParent">
+                                    <mat-option [value]="category.id">
+                                        {{category.name}}
+                                    </mat-option>
+                                </ng-container>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-row w-full pb-2">
                     <div class="w-1/2 max-w-1/2 text-xl font-bold">Tên dịch vụ</div>
                     <div class="w-1/4 max-w-1/4 text-xl font-bold">Giá cho thuê</div>
                     <div class="w-1/4 max-w-1/4"></div>
                 </div>
                 <div class="overflow-auto" [style.max-height]="'50vh'" >
-                    <div class="flex flex-row w-full pb-2" *ngFor="let service of services">
+                    <div class="flex flex-row w-full pb-2" *ngFor="let service of filteredServices">
                         <div class="w-1/2 max-w-1/2 truncate">{{service.name}}</div>
                         <div class="w-1/4 max-w-1/4">{{service.currentPrices?.price | number: '1.0-0'}} VNĐ</div>
                         <div class="flex w-1/4 max-w-1/4 justify-end pr-2">

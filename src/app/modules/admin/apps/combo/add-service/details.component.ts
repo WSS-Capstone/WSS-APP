@@ -12,12 +12,13 @@ import {map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Service} from "../../service/service.types";
 import {ServiceService} from "../../service/service.service";
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import {environment} from "../../../../../../environments/environment";
 import {DomSanitizer} from "@angular/platform-browser";
 import { ComboService } from '../combo.service';
+import {MatSelect, MatSelectChange} from "@angular/material/select";
 
 @Component({
     selector: 'category-details',
@@ -33,10 +34,12 @@ export class AddServiceComponent implements OnInit, OnDestroy {
     item$: Observable<Service>;
     categories$: Observable<Category[]>;
     services: Service[];
+    filteredServices: Service[];
     imgDataOrLink: any;
     newServices: string[] = [];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    selectedCate = '';
+    searchValue = '';
     form: FormGroup;
 
     /**
@@ -66,6 +69,7 @@ export class AddServiceComponent implements OnInit, OnDestroy {
         this.categories$ = this._comboService.categories$;
         this._comboService.services$.subscribe(data => {
             this.services = this._data.addedService && this._data.addedService.length > 0 ? data.filter(x => !this._data.addedService.includes(x.id) && x.status === 'Active') : data.filter(x => x.status === 'Active');
+            this.filteredServices = this.services;
         });
     }
 
@@ -136,6 +140,30 @@ export class AddServiceComponent implements OnInit, OnDestroy {
         setTimeout(() => {
             this._matDialogRef.close();
         }, 1200);
+    }
+
+    searchServices(query: string) {
+        this.searchValue = query;
+        if(this.selectedCate === '') {
+            this.filteredServices = this.services.filter(x => x.name.toLowerCase().includes(this.searchValue.toLowerCase()));
+        } else {
+            this.filteredServices = this.services.filter(x => x.name.toLowerCase().includes(this.searchValue.toLowerCase()) && x.categoryId === this.selectedCate);
+        }
+    }
+
+    filterCate(event: MatSelectChange) {
+        this.selectedCate = event.value;
+
+        if(this.selectedCate === '' && this.selectedCate === '') {
+            this.filteredServices = this.services;
+            return;
+        }
+
+        if(this.selectedCate === '') {
+            this.filteredServices = this.services.filter(x => x.categoryId === this.selectedCate);
+        } else {
+            this.filteredServices = this.services.filter(x => x.name.toLowerCase().includes(this.searchValue.toLowerCase()) && x.categoryId === this.selectedCate);
+        }
     }
 
     /**

@@ -41,6 +41,7 @@ export const itemRoutes: Route[] = [
                     // items: CombosResolver,
                     item: ComboResolver,
                     services: ServicesServiceResolver,
+                    category    : CategoriesServiceResolver,
                 }
             },
 
