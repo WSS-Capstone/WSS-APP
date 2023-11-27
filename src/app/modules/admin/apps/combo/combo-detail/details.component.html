@@ -240,14 +240,29 @@
                             </ng-container>
                         </div>
                         <div class="flex justify-center">
-                            <button
-                                *ngIf="item.id"
-                                mat-raised-button
-                                color="primary"
-                                (click)="update(item.id)"
-                            >
-                                Cập nhật
-                            </button>
+                            <ng-container *ngIf="item.id">
+                                <button
+                                    class="mr-4"
+                                    mat-raised-button
+                                    color="primary"
+                                    (click)="update(item.id)">
+                                    Cập nhật
+                                </button>
+                                <button
+                                    *ngIf="item.status === 'Active'"
+                                    mat-raised-button
+                                    color="warn"
+                                    (click)="changeStatus(item.id, 'InActive', 'ngưng hoạt động')">
+                                    Ngưng hoạt động
+                                </button>
+                                <button
+                                    *ngIf="item.status !== 'Active'"
+                                    mat-raised-button
+                                    color="accent"
+                                    (click)="changeStatus(item.id, 'Active', 'Tái hoạt động')">
+                                    Tái hoạt động
+                                </button>
+                            </ng-container>
                             <button
                                 *ngIf="!item.id"
                                 mat-raised-button

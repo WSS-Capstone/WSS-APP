@@ -283,6 +283,38 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             })).subscribe();
     }
 
+    changeStatus(id: string, status: string, text: string): void {
+        // Open the confirmation dialog
+        const confirmation = this._fuseConfirmationService.open({
+            title: text.charAt(0).toUpperCase() + text.substring(1),
+            message: 'Bạn có chắc chắn muốn ' + text + ' loại dịch vụ này?!',
+            actions: {
+                confirm: {
+                    label: text.charAt(0).toUpperCase() + text.substring(1)
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(id);
+                // Delete the product on the server
+                const ccc = this._service.changeStatus(id, status).subscribe(() => {
+                    this.openSnackBar('Đổi trạng thái thành công', 'Đóng');
+                    ccc.unsubscribe();
+                    // Close the details
+                    // this.closeDetails();
+                });
+            }
+        });
+    }
+
     /**
      * Upload image to given note
      *
