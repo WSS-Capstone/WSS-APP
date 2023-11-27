@@ -1,21 +1,22 @@
-import { Injectable } from '@angular/core';
-import { CanMatch, Route, Router, UrlSegment, UrlTree } from '@angular/router';
-import { Observable, of, switchMap } from 'rxjs';
-import { AuthService } from 'app/core/auth/auth.service';
+import {Injectable} from '@angular/core';
+import {CanMatch, Route, Router, UrlSegment, UrlTree} from '@angular/router';
+import {mergeMap, Observable, of, switchMap} from 'rxjs';
+import {AuthService} from 'app/core/auth/auth.service';
+import {UserService} from "../../user/user.service";
+import {combineLatest} from "rxjs/internal/operators/combineLatest";
 
 @Injectable({
     providedIn: 'root'
 })
-export class AuthGuard implements CanMatch
-{
+export class AuthGuard implements CanMatch {
     /**
      * Constructor
      */
     constructor(
         private _authService: AuthService,
+        private _userService: UserService,
         private _router: Router
-    )
-    {
+    ) {
     }
 
     // -----------------------------------------------------------------------------------------------------

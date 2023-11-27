@@ -30,7 +30,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
         /* language=SCSS */
         `
             .order-detail-grid {
-                grid-template-columns: 120px auto 150px 150px 150px 150px 80px;
+                grid-template-columns: 8% auto 8% 9% 10% 6%;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -89,7 +89,13 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             this.isLoading = true;
             const id = param.get('id');
             this._service.getItem(id).subscribe(p => {
-                this.item$ = this._service.item$;
+                this.item$ = this._service.item$.pipe(
+                    map(value => {
+                        value.orderDetails = value.orderDetails.concat(value.comboOrderDetails);
+                        return value;
+                    })
+                );
+
                 this.isLoading = false;
                 this._changeDetectorRef.markForCheck();
             });
@@ -175,12 +181,13 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    createTask(id: string, isOwnerService: boolean) {
+    createTask(id: string, isOwnerService: boolean, categoryId: string) {
         this._matDialog.open(OrderCreateTaskComponent, {
             autoFocus: false,
             data: {
                 orderDetailId: id,
-                isOwnerService: isOwnerService
+                isOwnerService: isOwnerService,
+                categoryId: categoryId
             },
             width: '50vw',
         });

@@ -17,6 +17,7 @@ export interface Order {
     voucherId: string;
     voucher: Discount;
     orderDetails: OrderDetail[];
+    comboOrderDetails: OrderDetail[];
     comboId?: string;
     combo: Combo;
     totalAmount?: number;

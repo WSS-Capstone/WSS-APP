@@ -44,7 +44,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         private sanitizer: DomSanitizer,
-        @Inject(MAT_DIALOG_DATA) private _data: { orderDetailId: string, isOwnerService: boolean },
+        @Inject(MAT_DIALOG_DATA) private _data: { orderDetailId: string, isOwnerService: boolean, categoryId: string },
         private _taskService: TaskService,
         private _orderService: OrderService,
         private _matDialogRef: MatDialogRef<OrderCreateTaskComponent>
@@ -62,7 +62,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         console.log(this._data)
         this._orderService.users$.subscribe(userss => {
-            this.users = userss.filter(x => this._data.isOwnerService ? x.roleName === 'Staff' : x.roleName === 'Partner');
+            this.users = userss.filter(x => (this._data.isOwnerService ? x.roleName === 'Staff' : x.roleName === 'Partner') && x.user.categoryId === this._data.categoryId);
         });
 
         this.form.patchValue({

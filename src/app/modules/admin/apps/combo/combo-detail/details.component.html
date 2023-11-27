@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="mt-8 text-3xl font-extrabold tracking-tight">
-                    {{item.id ? 'Gói dịch vụ #' + item.id : 'Tạo gói dịch vụ'}}
+                    {{item.id ? 'Gói dịch vụ ' + item.name : 'Tạo gói dịch vụ'}}
                 </div>
 
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2">
@@ -53,7 +53,7 @@
                                 [color]="'primary'"
                                 (click)="clearImage()"
                             >
-                                Clear
+                                Xóa
                             </button>
                             <button
                                 *ngIf="tempImageUrl === null"

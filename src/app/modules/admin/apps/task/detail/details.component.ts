@@ -249,6 +249,22 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             status: stt
         }
 
+        if (this._data.type === 'owner') {
+            this._service.updateTask(this.form.get('id').value, request).pipe(
+                map(() => {
+                    // Get the note
+                    // this.cate$ = this._categoryService.category$;
+                    this.showFlashMessage('success');
+                })).subscribe();
+        } else {
+            this._service.updateTaskPartner(this.form.get('id').value, request).pipe(
+                map(() => {
+                    // Get the note
+                    // this.cate$ = this._categoryService.category$;
+                    this.showFlashMessage('success');
+                })).subscribe();
+        }
+
         this._service.updateTask(this.form.get('id').value, request).pipe(
             map(() => {
                 // Get the note
