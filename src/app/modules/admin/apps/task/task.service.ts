@@ -78,7 +78,7 @@ export class TaskService {
     }
 
 
-    getOwnerItems(page: number = 0, size: number = 10, sort: string = 'taskName', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+    getOwnerItems(page: number = 0, size: number = 10, sort: string = 'Status', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<TaskResponse> {
         return this._httpClient.get<TaskResponse>(ENDPOINTS.task + '?ofPartner=false', {
             params: {
@@ -104,7 +104,7 @@ export class TaskService {
         );
     }
 
-    getPartnerItems(page: number = 0, size: number = 10, sort: string = 'taskName', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+    getPartnerItems(page: number = 0, size: number = 10, sort: string = 'Status', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<TaskResponse> {
         return this._httpClient.get<TaskResponse>(ENDPOINTS.task + '?ofPartner=true', {
             params: {

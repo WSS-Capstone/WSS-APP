@@ -3,6 +3,7 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
+import {AdminGuard} from "./core/auth/guards/admin.guard";
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -66,6 +67,7 @@ export const appRoutes: Route[] = [
     {
         path: '',
         canMatch: [AuthGuard],
+        canActivate: [AdminGuard],
         component: LayoutComponent,
         resolve: {
             initialData: InitialDataResolver,

@@ -7,6 +7,7 @@ import {AngularFireAuth} from "@angular/fire/compat/auth";
 import {ENDPOINTS} from "../global.constants";
 import {User} from "../user/user.types";
 import {Auth, GoogleAuthProvider} from "@angular/fire/auth";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
         private _httpClient: HttpClient,
         private _userService: UserService,
         private _authFb: AngularFireAuth,
+        private _router: Router,
         private _auth: Auth
     ) {
     }

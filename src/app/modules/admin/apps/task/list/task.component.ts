@@ -30,7 +30,7 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
         /* language=SCSS */
         `
             .task-grid {
-                grid-template-columns: 56px auto 209px 156px 213px 101px 109px 126px 73px;
+                grid-template-columns: 5% auto 11% 12% 15% 6% 6% 8% 5%;
             }
 
             .vh-70 {
