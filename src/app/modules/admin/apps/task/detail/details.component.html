@@ -123,7 +123,10 @@
                     <ng-container *ngIf="comments.length > 0; else noComments">
                         <div *ngFor="let comment of comments" class="mt-4 w-full">
                             <div class="text-[#8E8EA1] text-sm">{{comment.createDate | date: "hh:mm dd/MM/yyyy"}}</div>
-                            <div class="whitespace-normal">{{comment.content}}</div>
+                            <div class="flex flex-row">
+                                <div class="whitespace-normal font-semibold">{{comment.createBy?.fullname + ':'}}&nbsp;</div>
+                                <div class="whitespace-normal">{{comment.content}}</div>
+                            </div>
                         </div>
                     </ng-container>
                     <ng-template #noComments>
