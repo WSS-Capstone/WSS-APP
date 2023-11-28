@@ -4,6 +4,8 @@ import {BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, thro
 import {Comment, Task, TaskPagination, TaskResponse} from './task.types';
 import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse, FileInfo} from "../category/category.types";
+import {UserService} from "../../../../core/user/user.service";
+
 
 @Injectable({
     providedIn: 'root'
@@ -17,8 +19,8 @@ export class TaskService {
     private _itemsCate: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
     private _ownerPagination: BehaviorSubject<TaskPagination | null> = new BehaviorSubject(null);
     private _partnerPagination: BehaviorSubject<TaskPagination | null> = new BehaviorSubject(null);
-
-    constructor(private _httpClient: HttpClient) {
+    private user: any;
+    constructor(private _httpClient: HttpClient, private _userService: UserService) {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -28,6 +30,7 @@ export class TaskService {
     get ownerPagination$(): Observable<TaskPagination> {
         return this._ownerPagination.asObservable();
     }
+
     get partnerPagination$(): Observable<TaskPagination> {
         return this._partnerPagination.asObservable();
     }
@@ -184,28 +187,28 @@ export class TaskService {
     }
 
     create(item: any, type: string): Observable<Task> {
-        if(type === 'owner') {
+        if (type === 'owner') {
             return this.ownerItems$.pipe(
                 take(1),
                 switchMap(items => this._httpClient.post<Task>(ENDPOINTS.task, item).pipe(
                     map((newItem) => {
-                        if(items) {
+                        if (items) {
                             this._ownerItems.next([newItem, ...items]);
-                        }else {
+                        } else {
                             this._ownerItems.next([newItem]);
                         }
                         return newItem;
                     })
                 ))
             );
-        } else if(type === 'partner') {
+        } else if (type === 'partner') {
             return this.partnerItems$.pipe(
                 take(1),
                 switchMap(items => this._httpClient.post<Task>(ENDPOINTS.task, item).pipe(
                     map((newItem) => {
-                        if(items) {
+                        if (items) {
                             this._partnerItems.next([newItem, ...items]);
-                        }else {
+                        } else {
                             this._partnerItems.next([newItem]);
                         }
                         return newItem;
@@ -264,7 +267,7 @@ export class TaskService {
     }
 
     update(id: string, item: Task, type: string): Observable<Task> {
-        if(type === 'owner') {
+        if (type === 'owner') {
             return this.ownerItems$.pipe(
                 take(1),
                 switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}`, {
@@ -286,7 +289,7 @@ export class TaskService {
                     ))
                 ))
             );
-        } else if(type === 'partner') {
+        } else if (type === 'partner') {
             return this.partnerItems$.pipe(
                 take(1),
                 switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}`, {
@@ -312,7 +315,7 @@ export class TaskService {
     }
 
     updateStatus(id: string, item: any, type: string): Observable<Task> {
-        if(type === 'owner') {
+        if (type === 'owner') {
             return this.ownerItems$.pipe(
                 take(1),
                 switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}/status`, {
@@ -334,7 +337,7 @@ export class TaskService {
                     ))
                 ))
             );
-        } else if(type === 'partner') {
+        } else if (type === 'partner') {
             return this.partnerItems$.pipe(
                 take(1),
                 switchMap(itemsArr => this._httpClient.put<Task>(ENDPOINTS.task + `/${id}/status`, {
@@ -360,7 +363,7 @@ export class TaskService {
     }
 
     delete(id: string, type: string): Observable<boolean> {
-        if(type === 'owner') {
+        if (type === 'owner') {
             return this.ownerItems$.pipe(
                 take(1),
                 switchMap(items => this._httpClient.delete(ENDPOINTS.task + `/${id}`, {params: {id}}).pipe(
@@ -372,7 +375,7 @@ export class TaskService {
                     })
                 ))
             );
-        } else if(type === 'partner') {
+        } else if (type === 'partner') {
             return this.partnerItems$.pipe(
                 take(1),
                 switchMap(items => this._httpClient.delete(ENDPOINTS.task + `/${id}`, {params: {id}}).pipe(
@@ -384,11 +387,10 @@ export class TaskService {
                     })
                 ))
             );
-            }
+        }
     }
 
-    uploadImage(data : File): Observable<string>
-    {
+    uploadImage(data: File): Observable<string> {
         let formData = new FormData();
         formData.append('files', data);
         return this._httpClient.post<FileInfo[]>(ENDPOINTS.file, formData).pipe(
@@ -399,12 +401,25 @@ export class TaskService {
     }
 
     addComment(id: string, content: string, type: string) {
-        if(type === 'owner') {
+        if (type === 'owner') {
             return this.ownerItems$.pipe(
                 take(1),
-                switchMap(items => this._httpClient.post<Comment>(ENDPOINTS.comment, {taskId: id, content: content}).pipe(
+                switchMap(items => this._httpClient.post<Comment>(ENDPOINTS.comment, {
+                    taskId: id,
+                    content: content
+                }).pipe(
                     map((comment: Comment) => {
                         const index = items.findIndex(item => item.id === id);
+                        // comment.createBy = {
+                        //     id: this._userService.user.id,
+                        //     fullname: this._userService.user.name,
+                        //     imageUrl: this._userService.user.avatar,
+                        //     dateOfBirth: "",
+                        //     address: "",
+                        //     phone: "",
+                        //     categoryId: "",
+                        //     gender: "",
+                        // }
                         items[index].comments.push(comment)
                         this._ownerItems.next(items);
                         this._ownerItem.next(items[index]);
@@ -412,12 +427,16 @@ export class TaskService {
                     })
                 ))
             );
-        } else if(type === 'partner') {
+        } else if (type === 'partner') {
             return this.partnerItems$.pipe(
                 take(1),
-                switchMap(items => this._httpClient.post<Comment>(ENDPOINTS.comment, {taskId: id, content: content}).pipe(
+                switchMap(items => this._httpClient.post<Comment>(ENDPOINTS.comment, {
+                    taskId: id,
+                    content: content
+                }).pipe(
                     map((comment: Comment) => {
                         const index = items.findIndex(item => item.id === id);
+
                         items[index].comments.push(comment)
                         this._partnerItems.next(items);
                         this._partnerItem.next(items[index]);

@@ -262,9 +262,9 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             })).subscribe(data => {
             setTimeout(() => {
                 // const url = window.location.href.substring(0, window.location.href.lastIndexOf('/') - 1) + data.id
-                const url = 'owner/combo/'+ data.id
+                const url = 'owner/combo'
                 this.route.navigateByUrl(url);
-            }, 1000);
+            }, 300);
         });
     }
 

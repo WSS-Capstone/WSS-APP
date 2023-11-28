@@ -255,7 +255,7 @@
                                 matSortDisableClear>
                                 <div class="">Ngày thực hiện</div>
                                 <div class="">Tên dịch vụ</div>
-<!--                                <div class="">Số lượng</div>-->
+                                <div class="">Số người thực hiện</div>
                                 <div class="">Địa điểm</div>
                                 <div class="">Giá tiền</div>
                                 <div class="">Trạng thái</div>
@@ -272,9 +272,9 @@
                                         <div class="truncate">
                                             {{orderDetail.service?.name}}
                                         </div>
-<!--                                        <div class="truncate">-->
-<!--                                            {{orderDetail.service?.quantity}}-->
-<!--                                        </div>-->
+                                        <div class="truncate">
+                                            {{orderDetail.tasks.length}}
+                                        </div>
 
                                         <div class="truncate">
                                             {{orderDetail.address}}

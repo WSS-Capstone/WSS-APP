@@ -30,7 +30,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
         /* language=SCSS */
         `
             .order-detail-grid {
-                grid-template-columns: 8% auto 8% 9% 10% 6%;
+                grid-template-columns: 8% auto 9% 8% 9% 10% 6%;
 
                 /* @screen sm {
                     grid-template-columns: 57px auto 80px;
@@ -357,5 +357,9 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             // Mark for check
             this._changeDetectorRef.markForCheck();
         }, 1000);
+    }
+
+    fnCalculateNumOfPeopleDo(tasks: any[]): number {
+        return tasks.filter(x => x.status === 1).length;
     }
 }

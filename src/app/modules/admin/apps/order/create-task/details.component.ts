@@ -132,7 +132,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
             imageEvidence: null
         }
 
-        this._taskService.create(requestBody, this._data.isOwnerService ? 'owner' : 'partner').pipe(
+        this._orderService.createTask(requestBody, this._data.isOwnerService ? 'owner' : 'partner').pipe(
             map(() => {
                 this.showFlashMessage('success');
             })).subscribe();

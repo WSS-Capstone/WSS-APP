@@ -140,8 +140,8 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this._sort && this._partnerPaginator) {
             // Set the initial sort
             this._sort.sort({
-                id: 'taskName',
-                start: 'asc',
+                id: 'Status',
+                start: 'desc',
                 disableClear: true
             });
 
@@ -175,8 +175,8 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this._sort && this._ownerPaginator) {
             // Set the initial sort
             this._sort.sort({
-                id: 'taskName',
-                start: 'asc',
+                id: 'Status',
+                start: 'desc',
                 disableClear: true
             });
 

@@ -70,8 +70,8 @@ export class FeedbackService {
             params: {
                 page: '' + (page),
                 'page-size': '' + size,
-                'sort-key': 'CreateDate',
-                'sort-order': 'DESC',
+                'sort-key': 'Status',
+                'sort-order': 'asc',
                 name: search
             }
         }).pipe(

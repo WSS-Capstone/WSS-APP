@@ -6,6 +6,7 @@ import {ENDPOINTS} from "../../../../core/global.constants";
 import {Category, CategoryResponse} from "../category/category.types";
 import {Discount, DiscountResponse} from "../discount/discount.types";
 import {Account, AccountResponse} from "../user/user.types";
+import {Task} from "../task/task.types";
 
 @Injectable({
     providedIn: 'root'
@@ -115,7 +116,7 @@ export class OrderService {
     // -----------------------------------------------------------------------------------------------------
 
     getUsers(): Observable<Account[]> {
-        return this._httpClient.get<AccountResponse>(ENDPOINTS.account+ "?roleNames=Staff&roleNames=Partner", {
+        return this._httpClient.get<AccountResponse>(ENDPOINTS.account + "?roleNames=Staff&roleNames=Partner", {
             params: {
                 'page-size': '' + 250,
             }
@@ -321,6 +322,24 @@ export class OrderService {
         );
     }
 
+    createTask(item: any, type: string): Observable<Task> {
+        return this.item$.pipe(
+            take(1),
+            switchMap(items => this._httpClient.post<Task>(ENDPOINTS.task, item).pipe(
+                map((newItem) => {
+                    if (items) {
+                        items.orderDetails.find(order => order.id === newItem.orderDetail.id).tasks.push(newItem);
+                        this._item.next(items);
+                    } else {
+                        this._item.next(items);
+                    }
+                    return newItem;
+                })
+            ))
+        );
+    }
+
+
     // create(item: Order): Observable<Order> {
     //     return this.items$.pipe(
     //         take(1),
@@ -377,8 +396,8 @@ export class OrderService {
                             map((itemsArr) => {
                                 const index = itemsArr.findIndex(item => item.id === id);
 
-                                if(index < 0) {
-                                    return ;
+                                if (index < 0) {
+                                    return;
                                 }
 
                                 itemsArr[index].statusOrder = status;
@@ -405,8 +424,8 @@ export class OrderService {
                             map((itemsArr) => {
                                 const index = itemsArr.findIndex(item => item.id === id);
 
-                                if(index < 0) {
-                                    return ;
+                                if (index < 0) {
+                                    return;
                                 }
 
                                 itemsArr[index].statusOrder = status;
@@ -419,7 +438,7 @@ export class OrderService {
                     ))
                 );
             case 'CANCEL':
-                if(currentStatus === 'PENDING') {
+                if (currentStatus === 'PENDING') {
                     return this.item$.pipe(
                         take(1),
                         switchMap(itemArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval?id=${id}&request=${status}`, {}).pipe(
@@ -434,8 +453,8 @@ export class OrderService {
                                 map((itemsArr) => {
                                     const index = itemsArr.findIndex(item => item.id === id);
 
-                                    if(index < 0) {
-                                        return ;
+                                    if (index < 0) {
+                                        return;
                                     }
 
                                     itemsArr[index].statusOrder = status;
@@ -447,7 +466,7 @@ export class OrderService {
                             ))
                         ))
                     );
-                } else if(currentStatus === 'CONFIRM' || currentStatus === 'DOING') {
+                } else if (currentStatus === 'CONFIRM' || currentStatus === 'DOING') {
                     return this.item$.pipe(
                         take(1),
                         switchMap(itemArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval?id=${id}&request=${status}`, {}).pipe(
@@ -462,8 +481,8 @@ export class OrderService {
                                 map((itemsArr) => {
                                     const index = itemsArr.findIndex(item => item.id === id);
 
-                                    if(index < 0) {
-                                        return ;
+                                    if (index < 0) {
+                                        return;
                                     }
 
                                     itemsArr[index].statusOrder = status;
