@@ -9,6 +9,7 @@ export interface Task {
     startDate: string;
     endDate: string;
     status: string;
+    imageEvidence: string;
     comments?: Comment[];
     partner?: User;
     staff?: User;

@@ -117,10 +117,10 @@
 <!--                    </ng-container>-->
 <!--                </div>-->
             </div>
-            <div class="w-1/2 pl-4">
+            <div class="w-1/2 pl-4 pr-4">
                 <div class="text-1xl font-semibold tracking-tight mb-1">Bình luận</div>
                 <div class="flex flex-col overflow-auto h-2/3">
-                    <ng-container *ngIf="comments.length > 0; else noComments">
+                    <ng-container *ngIf="comments?.length > 0; else noComments">
                         <div *ngFor="let comment of comments" class="mt-4 w-full">
                             <div class="text-[#8E8EA1] text-sm">{{comment.createDate | date: "hh:mm dd/MM/yyyy"}}</div>
                             <div class="flex flex-row">
@@ -152,18 +152,18 @@
                 </div>
             </div>
 
-<!--            <div class="flex flex-col items-center pl-4">-->
-<!--                <div class="text-1xl font-semibold tracking-tight mb-1">Ảnh</div>-->
-<!--                <div class="max-w-30 w-10 h-50 border rounded overflow-hidden">-->
-<!--                    <img [hidden]="!imgDataOrLink" class="max-w-36 h-full object-cover" [src]="imgDataOrLink"-->
-<!--                         alt="Lỗi HÌnh Ảnh">-->
+            <div class="flex flex-col items-center pl-4">
+                <div class="text-1xl font-semibold tracking-tight mb-1">Ảnh</div>
+                <div class="max-w-80 w-80 h-50 border rounded overflow-hidden">
+                    <img [hidden]="!imgDataOrLink" class="max-w-80 h-full object-cover" [src]="imgDataOrLink"
+                         alt="Lỗi HÌnh Ảnh">
 
-<!--                    <span [hidden]="imgDataOrLink"-->
-<!--                          class="flex justify-center items-center min-h-20 text-lg font-semibold p-8 pt-12">NO IMAGE</span>-->
-<!--                </div>-->
-<!--                <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">-->
+                    <span [hidden]="imgDataOrLink"
+                          class="flex justify-center items-center min-h-20 text-lg font-semibold p-8 pt-12">NO IMAGE</span>
+                </div>
+                <input type="file" #fileInput style="display: none;" (change)="uploadImage($event)" accept="image/*">
 
-<!--            </div>-->
+            </div>
         </div>
         <div class="flex justify-end items-center m-4">
             <div

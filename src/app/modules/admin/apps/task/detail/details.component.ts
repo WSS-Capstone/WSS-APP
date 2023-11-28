@@ -15,19 +15,21 @@ import {TaskService} from "../task.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
-import { formatDate } from '@angular/common';
-import { OrderService } from '../../order/order.service';
-import { Account } from '../../user/user.types';
+import {formatDate} from '@angular/common';
+import {OrderService} from '../../order/order.service';
+import {Account} from '../../user/user.types';
 import {MatSelectChange} from "@angular/material/select";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
+import {environment} from "../../../../../../environments/environment";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
     selector: 'Task-details',
     templateUrl: './details.component.html',
     styles: [`
-          .fix-height {
-              height: 70vh !important;
-          }
+        .fix-height {
+            height: 70vh !important;
+        }
     `],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +61,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         @Inject(MAT_DIALOG_DATA) public _data: { service: Task, type: string },
         private _service: TaskService,
         private _orderService: OrderService,
+        private sanitizer: DomSanitizer,
         private _matDialogRef: MatDialogRef<TaskDetailsComponent>
     ) {
         this._initForm();
@@ -78,15 +81,20 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         if (this._data.service.id) {
             console.log("Edit");
 
-            if(this._data.type === 'owner') {
+            if (this._data.type === 'owner') {
                 this._service.getOwnerItem(this._data.service.id).subscribe();
                 this.item$ = this._service.ownerItem$;
-            } else if(this._data.type === 'partner') {
+            } else if (this._data.type === 'partner') {
                 this._service.getPartnerItem(this._data.service.id).subscribe();
                 this.item$ = this._service.partnerItem$;
             }
 
             this.item$.subscribe((value) => {
+                console.log(value.imageEvidence)
+                if (value.imageEvidence) {
+                    this.imgDataOrLink = this.mapImageUrl(value.imageEvidence);
+                    this._changeDetectorRef.detectChanges();
+                }
                 this._patchValue(value);
                 this._orderService.users$.subscribe(userss => {
                     this.users = userss.filter(x => value.partner ? x.roleName === 'Partner' : x.roleName === 'Staff');
@@ -95,6 +103,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
                 });
             });
         }
+    }
+
+    mapImageUrl(imageUrl: string): any {
+        var imageRelativeUrl = imageUrl.substring(imageUrl.indexOf('/upload/'));
+        var apiUrl = environment.wssApi;
+        return this.sanitizer.bypassSecurityTrustUrl(apiUrl + imageRelativeUrl);
     }
 
     private _initForm(): void {
@@ -130,7 +144,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             serviceName: value.orderDetail?.service?.name,
         });
 
-        this.comments = value.comments.sort((a:Comment, b:Comment) => {return a.createDate > b.createDate ? 1 : -1});
+        this.comments = value.comments.sort((a: Comment, b: Comment) => {
+            return a.createDate > b.createDate ? 1 : -1
+        });
 
         // this.tempUserId = this.form.get('staffId')?.value;
         // this.tempUserName = this.form.get('staffName')?.value || '';
@@ -158,7 +174,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     addComment() {
-        if(this.commentInput.value.length === 0) {
+        if (this.commentInput.value.length === 0) {
             return;
         }
 
@@ -199,7 +215,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         const endDate = this.form.get('endTime').value;
 
         return (
-          !endDate || date <= endDate
+            !endDate || date <= endDate
         );
     }
 
