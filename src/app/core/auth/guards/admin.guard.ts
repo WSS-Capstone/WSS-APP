@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {
     ActivatedRouteSnapshot,
-    CanActivate,
+    CanActivate, CanMatch,
     Route,
     Router,
     RouterStateSnapshot,
@@ -15,7 +15,7 @@ import {UserService} from "../../user/user.service";
 @Injectable({
     providedIn: 'root'
 })
-export class AdminGuard implements CanActivate {
+export class AdminGuard implements CanMatch {
     /**
      * Constructor
      */
@@ -38,7 +38,23 @@ export class AdminGuard implements CanActivate {
      */
     canMatch(route: Route, segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
     {
-        return this._check(segments);
+        console.log("canMatch");
+        return this._userService.user$.pipe(
+            map((user) => {
+console.log("user11", user);
+                if (user.roleName === "Admin") {
+                    const urlTree = this._router.parseUrl(`/admin/user`);
+                    console.log("urlTree", route);
+                    return urlTree;
+                    // state.url = urlTree.toString();
+                    // this._router.navigate(['/admin/user']);
+                    // return this._router.createUrlTree(['/admin/user']);
+                    // return true;
+                }
+
+                return true;
+            })
+        );
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
@@ -48,12 +64,11 @@ export class AdminGuard implements CanActivate {
                 if (user.roleName === "Admin") {
                     const urlTree = this._router.parseUrl(`/admin/user`);
                     console.log("urlTree", route);
-                    route.url = urlTree.root.children['primary'].segments;
-                    state.url = urlTree.toString();
+                    return urlTree;
                     // state.url = urlTree.toString();
                     // this._router.navigate(['/admin/user']);
                     // return this._router.createUrlTree(['/admin/user']);
-                    return true;
+                    // return true;
                 }
 
                 return true;

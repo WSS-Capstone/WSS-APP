@@ -8,6 +8,7 @@ import { FusePlatformService } from '@fuse/services/platform';
 import { FUSE_VERSION } from '@fuse/version';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
+import {UserService} from "../core/user/user.service";
 
 @Component({
     selector     : 'layout',
@@ -33,9 +34,15 @@ export class LayoutComponent implements OnInit, OnDestroy
         private _router: Router,
         private _fuseConfigService: FuseConfigService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fusePlatformService: FusePlatformService
+        private _fusePlatformService: FusePlatformService,
+        private _userService: UserService
     )
     {
+        this._userService.user$.subscribe((user) => {
+            if (user.roleName === "Admin") {
+                this._router.navigate(['/admin/user']);
+            }
+        })
     }
 
     // -----------------------------------------------------------------------------------------------------
