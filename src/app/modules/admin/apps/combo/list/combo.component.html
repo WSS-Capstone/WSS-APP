@@ -100,7 +100,7 @@
                                         {{item.description}}
                                     </div>
                                     <div class="truncate">
-                                        {{item.discountValueCombo | number : '1.0-0' }}%
+                                        {{item.discountValueCombo != null ? ( item.discountValueCombo | number : '1.0-0' ) : '0'}}%
                                     </div>
                                     <div class=" truncate">
                                         {{item.totalAmount | number : '1.0-0'}} VNĐ

@@ -133,11 +133,11 @@ export class ComboDetailComponent implements OnInit, OnDestroy {
             id: [null],
             name: [null, [Validators.required]],
             description: [null],
-            discountValueCombo: [null, Validators.max(100)],
+            discountValueCombo: [null, [Validators.required, Validators.max(100), Validators.min(0)]],
             discountPrice: [null],
             imageUrl: [null],
             rating: [null],
-            totalAmount: [null, [Validators.required]],
+            totalAmount: [null],
             comboServicesId: [null],
             status: [null],
         });

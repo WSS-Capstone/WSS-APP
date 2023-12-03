@@ -111,6 +111,11 @@
                                     [formControlName]="'discountValueCombo'"
                                 />
                                 <mat-error
+                                    *ngIf="form.get('discountValueCombo').hasError('required')"
+                                >
+                                    % giảm không được để trống
+                                </mat-error>
+                                <mat-error
                                     *ngIf="
                                         form
                                             .get('discountValueCombo')
@@ -119,14 +124,23 @@
                                 >
                                     % giảm không được quá 100%
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="
+                                        form
+                                            .get('discountValueCombo')
+                                            .hasError('min')
+                                    "
+                                >
+                                    % giảm không được dưới 0%
+                                </mat-error>
                             </mat-form-field>
 
                             <mat-form-field class="w-full">
-                                <mat-label>Giá giảm</mat-label>
+                                <mat-label>Thành tiền</mat-label>
                                 <input
                                     matInput
                                     readonly
-                                    [value]="initPrice - (initPrice * form.get('discountValueCombo').value / 100)  | number : '1.0-0'"
+                                    [value]="form.get('discountValueCombo').value != null ? (initPrice - (initPrice * form.get('discountValueCombo').value / 100)  | number : '1.0-0') : null"
                                 />
                             </mat-form-field>
                         </div>
@@ -150,40 +164,40 @@
                         </mat-form-field>
 
                         <div class="flex flex-row justify-between" *ngIf="item.id">
-                            <div class="flex flex-row mb-4 font-medium">
-                                <div>Đánh giá</div>
-                                <div class="flex flex-row ml-4">
-                                    <span
-                                        *ngFor="
-                                            let n of numSequence(
-                                                MAX_RATING -
-                                                    Math.round(item.rating)
-                                            )
-                                        "
-                                    >
-                                        <mat-icon
-                                            class="icon-size-5 text-[#E8E8E8]"
-                                            matPrefix
-                                            [svgIcon]="'heroicons_solid:star'"
-                                        >
-                                        </mat-icon>
-                                    </span>
-                                    <span
-                                        *ngFor="
-                                            let n of numSequence(
-                                                Math.round(item.rating)
-                                            )
-                                        "
-                                    >
-                                        <mat-icon
-                                            class="icon-size-5 text-[#FABF35]"
-                                            matPrefix
-                                            [svgIcon]="'heroicons_solid:star'"
-                                        >
-                                        </mat-icon>
-                                    </span>
-                                </div>
-                            </div>
+<!--                            <div class="flex flex-row mb-4 font-medium">-->
+<!--                                <div>Đánh giá</div>-->
+<!--                                <div class="flex flex-row ml-4">-->
+<!--                                    <span-->
+<!--                                        *ngFor="-->
+<!--                                            let n of numSequence(-->
+<!--                                                MAX_RATING - -->
+<!--                                                    Math.round(item.rating)-->
+<!--                                            )-->
+<!--                                        "-->
+<!--                                    >-->
+<!--                                        <mat-icon-->
+<!--                                            class="icon-size-5 text-[#E8E8E8]"-->
+<!--                                            matPrefix-->
+<!--                                            [svgIcon]="'heroicons_solid:star'"-->
+<!--                                        >-->
+<!--                                        </mat-icon>-->
+<!--                                    </span>-->
+<!--                                    <span-->
+<!--                                        *ngFor="-->
+<!--                                            let n of numSequence(-->
+<!--                                                Math.round(item.rating)-->
+<!--                                            )-->
+<!--                                        "-->
+<!--                                    >-->
+<!--                                        <mat-icon-->
+<!--                                            class="icon-size-5 text-[#FABF35]"-->
+<!--                                            matPrefix-->
+<!--                                            [svgIcon]="'heroicons_solid:star'"-->
+<!--                                        >-->
+<!--                                        </mat-icon>-->
+<!--                                    </span>-->
+<!--                                </div>-->
+<!--                            </div>-->
 
                             <div class="flex flex-row truncate">
                                 <div class="font-medium mr-4">Trạng thái</div>
@@ -245,6 +259,7 @@
                                     class="mr-4"
                                     mat-raised-button
                                     color="primary"
+                                    [disabled]="!form.valid"
                                     (click)="update(item.id)">
                                     Cập nhật
                                 </button>
@@ -267,6 +282,7 @@
                                 *ngIf="!item.id"
                                 mat-raised-button
                                 color="primary"
+                                [disabled]="!form.valid"
                                 (click)="create()"
                             >
                                Lưu
