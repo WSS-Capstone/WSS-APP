@@ -51,6 +51,14 @@
                 <div class="flex flex-row mb-4 font-medium">
                     <div>Đánh giá</div>
                     <div class="flex flex-row ml-4">
+                        <span *ngFor="let n of numSequence(item.rating)">
+                            <mat-icon
+                                class="icon-size-5 text-[#FABF35]"
+                                matPrefix
+                                [svgIcon]="'heroicons_solid:star'"
+                            >
+                            </mat-icon>
+                        </span>
                         <span
                             *ngFor="
                                 let n of numSequence(MAX_RATING - item.rating)
@@ -58,14 +66,6 @@
                         >
                             <mat-icon
                                 class="icon-size-5 text-[#E8E8E8]"
-                                matPrefix
-                                [svgIcon]="'heroicons_solid:star'"
-                            >
-                            </mat-icon>
-                        </span>
-                        <span *ngFor="let n of numSequence(item.rating)">
-                            <mat-icon
-                                class="icon-size-5 text-[#FABF35]"
                                 matPrefix
                                 [svgIcon]="'heroicons_solid:star'"
                             >

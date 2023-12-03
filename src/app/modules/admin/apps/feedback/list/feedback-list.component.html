@@ -78,16 +78,16 @@
                                     </div>
                                     <div class="">{{item.service?.name}}</div>
                                     <div class="flex flex-row">
-                                        <span *ngFor="let n of numSequence(MAX_RATING - item.rating)">
+                                        <span *ngFor="let n of numSequence(item.rating)">
                                             <mat-icon
-                                                class="icon-size-5 text-[#E8E8E8]"
+                                                class="icon-size-5 text-[#FABF35]"
                                                 matPrefix
                                                 [svgIcon]="'heroicons_solid:star'">
                                             </mat-icon>
                                         </span>
-                                        <span *ngFor="let n of numSequence(item.rating)">
+                                        <span *ngFor="let n of numSequence(MAX_RATING - item.rating)">
                                             <mat-icon
-                                                class="icon-size-5 text-[#FABF35]"
+                                                class="icon-size-5 text-[#E8E8E8]"
                                                 matPrefix
                                                 [svgIcon]="'heroicons_solid:star'">
                                             </mat-icon>
