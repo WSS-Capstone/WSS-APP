@@ -228,6 +228,44 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
         });
     }
 
+    cancelOrder(id: string, status: string, text: string, currentStatus: string) {
+        const confirmation = this._fuseConfirmationService.open({
+            title: text + ' đơn hàng',
+            message: `Bạn có chắc chắn muốn ${text.toLowerCase()} này?!`,
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            input: {
+                label: 'Lý do',
+                value: null
+            },
+            actions: {
+                confirm: {
+                    label: text,
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Hủy'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result != null && result !== 'cancelled') {
+                console.log(result);
+                const cccc = this._service.approval(id, status, currentStatus, result).subscribe(() => {
+                    this.openSnackBar(`${text} thành công`, 'Đóng');
+                    cccc.unsubscribe();
+                    this._changeDetectorRef.markForCheck();
+                });
+            }
+        });
+    }
+
     openSnackBar(message: string, action: string) {
         this._snackBar.open(message, action);
     }

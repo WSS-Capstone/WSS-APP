@@ -1,6 +1,7 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FuseConfirmationConfig } from '@fuse/services/confirmation/confirmation.types';
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
     selector     : 'fuse-confirmation-dialog',
@@ -26,6 +27,8 @@ import { FuseConfirmationConfig } from '@fuse/services/confirmation/confirmation
 })
 export class FuseConfirmationDialogComponent
 {
+    commentInput = new FormControl('', [Validators.required, Validators.maxLength(300)]);
+
     /**
      * Constructor
      */

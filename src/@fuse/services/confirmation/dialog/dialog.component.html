@@ -59,9 +59,15 @@
                         <textarea
                             class="resize-none"
                             matInput
-                            [(ngModel)]="data.input.value"
+                            [formControl]="commentInput"
                             [rows]="3"
                             ></textarea>
+                        <mat-error *ngIf="commentInput.hasError('maxlength')">
+                            Lý do không được quá 300 ký tự.
+                        </mat-error>
+                        <mat-error *ngIf="commentInput.hasError('required')">
+                            Lý do không được bỏ trống.
+                        </mat-error>
                     </mat-form-field>
                 </ng-container>
             </div>
@@ -93,8 +99,9 @@
                 <button
                     *ngIf="data.input"
                     mat-flat-button
+                    [disabled]="!commentInput.valid"
                     [color]="data.actions.confirm.color"
-                    [matDialogClose]="data.input.value">
+                    [matDialogClose]="commentInput.value">
                     {{data.actions.confirm.label}}
                 </button>
             </ng-container>

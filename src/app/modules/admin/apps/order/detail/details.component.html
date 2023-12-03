@@ -233,8 +233,12 @@
                 <ng-container *ngIf="item.statusOrder !== 'PENDING' && item.statusOrder !== 'DONE' && item.statusOrder !== 'CANCEL'">
                     <button mat-raised-button color="primary" class="mr-4" (click)="updateStatus(item.id, 'DONE', 'Hoàn tất đơn hàng', item.statusOrder)">Hoàn tất đơn hàng</button>
                 </ng-container>
-                <ng-container *ngIf="(item.statusOrder === 'PENDING' || item.statusOrder === 'CONFIRM') && item.statusOrder !== 'DONE' && item.statusOrder !== 'CANCEL'">
-                    <button mat-raised-button color="warn" (click)="updateStatus(item.id, 'CANCEL', 'Hủy đơn hàng', item.statusOrder)">Hủy đơn hàng</button>
+                <ng-container *ngIf="(item.statusOrder === 'PENDING' || item.statusOrder === 'CONFIRM')
+                                    && item.statusOrder !== 'DONE'
+                                    && item.statusOrder !== 'CANCEL'
+                                    && item.statusPayment != 'DOING'
+                                    && item.statusPayment != 'DONE'">
+                    <button mat-raised-button color="warn" (click)="cancelOrder(item.id, 'CANCEL', 'Hủy đơn hàng', item.statusOrder)">Hủy đơn hàng</button>
                 </ng-container>
             </div>
 

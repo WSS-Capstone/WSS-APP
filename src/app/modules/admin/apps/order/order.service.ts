@@ -379,7 +379,7 @@ export class OrderService {
     //     );
     // }
 
-    approval(id: string, status: string, currentStatus: string): Observable<Order> {
+    approval(id: string, status: string, currentStatus: string, cancelReason?: string): Observable<Order> {
         switch (status) {
             case 'CONFIRM':
                 return this.item$.pipe(
