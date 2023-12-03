@@ -18,6 +18,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import {Task} from "../../task/task.types";
 import {OrderService} from "../order.service";
 import {Account} from "../../user/user.types";
+import {OrderDetail} from "../order.types";
 
 @Component({
     selector: 'discount-details',
@@ -44,7 +45,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fb: FormBuilder,
         private sanitizer: DomSanitizer,
-        @Inject(MAT_DIALOG_DATA) private _data: { orderDetailId: string, isOwnerService: boolean, categoryId: string },
+        @Inject(MAT_DIALOG_DATA) public _data: { orderDetail: OrderDetail },
         private _taskService: TaskService,
         private _orderService: OrderService,
         private _matDialogRef: MatDialogRef<OrderCreateTaskComponent>
@@ -62,11 +63,11 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         console.log(this._data)
         this._orderService.users$.subscribe(userss => {
-            this.users = userss.filter(x => (this._data.isOwnerService ? x.roleName === 'Staff' : x.roleName === 'Partner') && x.user.categoryId === this._data.categoryId);
+            this.users = userss.filter(x => (this._data.orderDetail.service.isOwnerService ? x.roleName === 'Staff' : x.roleName === 'Partner') && x.user.categoryId === this._data.orderDetail.service.categoryId);
         });
 
         this.form.patchValue({
-            orderDetailId: this._data.orderDetailId
+            orderDetailId: this._data.orderDetail.id
         })
     }
 
@@ -123,8 +124,8 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
     create(): void {
         console.log(this.form.value)
         const requestBody = {
-            staffId: this._data.isOwnerService ? this.form.get('userId').value : null,
-            partnerId: !this._data.isOwnerService ? this.form.get('userId').value : null,
+            staffId: this._data.orderDetail.service.isOwnerService ? this.form.get('userId').value : null,
+            partnerId: !this._data.orderDetail.service.isOwnerService ? this.form.get('userId').value : null,
             orderDetailId: this.form.get('orderDetailId').value,
             taskName: this.form.get('taskName').value,
             startDate: this.form.get('startDate').value,
@@ -132,7 +133,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
             imageEvidence: null
         }
 
-        this._orderService.createTask(requestBody, this._data.isOwnerService ? 'owner' : 'partner').pipe(
+        this._orderService.createTask(requestBody, this._data.orderDetail.service.isOwnerService ? 'owner' : 'partner').pipe(
             map(() => {
                 this.showFlashMessage('success');
             })).subscribe();

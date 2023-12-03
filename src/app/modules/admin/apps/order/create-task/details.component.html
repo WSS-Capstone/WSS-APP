@@ -1,7 +1,41 @@
-<div class="flex flex-col flex-auto -m-6 pt-1">
+<div class="flex flex-row flex-auto pt-1">
+    <ng-container>
+        <div class="flex flex-col w-2/5">
+            <div class="text-3xl font-extrabold tracking-tight p-5">Thông tin dịch vụ</div>
+
+            <!-- Image -->
+            <div class="flex flex-auto flex-col p-5">
+                <mat-form-field class="w-full">
+                    <mat-label>Tên dịch vụ</mat-label>
+                    <input matInput readonly [value]="_data?.orderDetail?.service?.name">
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Ngày thực hiện</mat-label>
+                    <input matInput readonly [value]="_data?.orderDetail?.startTime | date: 'dd/MM/yyyy'">
+                </mat-form-field>
+
+                <mat-form-field class="w-full" >
+                    <mat-label>Giá tiền</mat-label>
+                    <input matInput readonly [value]="(_data?.orderDetail?.price | number: '1.0-0') + ' VNĐ'">
+                </mat-form-field>
+
+                <mat-form-field class="w-full" >
+                    <mat-label>Địa chỉ</mat-label>
+                    <input matInput readonly [value]="_data?.orderDetail?.address">
+                </mat-form-field>
+
+                <mat-form-field class="w-full" >
+                    <mat-label>Ghi chú</mat-label>
+                    <textarea matInput readonly rows="3" [value]="_data?.orderDetail?.description.length > 0 ? _data?.orderDetail?.description : 'Không có' "></textarea>
+                </mat-form-field>
+            </div>
+        </div>
+    </ng-container>
 
     <ng-container [formGroup]="form">
         <!-- Title -->
+        <div class="flex flex-col w-3/5 divide-x">
         <div class="text-3xl font-extrabold tracking-tight p-5">Tạo công việc</div>
 
         <!-- Image -->
@@ -53,7 +87,7 @@
             </div>
 
         </div>
-        <div class="flex justify-end items-center m-4">
+        <div class="flex justify-end items-center p-4">
             <div
                 class="flex items-center mr-4 mt-4"
                 *ngIf="flashMessage">
@@ -82,6 +116,7 @@
                         Lưu
                     </button>
                 </div>
+        </div>
         </div>
     </ng-container>
 

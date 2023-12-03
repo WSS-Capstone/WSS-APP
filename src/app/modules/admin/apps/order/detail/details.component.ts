@@ -10,7 +10,7 @@ import {
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {map, Observable, of, Subject, switchMap, take} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
-import {Order, WeddingInformation} from "../order.types";
+import {Order, OrderDetail, WeddingInformation} from "../order.types";
 import {OrderService} from "../order.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
@@ -22,6 +22,7 @@ import {AccountRequest} from "../../user/user.types";
 import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
 import { OrderCreateTaskComponent } from '../create-task/details.component';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Service} from "../../service/service.types";
 
 @Component({
     selector: 'order-details',
@@ -181,13 +182,11 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    createTask(id: string, isOwnerService: boolean, categoryId: string) {
+    createTask(orderDetail: OrderDetail) {
         this._matDialog.open(OrderCreateTaskComponent, {
             autoFocus: false,
             data: {
-                orderDetailId: id,
-                isOwnerService: isOwnerService,
-                categoryId: categoryId
+                orderDetail: orderDetail
             },
             width: '50vw',
         });

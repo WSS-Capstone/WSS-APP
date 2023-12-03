@@ -184,7 +184,7 @@
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
                                 <div class="ml-3">
-                                    <div class="text-[#8E8EA1] text-sm ">Chú rễ</div>
+                                    <div class="text-[#8E8EA1] text-sm ">Chú rể</div>
                                     <div class="text-lg font-semibold">{{item.weddingInformation?.nameBride}}</div>
                                 </div>
                             </div>
@@ -315,7 +315,7 @@
                                                 *ngIf="(item.statusOrder === 'CONFIRM' || item.statusOrder === 'DOING') && orderDetail.service.isOwnerService"
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
                                                 mat-stroked-button
-                                                (click)="createTask(orderDetail.id, orderDetail.service?.isOwnerService, orderDetail.service.categoryId)"
+                                                (click)="createTask(orderDetail)"
                                                 >
                                                 <mat-icon
                                                     class="icon-size-5"
