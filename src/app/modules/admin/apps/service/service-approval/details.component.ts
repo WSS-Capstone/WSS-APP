@@ -142,13 +142,18 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
             map(() => {
                 // Get the note
                 // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
-
-        setTimeout(() => {
+                // this._service.getPendingItems();
+                // this.showFlashMessage('success');
+            })).subscribe(() => {
             this._service.getPendingItems();
+            this.openSnackBar('Duyệt dịch vụ thành công', 'Đóng');
             this._matDialogRef.close();
-        }, 1200);
+        });
+
+        // setTimeout(() => {
+        //     this._service.getPendingItems();
+        //     this._matDialogRef.close();
+        // }, 3200);
     }
 
     reject(): void {

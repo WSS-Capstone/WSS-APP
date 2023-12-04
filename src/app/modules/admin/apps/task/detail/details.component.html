@@ -48,6 +48,16 @@
                     <input matInput readonly [formControlName]="'serviceName'">
                 </mat-form-field>
 
+                <mat-form-field class="w-full">
+                    <mat-label>Địa chỉ</mat-label>
+                    <input matInput readonly [formControlName]="'address'">
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Ghi chú</mat-label>
+                    <input matInput readonly [formControlName]="'note'">
+                </mat-form-field>
+
                 <div class="flex">
                     <mat-form-field class="w-full pr-2">
                         <mat-label>Ngày bắt đầu</mat-label>
@@ -152,7 +162,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col items-center pl-4">
+            <div class="flex flex-col items-center pl-4" *ngIf="cate.orderDetail.status == 'DONE'">
                 <div class="text-1xl font-semibold tracking-tight mb-1">Ảnh</div>
                 <div class="max-w-80 w-80 h-50 border rounded overflow-hidden">
                     <img [hidden]="!imgDataOrLink" class="max-w-80 h-full object-cover" [src]="imgDataOrLink"
