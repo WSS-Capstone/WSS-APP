@@ -19,6 +19,8 @@ import {environment} from "../../../../../../environments/environment";
 import {DomSanitizer} from "@angular/platform-browser";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
+import {Account} from "../../user/user.types";
+import {OrderService} from "../../order/order.service";
 
 @Component({
     selector: 'category-details',
@@ -36,6 +38,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
     imgDataOrLink: any;
     tempImageUrls: string[] = [];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    users: Account[];
 
     form: FormGroup;
 
@@ -51,7 +54,9 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
         private _fuseConfirmationService: FuseConfirmationService,
         private _snackBar: MatSnackBar,
         private _matDialog: MatDialog,
-        private _matDialogRef: MatDialogRef<ServiceDetailsComponent>
+        private _matDialogRef: MatDialogRef<ServiceDetailsComponent>,
+        private _orderService: OrderService,
+
     ) {
         this._initForm();
     }
@@ -103,6 +108,12 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
 
             this.item$ = of(item);
         }
+
+        this._orderService.users$.subscribe(data => {
+            this.users = data;
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        })
     }
 
     private _initForm(): void {
@@ -113,10 +124,16 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             description: [null, Validators.maxLength(1000)],
             ownerId: [null],
             quantity: [null, Validators.required],
+            unit: [null],
             price: [null, Validators.required],
             imageUrls: [[]],
             status: [true],
         });
+    }
+
+    getPartnerName(id: string) {
+        const user = this.users.find(x => x.id === id);
+        return user.user?.fullname || '';
     }
 
     private _patchValue(value: Service) {
@@ -127,6 +144,7 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
             description: value.description,
             ownerId: value.ownerId,
             quantity: value.quantity,
+            unit: value.unit,
             price: value.currentPrices?.price,
             imageUrls: value.serviceImages.map((image) => image.imageUrl),
             status: value.status === 'Active',

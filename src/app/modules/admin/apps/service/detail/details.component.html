@@ -115,6 +115,21 @@
                     </mat-form-field>
                 </div>
 
+                <!-- Doi tac & Don vi -->
+                <div class="flex" >
+                    <mat-form-field class="w-full pr-2" *ngIf="!cate.isOwnerService">
+                        <mat-label>Đối tác</mat-label>
+                        <input type="text" matInput [value]="getPartnerName(cate?.createByNavigation?.id)">
+                    </mat-form-field>
+                    <mat-form-field class="w-full">
+                        <mat-label>Đơn vị</mat-label>
+                        <input type="text" matInput [formControlName]="'unit'">
+                        <mat-error *ngIf="form.get('unit').hasError('required')">
+                            Đơn vị không được để trống
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
                 <mat-form-field class="w-full">
                     <mat-label>Giá cho thuê</mat-label>
                     <input matInput [formControlName]="'price'">

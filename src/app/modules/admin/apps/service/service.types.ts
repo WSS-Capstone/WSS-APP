@@ -12,6 +12,7 @@ export interface Service
     currentPrices?: CurrentPrice;
     description?: string;
     quantity: string;
+    unit?: string;
     ownerId: string;
     serviceImages: ImageUrl[];
     createByNavigation?: Account;
