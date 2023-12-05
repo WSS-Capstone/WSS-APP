@@ -389,7 +389,7 @@ export class OrderService {
                         filter(item => item && item.id === id),
                         tap((updatedItem) => {
                             itemArr.statusOrder = status;
-                            this._item.next(itemArr);
+                            // this._item.next(itemArr);
                             return itemArr;
                         }),
                         switchMap(updatedItem => this.pendingItems$.pipe(
@@ -399,11 +399,11 @@ export class OrderService {
                                 if (index < 0) {
                                     return;
                                 }
-
+                                // this._item.next(itemArr);
                                 itemsArr[index].statusOrder = status;
                                 itemsArr.splice(index, 1)
                                 this._pendingItems.next(itemsArr);
-                                this._doingItems.next([itemsArr[index], ...this._doingItems.value])
+                                this._doingItems.next(itemsArr)
                                 return itemsArr[index];
                             })
                         ))
