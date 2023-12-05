@@ -22,6 +22,7 @@ export const RESOURCE = {
     voucher: PrefixAPI + '/voucher',
     wedding: PrefixAPI + '/WeddingInformation',
     payment: PrefixAPI + '/paymentHistory',
+    dashboard: PrefixAPI + '/dashboard',
 };
 
 export const ENDPOINTS = {
@@ -41,4 +42,5 @@ export const ENDPOINTS = {
     task: RESOURCE.task,
     wedding: RESOURCE.wedding,
     payment: RESOURCE.payment,
+    dashboard: RESOURCE.dashboard,
 };
