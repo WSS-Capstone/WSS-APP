@@ -27,7 +27,7 @@
 
                 <mat-form-field class="w-full" >
                     <mat-label>Ghi chú</mat-label>
-                    <textarea matInput readonly rows="3" [value]="_data?.orderDetail?.description.length > 0 ? _data?.orderDetail?.description : 'Không có' "></textarea>
+                    <textarea matInput readonly rows="3" [value]="_data?.orderDetail?.description?.length > 0 ? _data?.orderDetail?.description : '' " placeholder="Ghi chú"></textarea>
                 </mat-form-field>
             </div>
         </div>
