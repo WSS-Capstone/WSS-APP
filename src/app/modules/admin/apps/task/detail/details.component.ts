@@ -81,13 +81,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         if (this._data.service.id) {
             console.log("Edit");
 
-            if (this._data.type === 'owner') {
-                this._service.getOwnerItem(this._data.service.id).subscribe();
-                this.item$ = this._service.ownerItem$;
-            } else if (this._data.type === 'partner') {
-                this._service.getPartnerItem(this._data.service.id).subscribe();
-                this.item$ = this._service.partnerItem$;
-            }
+            this._service.getItem(this._data.service.id, this._data.type).subscribe();
+            this.item$ = this._service.selectedItem$;
 
             this.item$.subscribe((value) => {
                 console.log(value.imageEvidence)
@@ -269,15 +264,46 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             status: stt
         }
 
-        if (this._data.type === 'owner') {
-            this._service.updateTask(this.form.get('id').value, request).pipe(
+        if (this._data.type.includes('owner')) {
+            let curStt = 0;
+            switch (this._data.type) {
+                case 'owner_expected':
+                    curStt = 0
+                    break;
+                case 'owner__to_do':
+                    curStt = 1
+                    break;
+                case 'owner__in_progress':
+                    curStt = 2
+                    break;
+                case 'owner_done':
+                    curStt = 3
+                    break;
+            }
+
+            this._service.updateTask(this.form.get('id').value, request, curStt, stt).pipe(
                 map(() => {
                     // Get the note
                     // this.cate$ = this._categoryService.category$;
                     this.showFlashMessage('success');
                 })).subscribe();
         } else {
-            this._service.updateTaskPartner(this.form.get('id').value, request).pipe(
+            let curStt = 0;
+            switch (this._data.type) {
+                case 'partner_expected':
+                    curStt = 0
+                    break;
+                case 'partner__to_do':
+                    curStt = 1
+                    break;
+                case 'partner__in_progress':
+                    curStt = 2
+                    break;
+                case 'partner_done':
+                    curStt = 3
+                    break;
+            }
+            this._service.updateTaskPartner(this.form.get('id').value, request, curStt, stt).pipe(
                 map(() => {
                     // Get the note
                     // this.cate$ = this._categoryService.category$;
@@ -285,12 +311,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
                 })).subscribe();
         }
 
-        this._service.updateTask(this.form.get('id').value, request).pipe(
-            map(() => {
-                // Get the note
-                // this.cate$ = this._categoryService.category$;
-                this.showFlashMessage('success');
-            })).subscribe();
+        // this._service.updateTask(this.form.get('id').value, request).pipe(
+        //     map(() => {
+        //         // Get the note
+        //         // this.cate$ = this._categoryService.category$;
+        //         this.showFlashMessage('success');
+        //     })).subscribe();
 
         setTimeout(() => {
             this._matDialogRef.close();

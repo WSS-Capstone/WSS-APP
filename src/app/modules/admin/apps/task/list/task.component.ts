@@ -36,6 +36,10 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
             .vh-70 {
                 height: 66vh !important;
             }
+
+            .mat-mdc-tab-body-wrapper .mat-mdc-tab-body-content {
+                padding: 0 !important;
+            }
         `
     ],
     encapsulation: ViewEncapsulation.None,
@@ -43,25 +47,51 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
     animations: fuseAnimations
 })
 export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild('ownerPaginator') private _ownerPaginator: MatPaginator;
-    @ViewChild('partnerPaginator') private _partnerPaginator: MatPaginator;
+    @ViewChild('ownerExpectedPaginator') private _ownerExpectedPaginator: MatPaginator;
+    @ViewChild('ownerToDoPaginator') private _ownerToDoPaginator: MatPaginator;
+    @ViewChild('ownerInProgressPaginator') private _ownerInProgressPaginator: MatPaginator;
+    @ViewChild('ownerDonePaginator') private _ownerDonePaginator: MatPaginator;
+    @ViewChild('ownerCancelPaginator') private _ownerCancelPaginator: MatPaginator;
+    @ViewChild('partnerExpectedPaginator') private _partnerExpectedPaginator: MatPaginator;
+    @ViewChild('partnerToDoPaginator') private _partnerToDoPaginator: MatPaginator;
+    @ViewChild('partnerInProgressPaginator') private _partnerInProgressPaginator: MatPaginator;
+    @ViewChild('partnerDonePaginator') private _partnerDonePaginator: MatPaginator;
+    @ViewChild('partnerCancelPaginator') private _partnerCancelPaginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
-    partnerItems$: Observable<Task[]>;
-    ownerItems$: Observable<Task[]>;
+    partnerExpectedItems$: Observable<Task[]>;
+    partnerToDoItems$: Observable<Task[]>;
+    partnerInProgressItems$: Observable<Task[]>;
+    partnerDoneItems$: Observable<Task[]>;
+    partnerCancelItems$: Observable<Task[]>;
+    ownerExpectedItems$: Observable<Task[]>;
+    ownerToDoItems$: Observable<Task[]>;
+    ownerInProgressItems$: Observable<Task[]>;
+    ownerDoneItems$: Observable<Task[]>;
+    ownerCancelItems$: Observable<Task[]>;
     categories$: Observable<Category[]>;
 
     parentCategories$: Observable<Task[]>;
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
-    ownerPagination: TaskPagination;
-    partnerPagination: TaskPagination;
+    ownerExpectedPagination: TaskPagination;
+    ownerToDoPagination: TaskPagination;
+    ownerInProgressPagination: TaskPagination;
+    ownerDonePagination: TaskPagination;
+    ownerCancelPagination: TaskPagination;
+    partnerExpectedPagination: TaskPagination;
+    partnerToDoPagination: TaskPagination;
+    partnerInProgressPagination: TaskPagination;
+    partnerDonePagination: TaskPagination;
+    partnerCancelPagination: TaskPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedCategory: Task | null = null;
     selectedCategoryForm: UntypedFormGroup;
     isNew: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     selectedTab = 0;
+    selectedOwnerSubTab = 0;
+    selectedPartnerSubTab = 0;
 
     /**
      * Constructor
@@ -85,31 +115,128 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit(): void {
         // Get the pagination
-        this._service.partnerPagination$
+        this._service.partnerExpectedPagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: TaskPagination) => {
 
                 // Update the pagination
-                this.partnerPagination = pagination;
+                this.partnerExpectedPagination = pagination;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
-        this._service.ownerPagination$
+        this._service.partnerToDoPagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: TaskPagination) => {
 
                 // Update the pagination
-                this.ownerPagination = pagination;
+                this.partnerToDoPagination = pagination;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+
+        this._service.partnerInProgressPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.partnerInProgressPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.partnerDonePagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.partnerDonePagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.partnerCancelPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.partnerCancelPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.ownerExpectedPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.ownerExpectedPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.ownerToDoPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.ownerToDoPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.ownerInProgressPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.ownerInProgressPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.ownerDonePagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.ownerDonePagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._service.ownerCancelPagination$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((pagination: TaskPagination) => {
+
+                // Update the pagination
+                this.ownerCancelPagination = pagination;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
 
         // Get the products
-        this.partnerItems$ = this._service.partnerItems$;
-        this.ownerItems$ = this._service.ownerItems$;
+        this.partnerExpectedItems$ = this._service.partnerExpectedItems$;
+        this.partnerToDoItems$ = this._service.partnerToDoItems$;
+        this.partnerInProgressItems$ = this._service.partnerInProgressItems$;
+        this.partnerDoneItems$ = this._service.partnerDoneItems$;
+        this.partnerCancelItems$ = this._service.partnerCancelItems$;
+        this.ownerExpectedItems$ = this._service.ownerExpectedItems$;
+        this.ownerToDoItems$ = this._service.ownerToDoItems$;
+        this.ownerInProgressItems$ = this._service.ownerInProgressItems$;
+        this.ownerDoneItems$ = this._service.ownerDoneItems$;
+        this.ownerCancelItems$ = this._service.ownerCancelItems$;
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
@@ -119,11 +246,33 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
                 switchMap((query) => {
                     this.closeDetails();
                     this.isLoading = true;
-                    switch (this.selectedTab) {
-                        case 0:
-                            return this._service.getPartnerItems(0, 10, 'status', 'asc', query);
-                        case 1:
-                            return this._service.getOwnerItems(0, 10, 'status', 'asc', query);
+
+                    if(this.selectedTab === 0){
+                        switch (this.selectedPartnerSubTab) {
+                            case 0:
+                                return this._service.getPartnerExpectedItems(0, 10, 'StartDate', 'desc', query);
+                            case 1:
+                                return this._service.getPartnerToDoItems(0, 10, 'StartDate', 'desc', query);
+                            case 2:
+                                return this._service.getPartnerInProgressItems(0, 10, 'StartDate', 'desc', query);
+                            case 3:
+                                return this._service.getPartnerDoneItems(0, 10, 'StartDate', 'desc', query);
+                            case 4:
+                                return this._service.getPartnerCancelItems(0, 10, 'StartDate', 'desc', query);
+                        }
+                    } else if(this.selectedTab === 1){
+                        switch (this.selectedOwnerSubTab) {
+                            case 0:
+                                return this._service.getOwnerExpectedItems(0, 10, 'StartDate', 'desc', query);
+                            case 1:
+                                return this._service.getOwnerToDoItems(0, 10, 'StartDate', 'desc', query);
+                            case 2:
+                                return this._service.getOwnerInProgressItems(0, 10, 'StartDate', 'desc', query);
+                            case 3:
+                                return this._service.getOwnerDoneItems(0, 10, 'StartDate', 'desc', query);
+                            case 4:
+                                return this._service.getOwnerCancelItems(0, 10, 'StartDate', 'desc', query);
+                        }
                     }
                 }),
                 map(() => {
@@ -137,34 +286,24 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
      * After view init
      */
     ngAfterViewInit(): void {
-        if (this._sort && this._partnerPaginator) {
-            // Set the initial sort
+        if (this._sort && this._partnerExpectedPaginator) {
             this._sort.sort({
-                id: 'Code',
-                start: 'asc',
+                id: 'StartDate',
+                start: 'desc',
                 disableClear: true
             });
-
-            // Mark for check
             this._changeDetectorRef.markForCheck();
-
-            // If the user changes the sort order...
             this._sort.sortChange
                 .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(() => {
-                    // Reset back to the first page
-                    this._partnerPaginator.pageIndex = 0;
-
-                    // Close the details
+                    this._partnerExpectedPaginator.pageIndex = 0;
                     this.closeDetails();
                 });
-
-            // Get products if sort or page changes
-            merge(this._sort.sortChange, this._partnerPaginator.page).pipe(
+            merge(this._sort.sortChange, this._partnerExpectedPaginator.page).pipe(
                 switchMap(() => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getPartnerItems(this._partnerPaginator.pageIndex, this._partnerPaginator.pageSize, this._sort.active, this._sort.direction);
+                    return this._service.getPartnerExpectedItems(this._partnerExpectedPaginator.pageIndex, this._partnerExpectedPaginator.pageSize, this._sort.active, this._sort.start);
                 }),
                 map(() => {
                     this.isLoading = false;
@@ -172,40 +311,231 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
             ).subscribe();
         }
 
-        if (this._sort && this._ownerPaginator) {
-            // Set the initial sort
+        if (this._sort && this._partnerToDoPaginator) {
             this._sort.sort({
-                id: 'Code',
-                start: 'asc',
+                id: 'StartDate',
+                start: 'desc',
                 disableClear: true
             });
-
-            // Mark for check
             this._changeDetectorRef.markForCheck();
-
-            // If the user changes the sort order...
             this._sort.sortChange
                 .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(() => {
-                    // Reset back to the first page
-                    this._ownerPaginator.pageIndex = 1;
-
-                    // Close the details
+                    this._partnerToDoPaginator.pageIndex = 0;
                     this.closeDetails();
                 });
-
-            // Get products if sort or page changes
-            merge(this._sort.sortChange, this._ownerPaginator.page).pipe(
+            merge(this._sort.sortChange, this._partnerToDoPaginator.page).pipe(
                 switchMap(() => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getOwnerItems(this._ownerPaginator.pageIndex, this._ownerPaginator.pageSize, this._sort.active, this._sort.direction);
+                    return this._service.getPartnerToDoItems(this._partnerToDoPaginator.pageIndex, this._partnerToDoPaginator.pageSize, this._sort.active, this._sort.start);
                 }),
                 map(() => {
                     this.isLoading = false;
                 })
             ).subscribe();
         }
+
+        if (this._sort && this._partnerInProgressPaginator) {
+            this._sort.sort({
+                id: 'StartDate',
+                start: 'desc',
+                disableClear: true
+            });
+            this._changeDetectorRef.markForCheck();
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    this._partnerInProgressPaginator.pageIndex = 0;
+                    this.closeDetails();
+                });
+            merge(this._sort.sortChange, this._partnerInProgressPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getPartnerInProgressItems(this._partnerInProgressPaginator.pageIndex, this._partnerInProgressPaginator.pageSize, this._sort.active, this._sort.start);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        if (this._sort && this._partnerDonePaginator) {
+            this._sort.sort({
+                id: 'StartDate',
+                start: 'desc',
+                disableClear: true
+            });
+            this._changeDetectorRef.markForCheck();
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    this._partnerDonePaginator.pageIndex = 0;
+                    this.closeDetails();
+                });
+            merge(this._sort.sortChange, this._partnerDonePaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getPartnerDoneItems(this._partnerDonePaginator.pageIndex, this._partnerDonePaginator.pageSize, this._sort.active, this._sort.start);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        if (this._sort && this._partnerCancelPaginator) {
+            this._sort.sort({
+                id: 'StartDate',
+                start: 'desc',
+                disableClear: true
+            });
+            this._changeDetectorRef.markForCheck();
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    this._partnerCancelPaginator.pageIndex = 0;
+                    this.closeDetails();
+                });
+            merge(this._sort.sortChange, this._partnerCancelPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getPartnerCancelItems(this._partnerCancelPaginator.pageIndex, this._partnerCancelPaginator.pageSize, this._sort.active, this._sort.start);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        if (this._sort && this._ownerExpectedPaginator) {
+            this._sort.sort({
+                id: 'StartDate',
+                start: 'desc',
+                disableClear: true
+            });
+            this._changeDetectorRef.markForCheck();
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    this._ownerExpectedPaginator.pageIndex = 0;
+                    this.closeDetails();
+                });
+            merge(this._sort.sortChange, this._ownerExpectedPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getOwnerExpectedItems(this._ownerExpectedPaginator.pageIndex, this._ownerExpectedPaginator.pageSize, this._sort.active, this._sort.start);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        if (this._sort && this._ownerToDoPaginator) {
+            this._sort.sort({
+                id: 'StartDate',
+                start: 'desc',
+                disableClear: true
+            });
+            this._changeDetectorRef.markForCheck();
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    this._ownerToDoPaginator.pageIndex = 0;
+                    this.closeDetails();
+                });
+            merge(this._sort.sortChange, this._ownerToDoPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getOwnerToDoItems(this._ownerToDoPaginator.pageIndex, this._ownerToDoPaginator.pageSize, this._sort.active, this._sort.start);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        if (this._sort && this._ownerInProgressPaginator) {
+            this._sort.sort({
+                id: 'StartDate',
+                start: 'desc',
+                disableClear: true
+            });
+            this._changeDetectorRef.markForCheck();
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    this._ownerInProgressPaginator.pageIndex = 0;
+                    this.closeDetails();
+                });
+            merge(this._sort.sortChange, this._ownerInProgressPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getOwnerInProgressItems(this._ownerInProgressPaginator.pageIndex, this._ownerInProgressPaginator.pageSize, this._sort.active, this._sort.start);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        if (this._sort && this._ownerDonePaginator) {
+            this._sort.sort({
+                id: 'StartDate',
+                start: 'desc',
+                disableClear: true
+            });
+            this._changeDetectorRef.markForCheck();
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    this._ownerDonePaginator.pageIndex = 0;
+                    this.closeDetails();
+                });
+            merge(this._sort.sortChange, this._ownerDonePaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getOwnerDoneItems(this._ownerDonePaginator.pageIndex, this._ownerDonePaginator.pageSize, this._sort.active, this._sort.start);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
+        if (this._sort && this._ownerCancelPaginator) {
+            this._sort.sort({
+                id: 'StartDate',
+                start: 'desc',
+                disableClear: true
+            });
+            this._changeDetectorRef.markForCheck();
+            this._sort.sortChange
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(() => {
+                    this._ownerCancelPaginator.pageIndex = 0;
+                    this.closeDetails();
+                });
+            merge(this._sort.sortChange, this._ownerCancelPaginator.page).pipe(
+                switchMap(() => {
+                    this.closeDetails();
+                    this.isLoading = true;
+                    return this._service.getOwnerCancelItems(this._ownerCancelPaginator.pageIndex, this._ownerCancelPaginator.pageSize, this._sort.active, this._sort.start);
+                }),
+                map(() => {
+                    this.isLoading = false;
+                })
+            ).subscribe();
+        }
+
     }
 
     /**
@@ -218,7 +548,15 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onTabChange(event: MatTabChangeEvent): void {
-        this.selectedTab = event.index
+        this.selectedTab = event.index;
+    }
+
+    onSubTabChange(event: MatTabChangeEvent): void {
+        if(this.selectedTab === 0) {
+            this.selectedPartnerSubTab = event.index;
+        } else if(this.selectedTab === 1) {
+            this.selectedOwnerSubTab = event.index;
+        }
     }
 
     // toggleDetails(productId: string): void {
@@ -262,41 +600,22 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     update(id: string, type: string): void {
-        if(type === 'owner') {
-            this._service.getOwnerItem(id)
-                .subscribe((item) => {
-                    this.selectedCategory = item;
+        this._service.getItem(id, type)
+            .subscribe((item) => {
+                this.selectedCategory = item;
 
-                    this._matDialog.open(TaskDetailsComponent, {
-                        autoFocus: false,
-                        data: {
-                            service: this.selectedCategory,
-                            type: type
-                        },
-                        width: '70vw',
-                        maxHeight: '90%'
-                    });
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
+                this._matDialog.open(TaskDetailsComponent, {
+                    autoFocus: false,
+                    data: {
+                        service: this.selectedCategory,
+                        type: type
+                    },
+                    width: '70vw',
+                    maxHeight: '90%'
                 });
-        } else if(type === 'partner') {
-            this._service.getPartnerItem(id)
-                .subscribe((item) => {
-                    this.selectedCategory = item;
-
-                    this._matDialog.open(TaskDetailsComponent, {
-                        autoFocus: false,
-                        data: {
-                            service: this.selectedCategory,
-                            type: type
-                        },
-                        width: '70vw',
-                        maxHeight: '90%'
-                    });
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
-                });
-        }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
     }
 
     delete(id: string, type: string): void {
@@ -321,21 +640,11 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
             if (result === 'confirmed') {
                 console.log(id);
 
-                if(type === 'owner') {
-                    // Delete the product on the server
-                    this._service.delete(id, type).subscribe(() => {
-                        this.openSnackBar('Xóa thành công', 'Đóng');
-                        // Close the details
-                        this.closeDetails();
-                    });
-                } else if(type === 'partner') {
-                    // Delete the product on the server
-                    this._service.delete(id, type).subscribe(() => {
-                        this.openSnackBar('Xóa thành công', 'Đóng');
-                        // Close the details
-                        this.closeDetails();
-                    });
-                }
+                this._service.delete(id, type).subscribe(() => {
+                    this.openSnackBar('Xóa thành công', 'Đóng');
+                    // Close the details
+                    this.closeDetails();
+                });
             }
         });
     }
