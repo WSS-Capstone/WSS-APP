@@ -441,7 +441,9 @@ export class OrderService {
                 if (currentStatus === 'PENDING') {
                     return this.item$.pipe(
                         take(1),
-                        switchMap(itemArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval?id=${id}&request=${status}`, {}).pipe(
+                        switchMap(itemArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval?id=${id}&request=${status}`, {
+                            reason: cancelReason
+                        }).pipe(
                             take(1),
                             filter(item => item && item.id === id),
                             tap((updatedItem) => {
@@ -469,7 +471,9 @@ export class OrderService {
                 } else if (currentStatus === 'CONFIRM' || currentStatus === 'DOING') {
                     return this.item$.pipe(
                         take(1),
-                        switchMap(itemArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval?id=${id}&request=${status}`, {}).pipe(
+                        switchMap(itemArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval?id=${id}&request=${status}`, {
+                            reason: cancelReason
+                        }).pipe(
                             take(1),
                             filter(item => item && item.id === id),
                             tap((updatedItem) => {

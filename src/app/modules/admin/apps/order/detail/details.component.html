@@ -20,7 +20,7 @@
                     <div class="text-3xl font-extrabold tracking-tight">Đơn hàng #{{item.code}}</div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
                         <div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_solid:clock'" class="text-white"></mat-icon>
                                 </div>
@@ -29,7 +29,7 @@
                                     <div class="text-lg font-semibold">{{item.createDate | date: 'dd/MM/yyyy'}}</div>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'mat_outline:credit_card'" class="text-white"></mat-icon>
                                 </div>
@@ -52,7 +52,7 @@
                                     </ng-container>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'mat_outline:receipt_long'" class="text-white"></mat-icon>
                                 </div>
@@ -77,7 +77,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
@@ -86,7 +86,7 @@
                                     <div class="text-lg font-semibold">{{item.voucher?.name ?? 'Không áp dụng'}}</div>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
@@ -95,7 +95,7 @@
                                     <div class="text-lg font-semibold">{{item.totalAmount | number: '1.0-0'}}  VNĐ</div>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:cash'" class="text-white"></mat-icon>
                                 </div>
@@ -109,7 +109,7 @@
                     <div class="text-3xl font-extrabold tracking-tight">Thông tin khách hàng</div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
                         <div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_solid:identification'" class="text-white"></mat-icon>
                                 </div>
@@ -118,7 +118,7 @@
                                     <div class="text-lg font-semibold">{{item.customer.fullname}}</div>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:map'" class="text-white"></mat-icon>
                                 </div>
@@ -129,7 +129,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_solid:phone'" class="text-white"></mat-icon>
                                 </div>
@@ -141,13 +141,13 @@
                         </div>
                     </div>
                     <div>
-                        <div class="text-2xl font-extrabold tracking-tight">Ghi chú</div>
+                        <div class="text-2xl font-extrabold tracking-tight mt-4">Ghi chú</div>
                         <div>{{item.description || 'Không có'}}</div>
                     </div>
                 </div>
                 <div class="">
                     <div class="text-3xl font-extrabold tracking-tight">Thông tin đám cưới</div>
-                    <div class="mt-4 flex flex-row h-18">
+                    <div class="mt-4 flex flex-row mt-4">
                         <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                             <mat-icon [svgIcon]="'heroicons_solid:clock'" class="text-white"></mat-icon>
                         </div>
@@ -161,7 +161,7 @@
                             <div class="">
                                 <div class="text-2xl font-bold tracking-tight">Nhà trai</div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
@@ -170,7 +170,7 @@
                                     <div class="text-lg font-semibold">{{item.weddingInformation?.nameBrideFather}}</div>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
@@ -179,7 +179,7 @@
                                     <div class="text-lg font-semibold">{{item.weddingInformation?.nameBrideMother}}</div>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
@@ -193,7 +193,7 @@
                             <div class="">
                                 <div class="text-2xl font-bold tracking-tight">Nhà gái</div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
@@ -202,7 +202,7 @@
                                     <div class="text-lg font-semibold">{{item.weddingInformation?.nameGroomFather}}</div>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
@@ -211,7 +211,7 @@
                                     <div class="text-lg font-semibold">{{item.weddingInformation?.nameGroomMother}}</div>
                                 </div>
                             </div>
-                            <div class="flex flex-row h-18">
+                            <div class="flex flex-row mt-4">
                                 <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
                                     <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
                                 </div>
