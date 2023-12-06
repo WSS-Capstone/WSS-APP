@@ -23,6 +23,7 @@ export const RESOURCE = {
     wedding: PrefixAPI + '/WeddingInformation',
     payment: PrefixAPI + '/paymentHistory',
     dashboard: PrefixAPI + '/dashboard',
+    notification: PrefixAPI + '/Noti',
 };
 
 export const ENDPOINTS = {
@@ -43,4 +44,5 @@ export const ENDPOINTS = {
     wedding: RESOURCE.wedding,
     payment: RESOURCE.payment,
     dashboard: RESOURCE.dashboard,
+    notification: RESOURCE.notification,
 };

@@ -115,7 +115,9 @@ export class NotificationsComponent implements OnInit, OnDestroy
     markAllAsRead(): void
     {
         // Mark all as read
-        this._notificationsService.markAllAsRead().subscribe();
+        this._notificationsService.markAllAsRead().subscribe(() => {
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
     /**
@@ -124,7 +126,8 @@ export class NotificationsComponent implements OnInit, OnDestroy
     toggleRead(notification: Notification): void
     {
         // Toggle the read status
-        notification.read = !notification.read;
+        notification.isRead = notification.isRead == 'Read' ? 'Unread' : 'Read';
+        notification.read = notification.isRead == 'Read';
 
         // Update the notification
         this._notificationsService.update(notification.id, notification).subscribe();
