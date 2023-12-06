@@ -41,6 +41,8 @@ export class NotificationsService {
      * Get all notifications
      */
     getAll(): Observable<NotificationResonponse> {
+
+
         return this._httpClient.get<NotificationResonponse>(ENDPOINTS.notification + `?userId=${this.userId}`).pipe(
             map((notis) => {
                 notis.data = notis.data.map((noti) => {

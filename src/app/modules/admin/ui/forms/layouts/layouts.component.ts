@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import {NotificationsService} from "../../../../../layout/common/notifications/notifications.service";
 
 @Component({
     selector     : 'forms-layouts',
@@ -10,7 +11,11 @@ export class FormsLayoutsComponent
     /**
      * Constructor
      */
-    constructor()
+    constructor(
+        private _notificationsService: NotificationsService,
+    )
     {
+
+
     }
 }

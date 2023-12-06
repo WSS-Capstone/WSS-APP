@@ -18,6 +18,8 @@ import {initializeApp, provideFirebaseApp} from "@angular/fire/app";
 import {getAuth, provideAuth} from "@angular/fire/auth";
 import {getFirestore, provideFirestore} from "@angular/fire/firestore";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import {getMessaging, provideMessaging} from "@angular/fire/messaging";
+import {AngularFireMessagingModule} from "@angular/fire/compat/messaging";
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -29,10 +31,12 @@ const initFirebase = [
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    AngularFireMessagingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     // provideAnalytics(() => getAnalytics()),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+    // provideMessaging(() => getAuth()),
     // provideFunctions(() => getFunctions()),
 ];
 

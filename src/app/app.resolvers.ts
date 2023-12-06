@@ -6,6 +6,7 @@ import { NavigationService } from 'app/core/navigation/navigation.service';
 import { NotificationsService } from 'app/layout/common/notifications/notifications.service';
 import { QuickChatService } from 'app/layout/common/quick-chat/quick-chat.service';
 import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service';
+import {FuseLoadingService} from "../@fuse/services/loading";
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +21,8 @@ export class InitialDataResolver implements Resolve<any>
         private _navigationService: NavigationService,
         private _notificationsService: NotificationsService,
         private _quickChatService: QuickChatService,
-        private _shortcutsService: ShortcutsService
+        private _shortcutsService: ShortcutsService,
+        private _loadingService: FuseLoadingService
     )
     {
     }
@@ -37,6 +39,12 @@ export class InitialDataResolver implements Resolve<any>
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>
     {
+
+        setInterval(() => {
+            this._loadingService.setAutoMode(false);
+            this._notificationsService.getAll().subscribe();
+            this._loadingService.setAutoMode(true);
+        }, 1000);
         // Fork join multiple API endpoint calls to wait all of them to finish
         return forkJoin([
             this._navigationService.get(),

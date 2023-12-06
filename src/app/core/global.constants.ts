@@ -24,6 +24,8 @@ export const RESOURCE = {
     payment: PrefixAPI + '/paymentHistory',
     dashboard: PrefixAPI + '/dashboard',
     notification: PrefixAPI + '/Noti',
+    subcribe: PrefixAPI + '/Noti/subscribe',
+    unsubcribe: PrefixAPI + '/Noti/unsubscribe',
 };
 
 export const ENDPOINTS = {
@@ -45,4 +47,6 @@ export const ENDPOINTS = {
     payment: RESOURCE.payment,
     dashboard: RESOURCE.dashboard,
     notification: RESOURCE.notification,
+    subcribe: RESOURCE.subcribe,
+    unsubcribe: RESOURCE.unsubcribe,
 };

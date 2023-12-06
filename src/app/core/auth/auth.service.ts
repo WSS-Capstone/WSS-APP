@@ -8,6 +8,8 @@ import {ENDPOINTS} from "../global.constants";
 import {User} from "../user/user.types";
 import {Auth, GoogleAuthProvider} from "@angular/fire/auth";
 import {Router} from "@angular/router";
+import {AngularFireMessaging} from "@angular/fire/compat/messaging";
+import {NotificationsService} from "../../layout/common/notifications/notifications.service";
 
 @Injectable()
 export class AuthService {
@@ -21,6 +23,7 @@ export class AuthService {
         private _httpClient: HttpClient,
         private _userService: UserService,
         private _authFb: AngularFireAuth,
+        private _noti: NotificationsService,
         private _router: Router,
         private _auth: Auth
     ) {
@@ -108,6 +111,7 @@ export class AuthService {
                 this._userService.user = response;
 
                 this.role = response.roleName;
+
                 return of(response);
             })
         );
@@ -184,6 +188,11 @@ export class AuthService {
                 // Store the user on the user service
                 this._userService.user = response;
                 this.role = response.roleName;
+
+                setInterval(() => {
+                    this._noti.getAll();
+                }, 1500);
+
                 // Return true
                 return of(true);
             })
