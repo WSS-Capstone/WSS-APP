@@ -21,6 +21,11 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 @Component({
     selector: 'payment-details',
     templateUrl: './details.component.html',
+    styles: [`
+        .payment-detail-grid {
+            grid-template-columns: 10% 20% 15% 15% 15% 15%;
+        }
+    `],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations
@@ -77,12 +82,12 @@ export class PaymentDetailsComponent implements OnInit, OnDestroy {
     private _initForm(): void {
         this.form = this._fb.group({
             id: [null],
+            code: [null],
             createDate: [null],
-            content: [null],
-            rating: [null],
-            fullname: [null],
-            serviceName: [null],
+            orderId: [null],
+            partnerId: [null],
             status: [null],
+            total: [null],
         });
     }
 
@@ -113,6 +118,41 @@ export class PaymentDetailsComponent implements OnInit, OnDestroy {
 
     numSequence(n: number): Array<number> {
         return Array(n);
+    }
+
+    pay(id: string): void {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'Xác nhận thanh toán',
+            message: 'Bạn có muốn thanh toán đơn hàng này?!',
+            icon:{
+                show: true,
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Xác nhận',
+                    color: 'primary'
+                },
+                cancel: {
+                    label: 'Đóng'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if (result === 'confirmed') {
+                console.log(result);
+                const ccc = this._service.patch(id, 'ACTIVE').subscribe(() => {
+                    this.showFlashMessage('success');
+                    ccc.unsubscribe();
+                    // Close the details
+                    // this.closeDetails();
+                });
+            }
+        });
     }
 
     create(): void {
