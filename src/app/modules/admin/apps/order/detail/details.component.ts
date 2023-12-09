@@ -399,4 +399,8 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     fnCalculateNumOfPeopleDo(tasks: any[]): number {
         return tasks.filter(x => x.status === 1).length;
     }
+
+    showDone(item: Order){
+        return item.orderDetails.every(x => x.status === 'DONE');
+    }
 }
