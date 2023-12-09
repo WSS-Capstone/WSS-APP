@@ -53,7 +53,6 @@ export class NotificationsService {
                 return notis;
             }),
             tap((notifications) => {
-                console.log(notifications);
                 this._notifications.next(notifications.data);
             })
         );

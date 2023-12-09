@@ -106,6 +106,9 @@
                             </div>
                         </div>
                     </div>
+
+                </div>
+                <div class="">
                     <div class="text-3xl font-extrabold tracking-tight mt-4">Thông tin khách hàng</div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
                         <div>
@@ -143,84 +146,6 @@
                     <div>
                         <div class="text-2xl font-extrabold tracking-tight mt-4">Ghi chú</div>
                         <div>{{item.description || 'Không có'}}</div>
-                    </div>
-                </div>
-                <div class="">
-                    <div class="text-3xl font-extrabold tracking-tight">Thông tin đám cưới</div>
-                    <div class="mt-4 flex flex-row mt-4">
-                        <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
-                            <mat-icon [svgIcon]="'heroicons_solid:clock'" class="text-white"></mat-icon>
-                        </div>
-                        <div class="ml-3">
-                            <div class="text-[#8E8EA1] text-sm ">Ngày cưới</div>
-                            <div class="text-lg font-semibold">{{item.weddingInformation?.weddingDay | date: 'dd/MM/yyyy'}}</div>
-                        </div>
-                    </div>
-                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2">
-                        <div>
-                            <div class="">
-                                <div class="text-2xl font-bold tracking-tight">Nhà trai</div>
-                            </div>
-                            <div class="flex flex-row mt-4">
-                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
-                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-[#8E8EA1] text-sm ">Ông</div>
-                                    <div class="text-lg font-semibold">{{item.weddingInformation?.nameBrideFather}}</div>
-                                </div>
-                            </div>
-                            <div class="flex flex-row mt-4">
-                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
-                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-[#8E8EA1] text-sm ">Bà</div>
-                                    <div class="text-lg font-semibold">{{item.weddingInformation?.nameBrideMother}}</div>
-                                </div>
-                            </div>
-                            <div class="flex flex-row mt-4">
-                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
-                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-[#8E8EA1] text-sm ">Chú rể</div>
-                                    <div class="text-lg font-semibold">{{item.weddingInformation?.nameBride}}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="">
-                                <div class="text-2xl font-bold tracking-tight">Nhà gái</div>
-                            </div>
-                            <div class="flex flex-row mt-4">
-                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
-                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-[#8E8EA1] text-sm ">Ông</div>
-                                    <div class="text-lg font-semibold">{{item.weddingInformation?.nameGroomFather}}</div>
-                                </div>
-                            </div>
-                            <div class="flex flex-row mt-4">
-                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
-                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-[#8E8EA1] text-sm ">Bà</div>
-                                    <div class="text-lg font-semibold">{{item.weddingInformation?.nameGroomMother}}</div>
-                                </div>
-                            </div>
-                            <div class="flex flex-row mt-4">
-                                <div class="min-w-10 w-10 min-h-10 h-10 bg-[#F8903A] rounded-full flex items-center justify-center">
-                                    <mat-icon [svgIcon]="'heroicons_outline:user'" class="text-white"></mat-icon>
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-[#8E8EA1] text-sm ">Cô dâu</div>
-                                    <div class="text-lg font-semibold">{{item.weddingInformation?.nameGroom}}</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                 </div>

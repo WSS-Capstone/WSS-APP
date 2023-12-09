@@ -33,28 +33,28 @@
             <!-- Details -->
             <div class="mt-10 space-y-4">
                 <div class="text-lg font-medium mb-3">Chi tiết</div>
-                <ng-container *ngIf="account.username.length">
+                <ng-container *ngIf="account?.username?.length">
                     <div>
                         <div class="font-medium text-secondary">Email</div>
-                        <div class="">{{account.username}}</div>
+                        <div class="">{{account?.username}}</div>
                     </div>
                 </ng-container>
-                <ng-container *ngIf="account.user.phone.length">
+                <ng-container *ngIf="account?.user?.phone?.length">
                     <div>
                         <div class="font-medium text-secondary">Số điện thoại</div>
-                        <div class="">{{account.user.phone}}</div>
+                        <div class="">{{account?.user?.phone}}</div>
                     </div>
                 </ng-container>
-                <ng-container *ngIf="account.user.dateOfBirth.length">
+                <ng-container *ngIf="account?.user?.dateOfBirth?.length">
                     <div>
                         <div class="font-medium text-secondary">Ngày sinh</div>
-                        <div class="">{{account.user.dateOfBirth | date: 'dd/MM/yyyy'}}</div>
+                        <div class="">{{account?.user?.dateOfBirth | date: 'dd/MM/yyyy'}}</div>
                     </div>
                 </ng-container>
-                <ng-container *ngIf="account.user.address.length">
+                <ng-container *ngIf="account?.user?.address.length">
                     <div>
                         <div class="font-medium text-secondary">Địa chỉ</div>
-                        <div class="">{{account.user.address}}</div>
+                        <div class="">{{account?.user?.address}}</div>
                     </div>
                 </ng-container>
             </div>

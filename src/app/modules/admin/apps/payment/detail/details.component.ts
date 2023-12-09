@@ -8,7 +8,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {map, Observable, of, Subject} from 'rxjs';
+import {filter, map, Observable, of, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Payment} from "../payment.types";
 import {PaymentService} from "../payment.service";
@@ -23,7 +23,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
     templateUrl: './details.component.html',
     styles: [`
         .payment-detail-grid {
-            grid-template-columns: 10% 20% 15% 15% 15% 15%;
+            grid-template-columns: auto 21% 10% 7% 7% 6%;
         }
     `],
     encapsulation: ViewEncapsulation.None,
@@ -71,7 +71,21 @@ export class PaymentDetailsComponent implements OnInit, OnDestroy {
             this._service.getItem(this._data.service.id).subscribe(f => console.log(f));
 
             // Get the note
-            this.item$ = this._service.item$;
+            this.item$ = this._service.item$
+                .pipe(
+                    map((item) => {
+                       return {...item,
+                           order: {
+                           ...item.order,
+                               orderDetails: item.order.orderDetails.filter((detail) => {
+                                   if (detail.service.createBy === item.partnerId) {
+                                       return detail;
+                                   }
+                               })
+                           }
+                       };
+                    })
+                );
 
             this.item$.subscribe((value) => {
                 this._patchValue(value);

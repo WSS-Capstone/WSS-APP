@@ -17,9 +17,10 @@ import {fuseAnimations} from "../../../../../../@fuse/animations";
 import {Category} from "../../category/category.types";
 import {environment} from "../../../../../../environments/environment";
 import {DomSanitizer} from "@angular/platform-browser";
-import {AccountRequest} from "../../user/user.types";
+import {Account, AccountRequest} from "../../user/user.types";
 import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {OrderService} from "../../order/order.service";
 
 @Component({
     selector: 'approval-details',
@@ -37,6 +38,7 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
     imgDataOrLink: any;
     tempImageUrls: string[] = [];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    users: Account[];
 
     form: FormGroup;
 
@@ -51,6 +53,7 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
         private _fuseConfirmationService: FuseConfirmationService,
         @Inject(MAT_DIALOG_DATA) private _data: { service: Service },
         private _service: ServiceService,
+        private _orderService: OrderService,
         private _matDialogRef: MatDialogRef<ServiceApprovalDetailsComponent>
     ) {
         this._initForm();
@@ -65,6 +68,12 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         this.categories$ = this._service.categories$;
+
+        this._orderService.users$.subscribe(data => {
+            this.users = data;
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        })
         // Edit
         if (this._data.service.id) {
             console.log("Edit");
@@ -90,8 +99,14 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
             quantity: [null, Validators.required],
             price: [null, Validators.required],
             imageUrls: [[]],
+            unit: [null],
             status: [null],
         });
+    }
+
+    getPartnerName(id: string) {
+        const user = this.users.find(x => x.id === id);
+        return user.user?.fullname || '';
     }
 
     private _patchValue(value: Service) {
@@ -103,6 +118,7 @@ export class ServiceApprovalDetailsComponent implements OnInit, OnDestroy {
             ownerId: value.ownerId,
             quantity: value.quantity,
             price: value.currentPrices?.price,
+            unit: value.unit,
             imageUrls: value.serviceImages.map((image) => image.imageUrl),
             status: value.status,
         });

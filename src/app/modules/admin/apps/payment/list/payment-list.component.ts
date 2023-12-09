@@ -272,7 +272,7 @@ export class PaymentListComponent implements OnInit, AfterViewInit, OnDestroy {
                     data: {
                         service: this.selectedCategory
                     },
-                    width: '50vw',
+                    width: '80vw',
                 });
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

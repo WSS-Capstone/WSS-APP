@@ -18,6 +18,7 @@ export interface Service
     createByNavigation?: Account;
     isOwnerService: boolean;
     status: string;
+    createBy?: string;
 }
 
 export interface ServicePagination
