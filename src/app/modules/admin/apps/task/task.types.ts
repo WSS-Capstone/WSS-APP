@@ -38,7 +38,8 @@ export interface TaskResponse {
 export interface Comment {
     id: string;
     taskId: string;
-    createBy?: User;
+    createBy?: string;
+    createByNavigation?: User;
     createDate: string;
     content: string;
 }
