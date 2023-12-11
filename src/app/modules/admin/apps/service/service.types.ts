@@ -14,6 +14,7 @@ export interface Service
     quantity: string;
     unit?: string;
     ownerId: string;
+    coverUrl?: string;
     serviceImages: ImageUrl[];
     createByNavigation?: Account;
     isOwnerService: boolean;

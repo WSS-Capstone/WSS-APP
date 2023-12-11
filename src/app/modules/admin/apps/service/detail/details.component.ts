@@ -137,6 +137,12 @@ export class ServiceDetailsComponent implements OnInit, OnDestroy {
     }
 
     private _patchValue(value: Service) {
+        var indexFirstImage = value.serviceImages.findIndex(x => x.imageUrl === value.coverUrl);
+        if(indexFirstImage >= 0) {
+            var temp = value.serviceImages[0];
+            value.serviceImages[0] = value.serviceImages[indexFirstImage];
+            value.serviceImages[indexFirstImage] = temp;
+        }
         this.form.patchValue({
             id: value.id,
             name: value.name,
