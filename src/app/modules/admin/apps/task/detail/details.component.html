@@ -61,14 +61,14 @@
                 <div class="flex">
                     <mat-form-field class="w-full pr-2">
                         <mat-label>Ngày bắt đầu</mat-label>
-                        <input matInput readonly [matDatepicker]="" [formControlName]="'startTime'">
-                        <mat-datepicker-toggle matIconSuffix [for]=""></mat-datepicker-toggle>
+                        <input matInput readonly [ngxMatDatetimePicker]="" [formControlName]="'startTime'">
+                        <ngx-mat-datepicker-toggle matIconSuffix [for]=""></ngx-mat-datepicker-toggle>
                         <!-- <mat-datepicker #picker></mat-datepicker> -->
                     </mat-form-field>
                     <mat-form-field class="w-full">
                         <mat-label>Ngày kết thúc</mat-label>
-                        <input matInput readonly [matDatepicker]="" [formControlName]="'endTime'">
-                        <mat-datepicker-toggle matIconSuffix [for]=""></mat-datepicker-toggle>
+                        <input matInput readonly [ngxMatDatetimePicker]="" [formControlName]="'endTime'">
+                        <ngx-mat-datepicker-toggle matIconSuffix [for]=""></ngx-mat-datepicker-toggle>
                         <!-- <mat-datepicker #picker2></mat-datepicker> -->
                     </mat-form-field>
                 </div>

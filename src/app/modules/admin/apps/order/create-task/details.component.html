@@ -68,18 +68,18 @@
             <div class="flex">
                 <mat-form-field class="w-full pr-2">
                     <mat-label>Ngày bắt đầu</mat-label>
-                    <input matInput [matDatepicker]="picker" [formControlName]="'startDate'" [matDatepickerFilter]="filterStart">
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
+                    <input matInput [ngxMatDatetimePicker]="picker" [formControlName]="'startDate'" [matDatepickerFilter]="filterStart">
+                    <ngx-mat-datepicker-toggle matIconSuffix [for]="picker"></ngx-mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
                     <mat-error *ngIf="form.get('startDate').hasError('required')">
                         Ngày bắt đầu áp dụng không được bỏ trống
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field class="w-full">
                     <mat-label>Ngày kết thúc</mat-label>
-                    <input matInput [matDatepicker]="picker2" [formControlName]="'endDate'" [matDatepickerFilter]="filterEnd">
-                    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-                     <mat-datepicker #picker2></mat-datepicker>
+                    <input matInput [ngxMatDatetimePicker]="picker2" [formControlName]="'endDate'" [matDatepickerFilter]="filterEnd">
+                    <ngx-mat-datepicker-toggle matIconSuffix [for]="picker2"></ngx-mat-datepicker-toggle>
+                     <ngx-mat-datetime-picker #picker2></ngx-mat-datetime-picker>
                     <mat-error *ngIf="form.get('endDate').hasError('required')">
                         Ngày kết thúc không được bỏ trống
                     </mat-error>

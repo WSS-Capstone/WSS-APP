@@ -10,3 +10,13 @@
     --mdc-snackbar-container-color: #333333;
     --mdc-snackbar-supporting-text-color: rgba(255, 255, 255, 0.87);
 }
+
+::ng-deep .ngx-mat-timepicker-table{
+    width: 200px;
+}
+
+::ng-deep .ngx-mat-timepicker form .ngx-mat-timepicker-table .ngx-mat-timepicker-tbody tr td .mat-mdc-form-field {
+    width: 60px !important;
+    max-width: 60px !important;
+    text-align: center;
+}

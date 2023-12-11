@@ -23,6 +23,11 @@ import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/materia
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
+    NgxMatTimepickerModule
+} from "@angular-material-components/datetime-picker";
 
 @NgModule({
     declarations: [
@@ -52,6 +57,9 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
         MatNativeDateModule,
         MatTabsModule,
         MatAutocompleteModule,
+        NgxMatDatetimePickerModule,
+        NgxMatNativeDateModule,
+        NgxMatTimepickerModule
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}

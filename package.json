@@ -13,6 +13,7 @@
         "test": "ng test"
     },
     "dependencies": {
+        "@angular-material-components/datetime-picker": "^16.0.1",
         "@angular/animations": "15.1.1",
         "@angular/cdk": "15.1.1",
         "@angular/common": "15.1.1",
