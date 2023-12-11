@@ -81,7 +81,7 @@ export class ChatService
 
     getUsers(): Observable<any>
     {
-        return this._httpClient.get<AccountResponse>(ENDPOINTS.account + "?roleNames=Staff&roleNames=Partner&roleNames=Customer&roleNames=Admin&roleNames=Owner").pipe(
+        return this._httpClient.get<AccountResponse>(ENDPOINTS.account + "?roleNames=Customer&roleNames=Owner&page-size=250").pipe(
             tap((response) => {
                 console.log(response);
                 this._users.next(response.data);

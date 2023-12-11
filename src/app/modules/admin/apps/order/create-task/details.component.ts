@@ -128,8 +128,8 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
             partnerId: !this._data.orderDetail.service.isOwnerService ? this.form.get('userId').value : null,
             orderDetailId: this.form.get('orderDetailId').value,
             taskName: this.form.get('taskName').value,
-            startDate: this.form.get('startDate').value,
-            endDate: this.form.get('endDate').value,
+            startDate: this.form.get('startDate').value.toISOString(),
+            endDate: this.form.get('endDate').value.toISOString(),
             imageEvidence: null
         }
 

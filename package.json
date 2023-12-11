@@ -32,6 +32,7 @@
         "highlight.js": "11.7.0",
         "lodash-es": "4.17.21",
         "luxon": "3.2.1",
+        "moment": "^2.29.4",
         "ng-apexcharts": "1.7.4",
         "ngx-quill": "20.0.1",
         "perfect-scrollbar": "1.5.5",
