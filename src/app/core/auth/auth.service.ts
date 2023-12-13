@@ -1,21 +1,29 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {catchError, from, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {AuthUtils} from 'app/core/auth/auth.utils';
-import {UserService} from 'app/core/user/user.service';
-import {AngularFireAuth} from "@angular/fire/compat/auth";
-import {ENDPOINTS} from "../global.constants";
-import {User} from "../user/user.types";
-import {Auth, GoogleAuthProvider} from "@angular/fire/auth";
-import {Router} from "@angular/router";
-import {AngularFireMessaging} from "@angular/fire/compat/messaging";
-import {NotificationsService} from "../../layout/common/notifications/notifications.service";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {
+    catchError,
+    from,
+    Observable,
+    of,
+    switchMap,
+    tap,
+    throwError,
+} from 'rxjs';
+import { AuthUtils } from 'app/core/auth/auth.utils';
+import { UserService } from 'app/core/user/user.service';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { ENDPOINTS } from '../global.constants';
+import { User } from '../user/user.types';
+import { Auth, GoogleAuthProvider } from '@angular/fire/auth';
+import { Router } from '@angular/router';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+import { NotificationsService } from '../../layout/common/notifications/notifications.service';
 
 @Injectable()
 export class AuthService {
     private _authenticated: boolean = false;
     private _tempToken: string = '';
-
+    user$: Observable<firebase.default.User>;
     /**
      * Constructor
      */
@@ -27,6 +35,15 @@ export class AuthService {
         private _router: Router,
         private _auth: Auth
     ) {
+        this.user$ = new Observable<firebase.default.User>((subscriber) => {
+           this._authFb.onAuthStateChanged((user) => {
+              if (user) {
+                subscriber.next(user);
+              } else {
+                subscriber.next(null);
+              }
+            });
+          });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -38,7 +55,7 @@ export class AuthService {
      */
     set accessToken(token: string) {
         localStorage.setItem('accessToken', token);
-        console.warn("token", token);
+        console.warn('token', token);
     }
 
     get accessToken(): string {
@@ -88,14 +105,15 @@ export class AuthService {
 
         return from(this._authFb.signInWithEmailAndPassword(credentials.email, credentials.password)).pipe(
             switchMap((response: any) => {
-                return from(response.user.getIdToken()).pipe(
+                return from(response.user.getIdToken(true)).pipe(
                     switchMap((token: any) => {
                         this._tempToken = token;
+                        console.log('token', token);
                         return this._httpClient.get(ENDPOINTS.userInfo, {
                             headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        })
+                                Authorization: `Bearer ${token}`,
+                            },
+                        });
                     }),
                     catchError((error) => {
                         return of(error);
@@ -105,8 +123,18 @@ export class AuthService {
             switchMap((response: User) => {
                 this.accessToken = this._tempToken;
                 this._authenticated = true;
-                response.avatar = response.owner?.imageUrl ?? response.partner?.imageUrl ?? response.customer?.imageUrl ?? response.staff?.imageUrl ?? '';
-                response.name = response.owner?.fullname ?? response.partner?.fullname ?? response.customer?.fullname ?? response.staff?.fullname ?? '';
+                response.avatar =
+                    response.owner?.imageUrl ??
+                    response.partner?.imageUrl ??
+                    response.customer?.imageUrl ??
+                    response.staff?.imageUrl ??
+                    '';
+                response.name =
+                    response.owner?.fullname ??
+                    response.partner?.fullname ??
+                    response.customer?.fullname ??
+                    response.staff?.fullname ??
+                    '';
                 response.email = response.username;
                 this._userService.user = response;
 
@@ -121,7 +149,7 @@ export class AuthService {
         const provider = new GoogleAuthProvider();
         return from(this._authFb.signInWithPopup(provider)).pipe(
             tap((response: any) => {
-                console.log("response", response);
+                console.log('response', response);
             }),
             switchMap((response: any) => {
                 return from(response.user.getIdToken()).pipe(
@@ -129,9 +157,9 @@ export class AuthService {
                         this._tempToken = token;
                         return this._httpClient.get(ENDPOINTS.userInfo, {
                             headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        })
+                                Authorization: `Bearer ${token}`,
+                            },
+                        });
                     }),
                     catchError((error) => {
                         return of(error);
@@ -141,8 +169,18 @@ export class AuthService {
             switchMap((response: User) => {
                 this.accessToken = this._tempToken;
                 this._authenticated = true;
-                response.avatar = response.owner?.imageUrl ?? response.partner?.imageUrl ?? response.customer?.imageUrl ?? response.staff?.imageUrl ?? '';
-                response.name = response.owner?.fullname ?? response.partner?.fullname ?? response.customer?.fullname ?? response.staff?.fullname ?? '';
+                response.avatar =
+                    response.owner?.imageUrl ??
+                    response.partner?.imageUrl ??
+                    response.customer?.imageUrl ??
+                    response.staff?.imageUrl ??
+                    '';
+                response.name =
+                    response.owner?.fullname ??
+                    response.partner?.fullname ??
+                    response.customer?.fullname ??
+                    response.staff?.fullname ??
+                    '';
                 response.email = response.username;
                 this._userService.user = response;
                 this.role = response.roleName;
@@ -155,48 +193,58 @@ export class AuthService {
      * Sign in using the access token
      */
     signInUsingToken(): Observable<any> {
-        console.warn(" signInUsingToken ", this.accessToken);
+        console.warn(' signInUsingToken ', this.accessToken);
         // Sign in using the token
-        return this._httpClient.get(ENDPOINTS.userInfo, {
-            headers: {
-                Authorization: `Bearer ${this.accessToken}`
-            }
-        }).pipe(
-            catchError(() =>
-
-                // Return false
-                of(false)
-            ),
-            switchMap((response: any) => {
-
-                // Replace the access token with the new one if it's available on
-                // the response object.
-                //
-                // This is an added optional step for better security. Once you sign
-                // in using the token, you should generate a new one on the server
-                // side and attach it to the response object. Then the following
-                // piece of code can replace the token with the refreshed one.
-                if (response.accessToken) {
-                    this.accessToken = response.accessToken;
-                }
-
-                // Set the authenticated flag to true
-                this._authenticated = true;
-                response.avatar = response.owner?.imageUrl ?? response.partner?.imageUrl ?? response.customer?.imageUrl ?? response.staff?.imageUrl ?? '';
-                response.name = response.owner?.fullname ?? response.partner?.fullname ?? response.customer?.fullname ?? response.staff?.fullname ?? '';
-                response.email = response.username;
-                // Store the user on the user service
-                this._userService.user = response;
-                this.role = response.roleName;
-
-                setInterval(() => {
-                    this._noti.getAll();
-                }, 1500);
-
-                // Return true
-                return of(true);
+        return this._httpClient
+            .get(ENDPOINTS.userInfo, {
+                headers: {
+                    Authorization: `Bearer ${this.accessToken}`,
+                },
             })
-        );
+            .pipe(
+                catchError(() =>
+                    // Return false
+                    of(false)
+                ),
+                switchMap((response: any) => {
+                    // Replace the access token with the new one if it's available on
+                    // the response object.
+                    //
+                    // This is an added optional step for better security. Once you sign
+                    // in using the token, you should generate a new one on the server
+                    // side and attach it to the response object. Then the following
+                    // piece of code can replace the token with the refreshed one.
+                    if (response.accessToken) {
+                        this.accessToken = response.accessToken;
+                    }
+
+                    // Set the authenticated flag to true
+                    this._authenticated = true;
+                    response.avatar =
+                        response.owner?.imageUrl ??
+                        response.partner?.imageUrl ??
+                        response.customer?.imageUrl ??
+                        response.staff?.imageUrl ??
+                        '';
+                    response.name =
+                        response.owner?.fullname ??
+                        response.partner?.fullname ??
+                        response.customer?.fullname ??
+                        response.staff?.fullname ??
+                        '';
+                    response.email = response.username;
+                    // Store the user on the user service
+                    this._userService.user = response;
+                    this.role = response.roleName;
+
+                    setInterval(() => {
+                        this._noti.getAll();
+                    }, 1500);
+
+                    // Return true
+                    return of(true);
+                })
+            );
     }
 
     /**
@@ -219,7 +267,12 @@ export class AuthService {
      *
      * @param user
      */
-    signUp(user: { name: string; email: string; password: string; company: string }): Observable<any> {
+    signUp(user: {
+        name: string;
+        email: string;
+        password: string;
+        company: string;
+    }): Observable<any> {
         return this._httpClient.post('api/auth/sign-up', user);
     }
 
@@ -228,7 +281,10 @@ export class AuthService {
      *
      * @param credentials
      */
-    unlockSession(credentials: { email: string; password: string }): Observable<any> {
+    unlockSession(credentials: {
+        email: string;
+        password: string;
+    }): Observable<any> {
         return this._httpClient.post('api/auth/unlock-session', credentials);
     }
 

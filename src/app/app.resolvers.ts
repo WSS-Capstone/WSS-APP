@@ -44,7 +44,7 @@ export class InitialDataResolver implements Resolve<any>
             this._loadingService.setAutoMode(false);
             this._notificationsService.getAll().subscribe();
             this._loadingService.setAutoMode(true);
-        }, 1000);
+        }, 2500);
         // Fork join multiple API endpoint calls to wait all of them to finish
         return forkJoin([
             this._navigationService.get(),

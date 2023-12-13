@@ -130,8 +130,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.form.patchValue({
             id: value.id,
             code: value.code,
-            startTime: new Date(value.orderDetail.startTime),
-            endTime: new Date(value.orderDetail?.endTime),
+            startTime: new Date(value.startDate),
+            endTime: new Date(value.endDate),
             taskName: value.taskName,
             status: value.status,
             staffId: value.staff?.id,

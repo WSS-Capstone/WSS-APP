@@ -3,6 +3,7 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { catchError, Observable, throwError } from 'rxjs';
 import { AuthService } from 'app/core/auth/auth.service';
 import { AuthUtils } from 'app/core/auth/auth.utils';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor
@@ -10,7 +11,10 @@ export class AuthInterceptor implements HttpInterceptor
     /**
      * Constructor
      */
-    constructor(private _authService: AuthService)
+    constructor(
+        private _authService: AuthService,
+        private _authFb: AngularFireAuth,
+        )
     {
     }
 
@@ -39,6 +43,18 @@ export class AuthInterceptor implements HttpInterceptor
                 headers: req.headers.set('Authorization', 'Bearer ' + this._authService.accessToken)
             });
         }
+
+        this._authService.user$.subscribe((user) => {
+            if (user) {
+                user.getIdToken().then((token) => {
+                    this._authService.accessToken = token;
+                    newReq = req.clone({
+                        headers: req.headers.set('Authorization', 'Bearer ' + token)
+                    });
+                });
+            }
+        });
+
 
         // Response
         return next.handle(newReq).pipe(
