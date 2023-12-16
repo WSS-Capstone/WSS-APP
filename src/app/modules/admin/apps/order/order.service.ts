@@ -329,9 +329,9 @@ export class OrderService {
                 map((newItem) => {
                     if (items) {
                         items.orderDetails.find(order => order.id === newItem.orderDetail.id).tasks.push(newItem);
-                        this._item.next(items);
+                        // this._item.next(items);
                     } else {
-                        this._item.next(items);
+                        // this._item.next(items);
                     }
                     return newItem;
                 })

@@ -107,9 +107,10 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
 
     filterStart = (date: Date | null): boolean => {
         const endDate = this.form.get('endDate').value;
-
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
         return (
-          !endDate || date <= endDate
+            date >= currentDate && (!endDate || date < endDate)
         );
     }
 
@@ -117,7 +118,7 @@ export class OrderCreateTaskComponent implements OnInit, OnDestroy {
         const startDate = this.form.get('startDate').value;
 
         return (
-            !startDate || date >= startDate
+            !startDate || date > startDate
         );
     }
 

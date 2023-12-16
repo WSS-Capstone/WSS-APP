@@ -186,7 +186,7 @@
                                 matSortDisableClear>
                                 <div class="">Ngày khách đặt</div>
                                 <div class="">Tên dịch vụ</div>
-                                <div class="">Số người thực hiện</div>
+                                <div class="" *ngIf="item.statusPayment != 'PENDING' && item.statusPayment != 'CONFIRM'">Số người thực hiện</div>
                                 <div class="">Địa điểm</div>
                                 <div class="">Giá tiền</div>
                                 <div class="">Trạng thái</div>
@@ -203,7 +203,7 @@
                                         <div class="truncate">
                                             {{orderDetail.service?.name}}
                                         </div>
-                                        <div class="truncate">
+                                        <div class="truncate" *ngIf="item.statusPayment != 'PENDING' && item.statusPayment != 'CONFIRM'">
                                             {{orderDetail.tasks.length}}
                                         </div>
 
