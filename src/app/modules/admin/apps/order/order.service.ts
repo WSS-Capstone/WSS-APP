@@ -7,6 +7,7 @@ import {Category, CategoryResponse} from "../category/category.types";
 import {Discount, DiscountResponse} from "../discount/discount.types";
 import {Account, AccountResponse} from "../user/user.types";
 import {Task} from "../task/task.types";
+import {tasks} from "../../../../mock-api/apps/tasks/data";
 
 @Injectable({
     providedIn: 'root'
@@ -323,13 +324,22 @@ export class OrderService {
     }
 
     createTask(item: any, type: string): Observable<Task> {
+        var it = structuredClone(this._item.value);
+        console.log('newItem', it);
         return this.item$.pipe(
             take(1),
             switchMap(items => this._httpClient.post<Task>(ENDPOINTS.task, item).pipe(
                 map((newItem) => {
                     if (items) {
-                        items.orderDetails.find(order => order.id === newItem.orderDetail.id).tasks.push(newItem);
-                        // this._item.next(items);
+                        // items.orderDetails.find(order => order.id === newItem.orderDetail.id).tasks.push(newItem);
+                        if (it.orderDetails.find(order => order.id === newItem.orderDetail.id)) {
+                            it.orderDetails.find(order => order.id === newItem.orderDetail.id).tasks.push(newItem);
+                        }
+                        if (it.comboOrderDetails.find(order => order.id === newItem.orderDetail.id)) {
+                            it.comboOrderDetails.find(order => order.id === newItem.orderDetail.id).tasks.push(newItem);
+                        }
+                        // console.log('newItem', it);
+                        this._item.next(it);
                     } else {
                         // this._item.next(items);
                     }

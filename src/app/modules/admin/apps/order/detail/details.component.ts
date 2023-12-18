@@ -2,27 +2,22 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    Inject,
     OnDestroy,
     OnInit,
     ViewEncapsulation
 } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {map, Observable, of, Subject, switchMap, take} from 'rxjs';
+import {MatDialog} from '@angular/material/dialog';
+import {map, Observable, Subject} from 'rxjs';
 import {Label} from 'app/modules/admin/apps/notes/notes.types';
 import {Order, OrderDetail, WeddingInformation} from "../order.types";
 import {OrderService} from "../order.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {fuseAnimations} from "../../../../../../@fuse/animations";
-import {Category} from "../../category/category.types";
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Discount} from "../../discount/discount.types";
-import {DiscountService} from "../../discount/discount.service";
-import {AccountRequest} from "../../user/user.types";
 import {FuseConfirmationService} from "../../../../../../@fuse/services/confirmation";
-import { OrderCreateTaskComponent } from '../create-task/details.component';
+import {OrderCreateTaskComponent} from '../create-task/details.component';
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {Service} from "../../service/service.types";
 
 @Component({
     selector: 'order-details',
@@ -32,18 +27,6 @@ import {Service} from "../../service/service.types";
         `
             .order-detail-grid {
                 grid-template-columns: 8% auto 9% 8% 9% 10% 6%;
-
-                /* @screen sm {
-                    grid-template-columns: 57px auto 80px;
-                }
-
-                @screen md {
-                    grid-template-columns: 56px 126px auto 80px;
-                } */
-
-                /* @screen lg {
-                    grid-template-columns: 56px 200px 200px 200px 200px 200px auto 200px;
-                } */
             }
         `
     ],
@@ -92,8 +75,9 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             this._service.getItem(id).subscribe(p => {
                 this.item$ = this._service.item$.pipe(
                     map(value => {
-                        value.orderDetails = value.orderDetails.concat(value.comboOrderDetails);
-                        return value;
+                        let r = structuredClone(value);
+                        r.orderDetails = r.orderDetails.concat(r.comboOrderDetails);
+                        return r;
                     })
                 );
 
@@ -101,46 +85,8 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
-            // Get the note
-
-            // this.item$.subscribe((data) => {
-            //     // this._patchValue(value);
-            //     this.weddingInfo$ = this._service.getWedding(data.weddingInformationId)
-            //     this.voucher$ = this._discountService.getItem(data.voucherId)
-            //     // this.voucher$ = this._service.vouchers$.pipe(
-            //     //     map(value => value.find(x => x.id === data.voucherId))
-            //     // )
-            // });
           })
-        // Edit
-        // if (this._data.service.id) {
-        //     console.log("Edit");
-        //     // Request the data from the server
-        //     this._service.getItem(this._data.service.id).subscribe();
 
-        //     // Get the note
-        //     this.item$ = this._service.item$;
-
-        //     this.item$.subscribe((value) => {
-        //         this._patchValue(value);
-        //     });
-        // }
-        // Add
-        // else {
-        //     console.log("Add");
-        //     // Create an empty note
-        //     const item: Order = {
-        //         vouncherId: "",
-        //         id: null,
-        //         fullname: '',
-        //         description: '',
-        //         customerId: null,
-        //         ownerId: null,
-        //         status: 1
-        //     };
-
-        //     this.item$ = of(item);
-        // }
     }
 
     private _initForm(): void {
@@ -155,19 +101,6 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             status: [null],
         });
     }
-
-    // private _patchValue(value: Order) {
-    //     this.form.patchValue({
-    //         id: value.id,
-    //         fullname: value.fullname,
-    //         // categoryId: value.categoryId,
-    //         description: value.description,
-    //         // ownerId: value.ownerId,
-    //         // quantity: value.quantity,
-    //         // coverUrl: value.coverUrl,
-    //         status: value.status,
-    //     });
-    // }
 
     /**
      * On destroy
