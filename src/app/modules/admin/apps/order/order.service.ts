@@ -349,47 +349,8 @@ export class OrderService {
         );
     }
 
-
-    // create(item: Order): Observable<Order> {
-    //     return this.items$.pipe(
-    //         take(1),
-    //         switchMap(items => this._httpClient.post<Order>(ENDPOINTS.order, item).pipe(
-    //             map((newItem) => {
-    //
-    //
-    //                 this._items.next([newItem, ...items]);
-    //
-    //                 return newItem;
-    //             })
-    //         ))
-    //     );
-    // }
-
-    // update(id: string, item: Order): Observable<Order> {
-    //     return this.items$.pipe(
-    //         take(1),
-    //         switchMap(itemsArr => this._httpClient.put<Order>(ENDPOINTS.order + `/approval`, {
-    //             ...item
-    //         }).pipe(
-    //             map((updatedItem) => {
-    //                 const index = itemsArr.findIndex(item => item.id === id);
-    //                 itemsArr[index] = updatedItem;
-    //                 this._items.next(itemsArr);
-    //                 return updatedItem;
-    //             }),
-    //             switchMap(updatedItem => this.item$.pipe(
-    //                 take(1),
-    //                 filter(item => item && item.id === id),
-    //                 tap(() => {
-    //                     this._item.next(updatedItem);
-    //                     return updatedItem;
-    //                 })
-    //             ))
-    //         ))
-    //     );
-    // }
-
     approval(id: string, status: string, currentStatus: string, cancelReason?: string): Observable<Order> {
+        var it = structuredClone(this._item.value);
         switch (status) {
             case 'CONFIRM':
                 return this.item$.pipe(
@@ -398,9 +359,9 @@ export class OrderService {
                         take(1),
                         filter(item => item && item.id === id),
                         tap((updatedItem) => {
-                            itemArr.statusOrder = status;
-                            // this._item.next(itemArr);
-                            return itemArr;
+                            it.statusOrder = status;
+                            this._item.next(itemArr);
+                            return it;
                         }),
                         switchMap(updatedItem => this.pendingItems$.pipe(
                             map((itemsArr) => {
@@ -426,9 +387,9 @@ export class OrderService {
                         take(1),
                         filter(item => item && item.id === id),
                         tap((updatedItem) => {
-                            itemArr.statusOrder = status;
-                            this._item.next(itemArr);
-                            return itemArr;
+                            it.statusOrder = status;
+                            this._item.next(it);
+                            return it;
                         }),
                         switchMap(updatedItem => this.doingItems$.pipe(
                             map((itemsArr) => {
@@ -457,9 +418,9 @@ export class OrderService {
                             take(1),
                             filter(item => item && item.id === id),
                             tap((updatedItem) => {
-                                itemArr.statusOrder = status;
-                                this._item.next(itemArr);
-                                return itemArr;
+                                it.statusOrder = status;
+                                this._item.next(it);
+                                return it;
                             }),
                             switchMap(updatedItem => this.pendingItems$.pipe(
                                 map((itemsArr) => {
@@ -487,9 +448,9 @@ export class OrderService {
                             take(1),
                             filter(item => item && item.id === id),
                             tap((updatedItem) => {
-                                itemArr.statusOrder = status;
-                                this._item.next(itemArr);
-                                return itemArr;
+                                it.statusOrder = status;
+                                this._item.next(it);
+                                return it;
                             }),
                             switchMap(updatedItem => this.doingItems$.pipe(
                                 map((itemsArr) => {

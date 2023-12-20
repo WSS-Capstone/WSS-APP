@@ -203,7 +203,7 @@ export class ProjectService {
             map((response: Dashboard) => ({
                 ...response,
                 totalService: response.serviceQuantity.reduce((a, b) => a + Object.values(b)[0], 0),
-                totalOrder: response.serviceOrder.reduce((a, b) => a + Object.values(b)[0], 0),
+                // totalOrder: response.serviceOrder.reduce((a, b) => a + Object.values(b)[0], 0),
                 githubIssues: this.githubIssues,
                 schedule: this.schedule,
                 partnerHighestRevenue: this.partnerHighestRevenue,
