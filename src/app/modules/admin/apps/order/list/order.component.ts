@@ -183,6 +183,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
      * After view init
      */
     ngAfterViewInit(): void {
+        this._sort.direction = 'desc';
         if (this._sort && this._pendingPaginator) {
             // Set the initial sort
             this._sort.sort({
@@ -278,7 +279,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
                     this._donePaginator.pageIndex = 0;
 
                     // Close the details
-                    // this.closeDetails();
+                    this.closeDetails();
                 });
 
             // Get products if sort or page changes
@@ -286,7 +287,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
                 switchMap(() => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._service.getDoingItems(this._donePaginator.pageIndex, this._donePaginator.pageSize, this._sort.active, this._sort.direction);
+                    return this._service.getDoneItems(this._donePaginator.pageIndex, this._donePaginator.pageSize, this._sort.active, this._sort.direction);
                 }),
                 map(() => {
                     this.isLoading = false;

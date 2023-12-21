@@ -238,7 +238,7 @@ export class OrderService {
                 page: '' + (page),
                 'page-size': '' + size,
                 'sort-key': sort,
-                'sort-order': order,
+                'sort-order': 'desc',
                 'status': 'DONE',
                 name: search
             }
